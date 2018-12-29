@@ -113,6 +113,7 @@ module.exports = {
   center: "居中",
   right: "靠右",
   copy_success: "复制成功",
+  success: "成功",
   copy_error: "抱歉您的系统不支持，请手动复制链接",
   not_support: "您好，无法支持自己的项目",
   agree_terms: "请先同意计划条款",

@@ -22,9 +22,9 @@
         </div>
         <h4 class="pro-value main-color">{{programs.amount}} EOS</h4>
         <p class="pro-key">{{$t("pledged")}} {{programs.complete}} EOS</p>
-        <h4 class="pro-value">{{programs.backers}} EOS</h4>
+        <h4 class="pro-value">{{programs.backers}}</h4>
         <p class="pro-key">{{$t("backers")}}</p>
-        <h4 class="pro-value">{{Math.ceil((Date.now()-(new Date(programs.release_time)))/1000/60/60/24)}} {{$t("day")}} </h4>
+        <h4 class="pro-value">{{programs.restDays}} {{$t("day")}} </h4>
         <p class="pro-key">{{$t("for_the_rest")}}</p>
         <div class="payment" @click="payModal">{{$t('payment')}}</div>
       </div>
@@ -68,11 +68,11 @@
         <h4 class="modal-title">{{$t('payment')}}</h4>
         <label>{{$t('pay_amount')}}</label>
         <p class="basic-group">
-          <input class="basic-input" type="number" v-model="amount" name="amount" :placeholder="$t('pay_amount_pl')">
+          <input class="basic-input" id="amount" type="number" v-model="amount" name="amount" :placeholder="$t('pay_amount_pl')" @blur="getEosPrice">
         </p>
-          <div class="equal">≈$0</div>
+          <div class="equal">≈${{totalEosPriceUsd}}</div>
           <label>{{$t('note')}}</label>
-          <textarea class="basic-input" rows="4" v-model="note" name="note" :placeholder="$t('note_pl')"></textarea>
+          <textarea class="basic-input" rows="4" v-model="note" id="note" name="note" :placeholder="$t('note_pl')"></textarea>
           <div class="payment" @click="payFunc" data-dismiss="modal">{{$t('determine')}}</div>
       </div>
     </div>
@@ -96,15 +96,17 @@ export default {
       link: window.location.href,
       copyBtn: null, //存储初始化复制按钮事件
       programs: {
-        id: 1,
-        address: 'eosjiazechen',
+        id: 0,
+        address: 'loading...',
         img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
         title: 'I need your help to expand the reproduction of secret chili sauce',
-        complete: 25000,
-        amount: 20032,
-        backers: 187,
-        release_time: '2018/12/10',
-        support: [{
+        complete: 0,
+        amount: 10,
+        backers: 0,
+        release_time: 'loading...',
+        restDays: 0,
+        support: [
+        {
             id: '1',
             address: 'tangying1234',
             amount: 20032,
@@ -117,30 +119,18 @@ export default {
             amount: 20032,
             comments: 'Make your own chili sauce, there must be a unique formula, should be very delicious, support!',
             time: '2018-11-04  14:26:06'
-          },
-          {
-            id: '3',
-            address: 'eosjiazechen',
-            amount: 20032,
-            comments: 'Make your own chili sauce, there must be a unique formula, should be very delicious, support!',
-            time: '2018-11-04  14:26:06'
-          },
-          {
-            id: '4',
-            address: 'tangying1234',
-            amount: 20032,
-            comments: 'Make your own chili sauce, there must be a unique formula, should be very delicious, support!',
-            time: '2018-11-04  14:26:06'
           }
         ],
-        info: ''
+        info: '',
+        crowdfundingNo: '',
+        targetAccount: ''
       },
       link_isShow: false,
-      isActive: true
+      isActive: true,
+      totalEosPriceUsd: 0
     }
   },
   mounted() {
-
     this.copyBtn = new this.clipboard(this.$refs.copy);
     this.$http.get('').then((res) => {
       console.log(res);
@@ -149,6 +139,8 @@ export default {
       console.log(err);
 
     })
+
+    this.getProjectInfo();
   },
   methods: {
     toggleDetails() {
@@ -167,7 +159,6 @@ export default {
         document.execCommand("Copy");
         _this.alertInfo = _this.$t('copy_success')
         $('#alert').modal('show')
-        // alert('安卓');
       } else {
         let clipboard = _this.copyBtn;
         clipboard.on('success', function () {
@@ -190,16 +181,124 @@ export default {
       }
     },
     payFunc() {
-      this.alertInfo = '连接scatter进行交易'
-      $('#alert').modal('show')
+      let _this = this;
+      let amount = $('#amount').val();
+      let note = $('#note').val();
 
+      // 判断金额
+
+      eos.transaction(
+          {
+            actions : [{
+                          account: 'eosio.token',
+                          name: 'transfer',
+                          authorization: [{
+                            actor: 'eosjiazechen',
+                            permission: 'active'
+                          }],
+                          data: {
+                            from: 'eosjiazechen',
+                            to: _this.programs.targetAccount,
+                            quantity: parseFloat(amount).toFixed(4) + ' EOS',
+                            memo: '###{"ID":'+_this.programs.id+',"creator":"'+_this.programs.address+'","comment":"'+note+'"}###'
+                          }
+                        }]
+          }
+      ).then(
+          result => {
+            // 成功之后调用我们的log
+            var url =  global.domain+'apiCrowdfunding/trans';
+
+            var args = {
+              crowdfundingNo : _this.programs.crowdfundingNo,
+              hash : result.transaction_id,
+              amount : amount,
+              from : from,
+              to : _this.targetAccount
+            };
+
+            $.post(url,args,function(res){
+              if( res.success ){
+                _this.alertInfo = _this.$t('success');
+                $('#alert').modal('show')
+              }else{
+                _this.alertInfo = res.message;
+                $('#alert').modal('show')
+              }
+            },'json')
+          }
+      ).catch(
+          error => {
+            // 失败
+            _this.alertInfo = JSON.parse(error).error.details[0].message;
+            $('#alert').modal('show')
+          }
+      )
+
+      // this.alertInfo = '连接scatter进行交易'
+      // $('#alert').modal('show')
+
+    },
+    getProjectInfo(){
+
+      let _this = this;
+      var url =  global.domain+'/apiCrowdfunding/getInfo?eosID=1';
+
+      $.get(url,{},function(res){
+        if( res.success ){
+          console.log(_this.programs)
+          _this.programs.info = res.data.des; // 简介
+          _this.programs.crowdfundingNo = res.data.crowdfundingNo; // 订单号
+          _this.programs.img = res.data.photos; // 图片
+          _this.programs.complete = res.data.amount; // 总共
+          _this.programs.title = res.data.title; // 标题
+          _this.programs.address = res.data.creator; // 发起人
+          _this.programs.restDays = res.data.endDate; // 还剩几天
+          _this.programs.release_time = res.data.releaseTime; // 发布时间
+          _this.programs.targetAccount = res.data.targetAccount; // 收款账户
+          _this.programs.id = res.data.eosID; // eosID
+
+          // transfer
+          $.get(global.domain+'/apiEos/getCrowdfundingTransfer',{'account':_this.programs.targetAccount},function(res){
+
+            if( res.success ){
+              $.each(res.data.transfer,function(index,event){
+
+                _this.programs.support.push({
+                  id: index+1,
+                  address: event.data.data.from,
+                  amount: event.data.data.quantity,  // 1.0000 EOS
+                  comments: JSON.parse( event.data.data.memo.replace('/###/ig','') ).comment,  // ###{}### 需要过滤
+                  time: event.data.timestamp      // 时间戳
+                });
+
+                _this.programs.backers ++;
+
+              });
+            }
+
+          },'json')
+
+        }
+      },'json')
+
+      
+
+    },
+    getEosPrice(){
+      let _this = this;
+      $.get('https://api.coinmarketcap.com/v1/ticker/eos/?convert=USD',{},function(res){
+        _this.totalEosPriceUsd = parseFloat( res[0]['price_usd'] * $('#amount').val() ).toFixed(2);
+      },'json')
     }
   },
   components: {
     foot,
     alert
   }
+
 }
+
 </script>
 
 <style scoped>
