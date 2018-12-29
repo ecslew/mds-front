@@ -39,4 +39,5 @@ $(function() {
       $('.header-nav').removeClass('scroll-nav');
     }
   }
+
 })

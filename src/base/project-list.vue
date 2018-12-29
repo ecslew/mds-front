@@ -8,15 +8,18 @@
   <div class="list-pic" :style="{backgroundImage: 'url(' + picture +')'}"></div>
   <div class="info">
     <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
-    <div class="complete">{{$t('complete')}}:{{complete}} EOS</div>
-    <div class="time">{{$t('release_time')}}:{{time}}</div>
+    <div class="progress">
+      <p class="progress-bar" :style="'width:'+parseFloat(1200/targetAmount*100)+'%'"></p>
+    </div>
+    <div class="complete">{{$t('complete')}}: {{targetAmount}} EOS</div>
+    <div class="time">{{$t('release_time')}}: {{time.slice(0,10)}}</div>
     </div>
 </router-link>
 </template>
 
 <script>
 export default {
-  props: ['picture', 'title', 'complete', 'time', 'id']
+  props: ['picture', 'title', 'targetAmount', 'time', 'id']
 }
 </script>
 
@@ -57,31 +60,23 @@ export default {
   font-weight: 600;
   font-family: Gotham-Medium;
   font-size: 16px;
-  position: relative;
-  padding: 12px 0 48px;
-}
-
-.info .complete:after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top: 0;
-  border-radius: 4px;
-  border-top: 4px solid #00d102;
+  padding: 8px 0 48px;
 }
 
 .info .time {
   color: #607d8b;
 }
-@media (max-width: 767px){
-  .list-pic{
+
+@media (max-width: 767px) {
+  .list-pic {
     height: 180px;
   }
-  .info .complete{
+
+  .info .complete {
     padding-bottom: 28px;
   }
-  .info h4{
+
+  .info h4 {
     height: auto;
   }
 }

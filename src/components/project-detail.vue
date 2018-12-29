@@ -40,8 +40,7 @@
     <div class="container detail-info-container">
       <div class="row">
         <div class="col-sm-8">
-          <div class="details" v-show="isActive">
-            {{programs.info}}
+          <div class="details" v-show="isActive" v-html="programs.info">
           </div>
           <div class="transfer" v-show="!isActive">
             <div class="info-title">{{programs.support.length}} {{$t('support')}}</div>
@@ -106,8 +105,7 @@ export default {
         backers: 0,
         release_time: 'loading...',
         restDays: 0,
-        support: [
-        {
+        support: [{
             id: '1',
             address: 'tangying1234',
             amount: 20032,
@@ -132,6 +130,7 @@ export default {
     }
   },
   mounted() {
+
     this.copyBtn = new this.clipboard(this.$refs.copy);
     this.$http.get('').then((res) => {
       console.log(res);
@@ -188,65 +187,63 @@ export default {
 
       // 判断金额
 
-      eos.transaction(
-          {
-            actions : [{
-                          account: 'eosio.token',
-                          name: 'transfer',
-                          authorization: [{
-                            actor: 'eosjiazechen',
-                            permission: 'active'
-                          }],
-                          data: {
-                            from: 'eosjiazechen',
-                            to: _this.programs.targetAccount,
-                            quantity: parseFloat(amount).toFixed(4) + ' EOS',
-                            memo: '###{"ID":'+_this.programs.id+',"creator":"'+_this.programs.address+'","comment":"'+note+'"}###'
-                          }
-                        }]
+      eos.transaction({
+        actions: [{
+          account: 'eosio.token',
+          name: 'transfer',
+          authorization: [{
+            actor: 'eosjiazechen',
+            permission: 'active'
+          }],
+          data: {
+            from: 'eosjiazechen',
+            to: _this.programs.targetAccount,
+            quantity: parseFloat(amount).toFixed(4) + ' EOS',
+            memo: '###{"ID":' + _this.programs.id + ',"creator":"' + _this.programs.address + '","comment":"' + note + '"}###'
           }
-      ).then(
-          result => {
-            // 成功之后调用我们的log
-            var url =  global.domain+'apiCrowdfunding/trans';
+        }]
+      }).then(
+        result => {
+          // 成功之后调用我们的log
+          var url = global.domain + 'apiCrowdfunding/trans';
 
-            var args = {
-              crowdfundingNo : _this.programs.crowdfundingNo,
-              hash : result.transaction_id,
-              amount : amount,
-              from : from,
-              to : _this.targetAccount
-            };
+          var args = {
+            crowdfundingNo: _this.programs.crowdfundingNo,
+            hash: result.transaction_id,
+            amount: amount,
+            from: from,
+            to: _this.targetAccount
+          };
 
-            $.post(url,args,function(res){
-              if( res.success ){
-                _this.alertInfo = _this.$t('success');
-                $('#alert').modal('show')
-              }else{
-                _this.alertInfo = res.message;
-                $('#alert').modal('show')
-              }
-            },'json')
-          }
+          $.post(url, args, function (res) {
+            if (res.success) {
+              _this.alertInfo = _this.$t('success');
+              $('#alert').modal('show')
+            } else {
+              _this.alertInfo = res.message;
+              $('#alert').modal('show')
+            }
+          }, 'json')
+        }
       ).catch(
-          error => {
-            // 失败
-            _this.alertInfo = JSON.parse(error).error.details[0].message;
-            $('#alert').modal('show')
-          }
+        error => {
+          // 失败
+          _this.alertInfo = JSON.parse(error).error.details[0].message;
+          $('#alert').modal('show')
+        }
       )
 
       // this.alertInfo = '连接scatter进行交易'
       // $('#alert').modal('show')
 
     },
-    getProjectInfo(){
+    getProjectInfo() {
 
       let _this = this;
-      var url =  global.domain+'/apiCrowdfunding/getInfo?eosID=1';
+      var url = this.globalData.domain + '/apiCrowdfunding/getInfo?eosID=1';
 
-      $.get(url,{},function(res){
-        if( res.success ){
+      $.get(url, {}, function (res) {
+        if (res.success) {
           console.log(_this.programs)
           _this.programs.info = res.data.des; // 简介
           _this.programs.crowdfundingNo = res.data.crowdfundingNo; // 订单号
@@ -260,34 +257,37 @@ export default {
           _this.programs.id = res.data.eosID; // eosID
 
           // transfer
-          $.get(global.domain+'/apiEos/getCrowdfundingTransfer',{'account':_this.programs.targetAccount},function(res){
+          $.get(global.domain + '/apiEos/getCrowdfundingTransfer', {
+            'account': _this.programs.targetAccount
+          }, function (res) {
 
-            if( res.success ){
-              $.each(res.data.transfer,function(index,event){
+            if (res.success) {
+              $.each(res.data.transfer, function (index, event) {
 
                 _this.programs.support.push({
-                  id: index+1,
+                  id: index + 1,
                   address: event.data.data.from,
-                  amount: event.data.data.quantity,  // 1.0000 EOS
-                  comments: JSON.parse( event.data.data.memo.replace('/###/ig','') ).comment,  // ###{}### 需要过滤
-                  time: event.data.timestamp      // 时间戳
+                  amount: event.data.data.quantity, // 1.0000 EOS
+                  comments: JSON.parse(event.data.data.memo.replace('/###/ig', '')).comment, // ###{}### 需要过滤
+                  time: event.data.timestamp // 时间戳
                 });
 
-                _this.programs.backers ++;
+                _this.programs.backers++;
 
               });
             }
 
-          },'json')
+          }, 'json')
 
         }
       },'json')
+
     },
-    getEosPrice(){
+    getEosPrice() {
       let _this = this;
-      $.get('https://api.coinmarketcap.com/v1/ticker/eos/?convert=USD',{},function(res){
-        _this.totalEosPriceUsd = parseFloat( res[0]['price_usd'] * $('#amount').val() ).toFixed(2);
-      },'json')
+      $.get('https://api.coinmarketcap.com/v1/ticker/eos/?convert=USD', {}, function (res) {
+        _this.totalEosPriceUsd = parseFloat(res[0]['price_usd'] * $('#amount').val()).toFixed(2);
+      }, 'json')
     }
   },
   components: {
@@ -296,7 +296,6 @@ export default {
   }
 
 }
-
 </script>
 
 <style scoped>

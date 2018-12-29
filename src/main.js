@@ -5,23 +5,26 @@ import App from './App'
 import router from './router'
 import resource from 'vue-resource'
 import i18n from 'static/js/i18n'
+import globalData from 'static/js/config.js'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'static/css/index.css'
 import 'static/js/common.js'
-import clipboard from 'clipboard';
+import clipboard from 'clipboard'
 
-//注册到vue原型上
+import ScatterJS from 'scatterjs-core'
+import ScatterEOS from 'scatterjs-plugin-eosjs'
+
+ScatterJS.plugins(new ScatterEOS())
+
+/*注册到vue原型上*/
+Vue.prototype.globalData = globalData;
 Vue.prototype.clipboard = clipboard;
+
 Vue.config.productionTip = false
 Vue.use(resource)
-global.devdomain = 'http://apidev.xinchain.org/'
-global.prodomain = 'https://api.medishares.net/'
-global.browsers = {
-    mobile: !!navigator.userAgent.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
-    android: navigator.userAgent.indexOf('Android') > -1 || navigator.userAgent.indexOf('Adr') > -1 //android终端
-  }
-  /* eslint-disable no-new */
+
+/* eslint-disable no-new */
 new Vue({
   el: '#app',
   i18n,

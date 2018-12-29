@@ -5,16 +5,31 @@
       <div class="title">{{$t('basic_project_information')}}</div>
       <div class="subtitle">{{$t('submit_information')}}</div>
       <form class="basic-form" accept-charset="utf-8" id="form" enctype="multipart/form-data">
+        <!-- 项目发起者 creator -->
+        <input type="text" name="creator" v-model="creator" class="hide">
+        <!-- 筹款账户 targetAccount-->
+        <input type="text" name="targetAccount" v-model="targetAccount" class="hide">
+        <!-- 筹款Token,比如：EOS，IQ，MEV. targetToken -->
+        <input type="text" name="targetToken" v-model="targetToken" class="hide">
+        <!-- 筹款 Token 合约，EOS 请填写 eosio.token   targetTokenContract-->
+        <input type="text" name="targetTokenContract" v-model="targetTokenContract" class="hide">
+        <!-- 项目名称 title-->
         <label>{{$t('project_title')}}</label>
         <input type="text" class="basic-input" name="title" v-model="title" :placeholder="$t('project_title_pl')">
+        <!-- 项目简介 des -->
         <label>{{$t('tell_story')}}</label>
         <div id="story">
           <div v-if="!isFocus" class="story_pl">{{$t('tell_story_pl')}}</div>
+          <!--<div v-if='description'>{{des}}</div>-->
         </div>
+        <textarea id="des" name="des" class="hide" v-model="des"></textarea>
+        <!-- 简介做 MD5 后的值 desHash -->
+        <input type="text" class="hide" name="desHash" v-model="desHash">
+        <!-- 封面图片，注意name为数组，以后可能要传多张 photos[]-->
         <label>{{$t('position_photo')}}</label>
         <div class="photo-container">
           <div class='photo' :style="{background: imgUrl?'url(' + imgUrl +')no-repeat center/cover':'#e1e6e9'}">
-            <input type="file" name="photo" id="photo" ref="photo" @change="uploadPic">
+            <input type="file" name="photos[]" id="photo" ref="photo" @change="uploadPic">
             <template v-if='!isLoad'>
               <img src="static/img/icon/web_con_pic.png" width="72">
               <h5>{{$t('position_photo_pl')}}</h5>
@@ -29,24 +44,28 @@
             <div class="blank"></div>
           </div>
         </div>
+        <!-- 筹款金额 targetAmount-->
         <label>{{$t('target_amount')}}</label>
-        <p class="basic-group">
-          <input class="basic-input" type="number" v-model="amount" name="amount" :placeholder="$t('target_amount_pl')">
-        </p>
+        <div class="basic-group">
+          <input class="basic-input" type="number" v-model="targetAmount" name="targetAmount" :placeholder="$t('target_amount_pl')">
+        </div>
           <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
           <template v-if="isShow">
             <label>{{$t('transfer_limit')}}</label>
             <div class="row">
+              <!-- 最低筹款金额 ，非必须 low  -->
               <p class="col-sm-6 basic-group">
-                <input class="basic-input" type="number" v-model="amount1" name="amount1">
-            </p>
+                <input class="basic-input" type="number" v-model="low" name="low">
+              </p>
+                <!-- 最高筹款金额 ，非必须 high-->
                 <p class="col-sm-6 basic-group">
-                  <input class="basic-input" type="number" v-model="amount2" name="amount2">
-            </p>
+                  <input class="basic-input" type="number" v-model="high" name="high">
+              </p>
             </div>
           </template>
-          <label for="date">{{$t('end_date')}}</label>
-          <input class="basic-input" type="date" v-model="date" name="date" :placeholder="$t('end_date_pl')">
+          <!-- 筹款结束时间 endDate-->
+          <label>{{$t('end_date')}}</label>
+          <input class="basic-input" type="date" v-model="endDate" name="endDate" :placeholder="$t('end_date_pl')">
           <div class="agree">
             <input type="checkbox" v-model="checked">
             <div>{{$t('fundraising_rules')}}</div>
@@ -75,22 +94,30 @@
 import alert from '@/base/alert'
 import 'wangeditor/release/wangEditor.css'
 import E from 'wangeditor'
+import md5 from 'js-md5'
+import user from 'static/js/user'
 export default {
   data() {
     return {
+      url: 'apiCrowdfunding/saveInfo',
       alertInfo: '',
       alertTitle: '',
-      title: '',
-      imgUrl: '',
-      story: '',
-      amount: '',
-      amount1: '',
-      amount2: '',
-      date: '',
       checked: false,
       isLoad: false,
       isFocus: false,
-      isShow: false
+      isShow: false,
+      title: '', //【 项目名称 】
+      des: '', //【 项目简介 】
+      desHash: '', //【 简介做 MD5 后的值 】
+      creator: '', //【 项目发起者 】
+      targetAccount: '', //【 筹款账户 】
+      targetToken: '', //【 筹款Token,比如：EOS，IQ，MEV 】
+      targetAmount: '', //【 筹款金额 】
+      low: '', //【 最低筹款金额 ，非必须 】
+      high: '', //【 最高筹款金额 ，非必须 】
+      targetTokenContract: '', //【 筹款 Token 合约，EOS 请填写 eosio.token 】
+      imgUrl: '', //【 封面图片，注意name为数组，以后可能要传多张 】
+      endDate: '1999999999999' //【 筹款结束时间 】
     }
   },
   mounted() {
@@ -99,7 +126,7 @@ export default {
     }
     const editor = new E('#story')
     const that = this
-    // editor.customConfig.uploadImgServer = '/article/upload'
+    editor.customConfig.uploadImgServer = global.domain + '/apiCrowdfunding/uploadImg'
     // editor.customConfig.debug = location.href.indexOf('wangeditor_debug_mode=1') > 0
     editor.customConfig.zIndex = 10
     editor.customConfig.menus = [
@@ -129,30 +156,90 @@ export default {
     }
     editor.customConfig.onchange = function (html) {
       that.isFocus = true
-      that.story = html.replace(/<div class="story_pl">&\s*\S*&<\/div>/g, '')
+      that.des = html.replace(/<div class="story_pl">&\s*\S*&<\/div>/g, '')
+      $('#des').val(that.des)
+      that.desHash = md5(that.des)
+      that.creator = global.currentAccount.name
+      that.targetAccount = that.creator
+      that.targetToken = 'EOS'
+      that.targetTokenContract = 'eosio.token'
     }
     editor.create()
   },
   methods: {
     nextStep() {
       const that = this
-      let params = {
-        title: that.title,
-        story: that.story,
-        imgUrl: that.imgUrl,
-        amount: that.amount,
-        amount1: that.amount1,
-        amount2: that.amount2,
-        date: that.date
-      }
+      const formData = new FormData(document.getElementById("form"));
+      // 去除空文件元素
+      try {
+        for (let pair of formData.entries()) {
+          if (pair[1] instanceof File && pair[1].name == '' && pair[1].size == 0) {
+            formData.delete(pair[0]);
+          }
+        }
+      } catch (e) {}
+      console.log(formData)
       if (this.checked) {
-        this.$http.post('/', params).then(res => {
-          console.info(res.data)
-          $('#myModal').modal('show')
-        }, error => {
-          console.info(error)
-        })
-
+        if (user.currentAccount == null) {
+          this.alertInfo = "请先登录"
+          $('#alert').modal('show')
+        }
+        const eos = user.getEos()
+        // 创建项目提交到链上
+        eos.transaction({
+          actions: [{
+            account: 'medishareeos', // 合约名
+            name: 'add', // 合约方法
+            authorization: [{
+              actor: that.creator, // 登录当前账户
+              permission: 'active'
+            }],
+            data: {
+              "initiator": that.creator, // 项目发起人
+              "name": that.title, // 项目名称
+              "item_digest": that.desHash, // 项目简介md5 后的值 32 位
+              "receiver": that.targetAccount, // 收款人
+              "min_fund": {
+                "quantity": that.low + " EOS", // 金额 注意格式
+                "contract": "eosio.token" // 代币合约 eos 为 eosio.token
+              },
+              "max_fund": {
+                "quantity": that.high + " EOS", // 金额 注意格式
+                "contract": "eosio.token" // 代币合约 eos 为 eosio.token
+              },
+              "target_fund": {
+                "quantity": that.targetAmount + " EOS", // 金额 注意格式
+                "contract": "eosio.token" // 代币合约 eos 为 eosio.token
+              },
+              "deadline": that.endDate // 结束时间 时间戳(s)
+            }
+          }]
+        }).then(
+          result => {
+            console.log(result);
+            // 成功，调用我们的接口
+            this.$http.post(this.globalData.domain + this.url, formData, {
+              cache: false,
+              processData: false,
+              contentType: false
+            }).then(res => {
+              console.log(res)
+              if (res.data.success) {
+                $('#myModal').modal('show')
+              } else {
+                this.alertInfo = res.data.message
+                $('#alert').modal('show')
+              }
+            }, error => {
+              console.info(error)
+            })
+          }
+        ).catch(
+          error => {
+            console.log(error)
+            // 失败
+          }
+        )
       } else {
         this.alertInfo = this.$t('agree_terms')
         $('#alert').modal('show')
@@ -161,7 +248,6 @@ export default {
     uploadPic(event) {
       //获取的图片文件
       var fileList = event.target.files[0];
-      console.log(event.target);
 
       if (fileList) {
         this.imgUrl = window.URL.createObjectURL(fileList);
@@ -259,6 +345,12 @@ export default {
   text-align: right;
   color: #2196f3 !important;
   margin-top: 8px;
+}
+
+.sel {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .agree {
