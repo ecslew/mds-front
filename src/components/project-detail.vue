@@ -84,6 +84,7 @@
 <script>
 import alert from '@/base/alert'
 import foot from '@/base/foot'
+import util from 'static/js/util'
 export default {
   props: ['id'],
   data() {
@@ -281,9 +282,6 @@ export default {
 
         }
       },'json')
-
-      
-
     },
     getEosPrice(){
       let _this = this;
