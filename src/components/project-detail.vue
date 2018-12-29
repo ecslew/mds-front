@@ -154,7 +154,7 @@ export default {
     },
     copyLink() {
       let _this = this;
-      if (global.browsers.android) {
+      if (this.globalData.browsers.android) {
         _this.$refs.copy.select();
         document.execCommand("Copy");
         _this.alertInfo = _this.$t('copy_success')
@@ -205,7 +205,7 @@ export default {
       }).then(
         result => {
           // 成功之后调用我们的log
-          var url = global.domain + 'apiCrowdfunding/trans';
+          var url = this.globalData.domain + 'apiCrowdfunding/trans';
 
           var args = {
             crowdfundingNo: _this.programs.crowdfundingNo,
@@ -257,7 +257,7 @@ export default {
           _this.programs.id = res.data.eosID; // eosID
 
           // transfer
-          $.get(global.domain + '/apiEos/getCrowdfundingTransfer', {
+          $.get(this.globalData.domain + '/apiEos/getCrowdfundingTransfer', {
             'account': _this.programs.targetAccount
           }, function (res) {
 
