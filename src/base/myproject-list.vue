@@ -1,16 +1,14 @@
 <template>
-<router-link :to="{
-          path: '/projectDetail',
-          query: {
-            id: id
-          }
-        }" class="myproject-list">
+<div class="myproject-list">
   <div class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + picture +')'}">
-    <div class="status" v-if='!isApproved'>
+    <!-- 我的项目:未发布的项目 -->
+    <div class="status" v-if='(!isBacked)&&(!isApproved)'>
+      <!-- 审核未通过 -->
       <div v-if="isFail">
         <p>{{$t('Audit_failed')}}</p>
-        <p class="why">{{$t('not_pass_reason')}}</p>
+        <!-- <p class="why">{{$t('not_pass_reason')}}</p> -->
       </div>
+      <!-- 正在审核 -->
       <div v-else>
         <p>{{$t('in_review')}}</p>
       </div>
@@ -18,23 +16,48 @@
   </div>
   <div class="info col-sm-9">
     <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
-    <div class="time">{{$t('release_time')}}:{{time}}</div>
-      <div class="btn-box">
+    <div class="time">{{$t('release_time')}}: {{time.slice(0,10)}}</div>
+    <div class="btn-box">
+      <!-- 支持项目 -->
+      <template v-if='isBacked'>
+        <router-link :to="{
+            path: '/projectDetail',
+            query: {
+              id: id
+            }
+          }">{{$t('view_project')}}</router-link>
+      </template>
+      <!-- 我的项目 -->
+      <template v-else>
+        <!-- 已发布 -->
         <template v-if="isApproved">
-          <span class="main-color">{{$t('approved')}}</span>
+          <router-link :to="{
+              path: '/projectDetail',
+              query: {
+                id: id
+              }
+            }" class="main-color">{{$t('approved')}}</router-link>
         </template>
+        <!-- 未发布 -->
         <template v-else>
-          <span class="editor">{{$t('editor')}}</span>
-          <span class="delete">{{$t('delete')}}</span>
+          <router-link class="editor" :to="{
+              path: '/projectBasic'}">{{$t('editor')}}</router-link>
+          <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
         </template>
-      </div>
+      </template>
     </div>
-</router-link>
+  </div>
+</div>
 </template>
 
 <script>
 export default {
-  props: ['picture', 'title', 'complete', 'time', 'id', 'isApproved', 'isFail']
+  props: ['picture', 'title', 'targetAmount', 'time', 'id', 'isApproved', 'isFail', 'isBacked'],
+  methods: {
+    deleteProject() {
+
+    }
+  }
 }
 </script>
 
@@ -84,7 +107,7 @@ export default {
   line-height: 1.5;
 }
 
-.btn-box span {
+.btn-box a {
   display: inline-block;
   padding-right: 32px;
   color: #2196f3;
@@ -92,10 +115,11 @@ export default {
 }
 
 .btn-box .delete {
-  color: #f44336;
+  color: #f44336 !important;
 }
-.status{
-  background: rgba(0,0,0,0.5);
+
+.status {
+  background: rgba(0, 0, 0, 0.5);
   color: #fff;
   text-align: center;
   font-family: Gotham-Medium;
@@ -103,16 +127,19 @@ export default {
   height: 100%;
   position: relative;
 }
-.status>div{
+
+.status>div {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   width: 100%;
 }
-.why{
+
+.why {
   text-decoration: underline;
   font-family: Gotham-Book;
 }
+
 @media (max-width: 767px) {
   .list-pic {
     height: 228px;
@@ -126,10 +153,12 @@ export default {
     height: auto;
     font-size: 14px;
   }
-  .info .time{
+
+  .info .time {
     font-size: 12px;
   }
-  .btn-box{
+
+  .btn-box {
     font-size: 14px;
   }
 }

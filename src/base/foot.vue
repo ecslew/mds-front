@@ -39,16 +39,9 @@
             </a>
           </li>
           <li class="col-xs-6 col-sm-12">
-            <a href="https://medium.com/@MediShares" target="_blank">
+            <a href="http://blog.medishares.org/" target="_blank">
               <span class="contact-icon"><img src="static/img/icon/sns_icon_blog@2x.png"></span>
               <span>Blog</span>
-            </a>
-          </li>
-          <li class="col-xs-6 col-sm-12">
-            <a href="javascript:;" class="qq">
-              <span class="contact-icon"><img src="static/img/icon/sns_icon_qq@2x.png"></span>
-              <span>QQ</span>
-              <div class="qq-code"><img src="static/img/qq-code.png" width="100%"></div>
             </a>
           </li>
         </ul>
