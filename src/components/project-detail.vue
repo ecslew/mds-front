@@ -84,13 +84,14 @@
 import alert from '@/base/alert'
 import foot from '@/base/foot'
 import util from 'static/js/util'
+import user from 'static/js/user'
 export default {
   props: ['id'],
   data() {
     return {
       alertInfo: '',
       alertTitle: '',
-      address: 'tangying1234',
+      currentAccount: '',
       amount: '',
       note: '',
       link: window.location.href,
@@ -187,54 +188,67 @@ export default {
 
       // 判断金额
 
-      eos.transaction({
-        actions: [{
-          account: 'eosio.token',
-          name: 'transfer',
-          authorization: [{
-            actor: 'eosjiazechen',
-            permission: 'active'
-          }],
-          data: {
-            from: 'eosjiazechen',
-            to: _this.programs.targetAccount,
-            quantity: parseFloat(amount).toFixed(4) + ' EOS',
-            memo: '###{"ID":' + _this.programs.id + ',"creator":"' + _this.programs.address + '","comment":"' + note + '"}###'
-          }
-        }]
-      }).then(
-        result => {
-          // 成功之后调用我们的log
-          var url = this.globalData.domain + 'apiCrowdfunding/trans';
+      // 判断登录
+      user.getAccount().then((currentAccount) => {
+        _this.currentAccount = currentAccount.name;
 
-          var args = {
-            crowdfundingNo: _this.programs.crowdfundingNo,
-            hash: result.transaction_id,
-            amount: amount,
-            from: from,
-            to: _this.targetAccount
-          };
-
-          $.post(url, args, function (res) {
-            if (res.success) {
-              _this.alertInfo = _this.$t('success');
-              $('#alert').modal('show')
-            } else {
-              _this.alertInfo = res.message;
-              $('#alert').modal('show')
+        // 交易
+        user.getEos().transaction({
+          actions: [{
+            account: 'eosio.token',
+            name: 'transfer',
+            authorization: [{
+              actor: _this.currentAccount,
+              permission: 'active'
+            }],
+            data: {
+              from: _this.currentAccount,
+              to: _this.programs.targetAccount,
+              quantity: parseFloat(amount).toFixed(4) + ' EOS',
+              memo: '###{"ID":' + _this.programs.id + ',"creator":"' + _this.programs.address + '","comment":"' + note + '"}###'
             }
-          }, 'json')
-        }
-      ).catch(
-        error => {
-          // 失败
-          _this.alertInfo = JSON.parse(error).error.details[0].message;
-          $('#alert').modal('show')
-        }
-      )
+          }]
+        }).then(
+          result => {
+            // 成功之后调用我们的log
+            var url = _this.globalData.domain + '/apiCrowdfunding/trans';
 
-      // this.alertInfo = '连接scatter进行交易'
-      // $('#alert').modal('show')
+            var args = {
+              crowdfundingNo: _this.programs.crowdfundingNo,
+              hash: result.transaction_id,
+              amount: amount,
+              from: _this.currentAccount,
+              to: _this.programs.targetAccount
+            };
+
+
+            $.post(url, args, function (res) {
+              if (res.success) {
+                _this.alertInfo = _this.$t('success');
+                $('#alert').modal('show')
+              } else {
+                _this.alertInfo = res.message;
+                $('#alert').modal('show')
+              }
+            }, 'json')
+          }
+        ).catch(
+          error => {
+            // 失败
+            _this.alertInfo = JSON.parse(error).error.details[0].message;
+            $('#alert').modal('show')
+          }
+        )
+        // end 交易
+        
+
+      },error=>{
+        // 未安装 scatter 或 登录失败
+        this.alertInfo = '连接scatter进行交易'
+        $('#alert').modal('show')
+      })
+
+      
 
     },
     getProjectInfo() {
