@@ -9,7 +9,6 @@ import globalData from 'static/js/config-dev.js'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'static/css/index.css'
-import 'static/js/common.js'
 import clipboard from 'clipboard'
 
 import ScatterJS from 'scatterjs-core'

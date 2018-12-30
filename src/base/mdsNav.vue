@@ -5,7 +5,7 @@
       <div class="navbar-header">
         <router-link to="/" class="navbar-brand">MDS</router-link>
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                  data-target="#mds-nav" aria-expanded="true">
+                  data-target="#mds-nav" aria-expanded="true" @click="addWh100">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
@@ -13,7 +13,7 @@
         </button>
         <div class="mobile-login hidden-sm hidden-md hidden-lg" @click="login" v-show='!isLogin'>{{$t("login")}}</div>
         <div class="dropdown personal hidden-sm hidden-md hidden-lg" v-show='isLogin'>
-          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button">{{currentAccount?currentAccount.name:''}}<span class="caret"></span></a>
+          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount">{{currentAccount?currentAccount.name:''}}</span><span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li>
               <router-link to="/projectCreate">{{$t("create_a_project")}}</router-link>
@@ -29,13 +29,14 @@
         </div>
       </div>
       <div class="collapse navbar-collapse" id="mds-nav">
-        <div class="collapse-close hidden-sm hidden-md hidden-lg">×</div>
+        <div class="collapse-close hidden-sm hidden-md hidden-lg" @click="removeWh100">×</div>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="/" class="ico-book hidden-sm hidden-md hidden-lg">{{$t("home")}}</a></li>
-          <li><a href="http://www.mathwallet.org/en/">{{$t("MathWallet")}}</a></li>
-          <li><a href="http://doc.medishares.org/whitepaper/MediShares.Whitepaper.EN.pdf" target="_blank">{{$t("WhitePaper")}}</a></li>
-          <li><a href="http://blog.medishares.org/?page_id=610" target="_blank">{{$t("career")}}</a></li>
-          <li><a href="https://medium.com/@MediShares" target="_blank">{{$t("help")}}</a></li>
+          <li @click="removeWh100">
+            <router-link to="/" class="ico-book hidden-sm hidden-md hidden-lg">{{$t("home")}}</router-link>
+          </li>
+          <li @click="removeWh100"><a :href="$t('medishares_link')" target="_blank">{{$t("about")}}</a></li>
+          <li @click="removeWh100"><a :href="$t('news_link')" target="_blank">{{$t("news")}}</a></li>
+          <li @click="removeWh100"><a :href="$t('mathwallet_link')" target="_blank">{{$t("MathWallet")}}</a></li>
           <div class="dropdown">
             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button">{{$t("lang")}}<span class="caret"></span></a>
             <ul class="dropdown-menu">
@@ -46,18 +47,18 @@
           </div>
           <div class="login pull-left hidden-xs" @click="login" v-show='!isLogin'>{{$t("login")}}</div>
           <div class="dropdown personal hidden-xs" v-show='isLogin'>
-            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button">{{currentAccount?currentAccount.name:''}}<span class="caret"></span></a>
+            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount">{{currentAccount?currentAccount.name:''}}</span><span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li>
-                <router-link to="/projectCreate">{{$t("create_a_project")}}</router-link>
+              <li @click="removeWh100">
+                <router-link to="/projectRelease">{{$t("create_a_project")}}</router-link>
               </li>
-              <li>
+              <li @click="removeWh100">
                 <router-link to="/myProject">{{$t("my_projects")}}</router-link>
               </li>
-              <li>
+              <li @click="removeWh100">
                 <router-link to="/projectBacked">{{$t("backed_projects")}}</router-link>
               </li>
-              <li><a href="javascript:;" @click="logout">{{$t("logout")}}</a></li>
+              <li @click="removeWh100"><a href="javascript:;" @click="logout">{{$t("logout")}}</a></li>
             </ul>
           </div>
         </ul>
@@ -90,23 +91,28 @@ export default {
     }
   },
   created() {
-    if (this.$route.path == '/') {
-      this.isHome = true
-    } else {
-      this.isHome = false
-    }
+    this.isHomePage()
   },
   mounted() {
-    if (this.$route.path == '/') {
-      this.isHome = true
-    } else {
-      this.isHome = false
-    }
+    this.isHomePage()
     this.loginByScatter()
+    // 导航固定
+    this.navFix();
+    $(window).scroll(() => {
+      this.navFix();
+    })
   },
   methods: {
+    isHomePage() {
+      if (this.$route.path == '/') {
+        this.isHome = true
+      } else {
+        this.isHome = false
+      }
+    },
     changeLang(event) {
       this.$i18n.setUserLanguage(event.target.name)
+      this.removeWh100()
     },
     login() {
       $("#login").modal('show');
@@ -127,7 +133,22 @@ export default {
       }, (err) => {
         alert(err);
       });
-
+    },
+    navFix() {
+      if ($(window).scrollTop() >= ($('.mds-top').outerHeight() - $('.header-nav').outerHeight())) {
+        $('.header-nav').addClass('scroll-nav');
+      } else {
+        $('.header-nav').removeClass('scroll-nav');
+      }
+    },
+    addWh100() {
+      $(document.documentElement).addClass('wh100');
+      $(document.body).addClass('wh100');
+    },
+    removeWh100() {
+      $('#mds-nav').removeClass('in');
+      $(document.documentElement).removeClass('wh100');
+      $(document.body).removeClass('wh100');
     }
   },
   watch: {
@@ -165,14 +186,21 @@ export default {
 .ishome .header-nav {
   background: transparent;
   box-shadow: none;
+  position: absolute;
 }
 
 .ishome .scroll-nav {
   background: #020308;
+  position: fixed;
 }
 
 .header-nav a {
   color: #2c363f;
+  text-transform: capitalize;
+}
+
+.personal>a {
+  text-transform: none;
 }
 
 .navbar-toggle .icon-bar {
@@ -191,14 +219,12 @@ export default {
   font-size: 20px;
 }
 
-.dropdown-menu {
-  min-width: 80px;
+.navbar-right .dropdown-menu {
+  min-width: auto;
   text-align: center;
   border: none;
-}
-
-.personal .dropdown-menu {
-  min-width: 120px;
+  padding: 10px 16px;
+  right: auto;
 }
 
 .navbar-brand:after {
@@ -211,8 +237,8 @@ nav .open>a {
   background: transparent !important;
 }
 
-.navbar-nav .open .dropdown-menu>li>a {
-  padding: 10px;
+.navbar-nav .dropdown-menu>li>a {
+  padding: 4px 0;
 }
 
 .dropdown a {
@@ -226,6 +252,7 @@ nav .open>a {
   border: 1px solid #2c363f;
   border-radius: 4px;
   margin: 8px 10px;
+  text-transform: capitalize;
 }
 
 .ishome .login {

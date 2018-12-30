@@ -41,7 +41,11 @@
         <!-- 未发布 -->
         <template v-else>
           <router-link class="editor" :to="{
-              path: '/projectBasic'}">{{$t('editor')}}</router-link>
+              path: '/projectModify',
+              query: {
+                eosID: id
+              }
+            }">{{$t('editor')}}</router-link>
           <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
         </template>
       </template>
@@ -52,10 +56,10 @@
 
 <script>
 export default {
-  props: ['picture', 'title', 'targetAmount', 'time', 'id', 'isApproved', 'isFail', 'isBacked'],
+  props: ['index', 'picture', 'title', 'targetAmount', 'time', 'id', 'isApproved', 'isFail', 'isBacked'],
   methods: {
     deleteProject() {
-
+      this.$emit('deleteItem', this.index, this.id)
     }
   }
 }
@@ -87,7 +91,7 @@ export default {
   font-family: Gotham-Medium;
   font-size: 20px;
   height: 48px;
-  padding-bottom: 8px;
+  margin-bottom: 8px;
   line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;

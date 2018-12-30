@@ -25,8 +25,16 @@ export default new Router({
     },
     // 提交项目表单
     {
-      path: '/projectBasic',
-      component: resolve => require(['@/components/project-basic'], resolve)
+      path: '/projectRelease',
+      component: resolve => require(['@/components/project-release'], resolve)
+    },
+    // 编辑项目
+    {
+      path: '/projectModify',
+      component: resolve => require(['@/components/project-modify'], resolve),
+      props: (route) => ({
+        eosID: route.query.eosID
+      })
     },
     // 项目详情
     {

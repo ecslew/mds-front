@@ -6,7 +6,7 @@
     <div class='img'>
       <img src="static/img/icon/web_icon_fundraising.png">
     </div>
-    <router-link to="/projectBasic" class="start">{{$t('publish_project')}}</router-link>
+    <router-link to="/projectRelease" class="start">{{$t('publish_project')}}</router-link>
   </div>
 </div>
 </template>

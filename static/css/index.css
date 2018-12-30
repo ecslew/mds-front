@@ -282,64 +282,6 @@ ul {
 }
 
 
-/*什么是 MediShares*/
-
-.mds-des {
-  padding: 160px 0;
-  color: #2c363f;
-  line-height: 1.5;
-}
-
-.mds-title {
-  font-size: 32px;
-  line-height: 1.5;
-  text-align: center;
-  font-family: Gotham-Light;
-  margin-bottom: 64px;
-}
-
-.mds-des-dot {
-  float: left;
-  margin-right: 15px;
-}
-
-.mds-des-dot+div {
-  overflow: hidden;
-}
-
-
-/*MediShares 的优势*/
-
-.mds-superiority {
-  background: #fff;
-  padding: 160px 0;
-}
-
-.mds-superiority li {
-  padding: 60px 50px 20px;
-  color: #2c363f;
-}
-
-.mds-sup-icon {
-  float: left;
-  width: 32px;
-  height: 32px;
-  margin-right: 15px;
-  background-color: #2c363f;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  overflow: hidden;
-}
-
-.mds-sup-icon>img {
-  width: 100%;
-}
-
-.mds-sup-icon+div {
-  overflow: hidden;
-}
-
-
 /* 富文本编辑 */
 
 #story {
@@ -366,85 +308,21 @@ ul {
   padding: 0;
 }
 
-
-/*页脚*/
-
-footer {
-  background-color: #2c363f;
-  padding: 120px 0 48px;
-}
-
-footer .row {
-  padding-bottom: 120px;
-}
-
-footer .medi-shares {
-  margin: 0;
-}
-
-footer .medi-shares>img {
-  height: 40px;
-}
-
-footer .contact-list>li {
-  margin-top: 24px;
-  position: relative;
-}
-
-footer .contact-list .qq-code {
-  position: absolute;
-  left: 15px;
-  bottom: 50px;
-  width: 200px;
-  display: none;
-}
-
-footer .contact-list>li:first-of-type {
-  margin-top: 0;
-}
-
-footer .contact-list a {
-  display: block;
-}
-
-footer .contact-icon {
-  width: 40px;
-  height: 40px;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  overflow: hidden;
-  display: inline-block;
-  margin-right: 16px;
-  vertical-align: middle;
-  overflow: hidden;
-}
-
-footer .contact-icon>img {
-  width: 100%;
-}
-
-footer .contact-icon+span {
-  font-family: Gotham-Medium;
-  font-size: 16px;
-  line-height: 1.25;
-  color: #607d8b;
-  vertical-align: middle;
-}
-
-.code-tip {
-  font-family: Gotham-Medium;
-  font-size: 12px;
-  line-height: 1.33;
-  color: #607d8b;
-  margin-top: 24px;
-  white-space: nowrap;
-}
-
-.copyright {
-  font-size: 14px;
-  line-height: 1.43;
-  color: #607d8b;
+.mds-title {
+  font-size: 32px;
+  line-height: 1.5;
   text-align: center;
+  font-family: Gotham-Light;
+  margin-bottom: 64px;
+}
+
+.mds-des-dot {
+  float: left;
+  margin-right: 15px;
+}
+
+.mds-des-dot+div {
+  overflow: hidden;
 }
 
 
@@ -495,55 +373,6 @@ footer .contact-icon+span {
   .mds-title {
     font-size: 24px;
     margin-bottom: 32px;
-  }
-  /*什么是 MediShares*/
-  .mds-des li {
-    margin-bottom: 32px;
-  }
-  /*优势*/
-  .mds-superiority li {
-    padding: 0 15px 32px;
-  }
-  /*页脚*/
-  footer {
-    padding: 80px 15px 40px;
-  }
-  footer .medi-shares {
-    margin-bottom: 60px;
-  }
-  footer .contact-list>li {
-    padding: 0;
-  }
-  footer .contact-list>li:nth-of-type(2) {
-    margin-top: 0;
-  }
-  footer .contact-icon {
-    margin-right: 12px;
-  }
-  footer .code-img {
-    margin-top: 80px;
-  }
-  footer .code-tip {
-    margin-top: 16px;
-  }
-  footer .row {
-    padding-bottom: 80px;
-  }
-  footer .contact-list .qq-code {
-    left: 0;
-    width: 150px;
-  }
-}
-
-
-/*小于等于360px屏幕*/
-
-@media (max-width: 360px) {
-  footer .contact-icon {
-    margin-right: 3px;
-  }
-  footer .contact-icon+span {
-    font-size: 14px;
   }
 }
 

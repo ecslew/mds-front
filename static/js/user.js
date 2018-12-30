@@ -1,4 +1,4 @@
-import globalData from 'static/js/config-dev.js'
+import globalData from 'static/js/config-pro.js'
 import Eos from 'eosjs'
 
 class User {
