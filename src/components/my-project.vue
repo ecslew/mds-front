@@ -12,11 +12,14 @@
       </div>
     </div>
   </div>
+  <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
 </div>
 </template>
 
 <script>
+import alertModal from '@/base/alert'
 import myprojectList from '@/base/myproject-list'
+import user from 'static/js/user'
 export default {
   data() {
     return {
@@ -27,6 +30,8 @@ export default {
         "table": "item",
         "json": true
       },
+      alertInfo: '',
+      alertTitle: '',
       isBacked: false,
       programs: [
         // {
@@ -51,87 +56,15 @@ export default {
         //   "deadline": 1555742002,
         //   "status": 0
         // },
-        {
-          eosID: 1,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'I need your help to expand the reproduction of secret chili sauce',
-          isApproved: false,
-          isFail: false,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 2,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'A Plastic-free, Fuss-free lunch box',
-          isApproved: false,
-          isFail: false,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 3,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'I need your help to expand the reproduction of secret chili sauce',
-          isApproved: true,
-          isFail: false,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 4,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'A Plastic-free, Fuss-free lunch box',
-          isApproved: false,
-          isFail: true,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 5,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'I need your help to expand the reproduction of secret chili sauce',
-          isApproved: false,
-          isFail: false,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 6,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'A Plastic-free, Fuss-free lunch box',
-          isApproved: true,
-          isFail: false,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 7,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'I need your help to expand the reproduction of secret chili sauce',
-          isApproved: false,
-          isFail: false,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 8,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'A Plastic-free, Fuss-free lunch box',
-          isApproved: true,
-          isFail: false,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 9,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'I need your help to expand the reproduction of secret chili sauce',
-          isApproved: false,
-          isFail: true,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        }
+        //        {
+        //          eosID: 1,
+        //          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
+        //          title: 'I need your help to expand the reproduction of secret chili sauce',
+        //          isApproved: false,
+        //          isFail: false,
+        //          targetAmount: "10000",
+        //          releaseTime: '2018-12-30'
+        //        }
       ]
     }
   },
@@ -147,21 +80,54 @@ export default {
         console.log('error:' + err);
       })
     },
-    deleteProject(val, id) {
+    deleteProject(val, title, id) {
       this.programs.splice(val, 1)
-      this.$http.get(this.globalData.domain + '/apiCrowdfunding/delete?eosID=' + id).then(res => {
-        if (res.data.success) {
-          console.log(res);
-        } else {
-          console.log(res.data.message);
-        }
-      }, err => {
-        console.log(err);
+      // 判断是否登录
+      user.getAccount().then((res) => {
+        const eos = user.getEos()
+        // 删除项目提交到链上
+        eos.transaction({
+          actions: [{
+            account: 'medishareeos', // 合约名
+            name: 'erase', // 合约方法
+            authorization: [{
+              actor: res.name, // 登录当前账户
+              permission: 'active'
+            }],
+            data: {
+              "initiator": res.name, // 项目发起人
+              "name": title // 项目名称
+            }
+          }]
+        }).then(
+          result => {
+            console.log(result);
+            // 成功，调用我们的接口
+            this.$http.get(this.globalData.domain + '/apiCrowdfunding/delete?eosID=' + id).then(res => {
+              if (res.data.success) {
+                this.alertInfo = "successfully deleted"
+                $('#alert').modal('show')
+              } else {
+                console.log(res.data.message);
+              }
+            }, err => {
+              console.log(err);
+            })
+          }
+        ).catch(
+          error => {
+            // 失败
+            console.log(error)
+          }
+        )
+      }, (err) => {
+        alert(err)
       })
     }
   },
   components: {
-    myprojectList
+    myprojectList,
+    alertModal
   }
 }
 </script>

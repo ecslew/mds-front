@@ -59,7 +59,7 @@ export default {
   props: ['index', 'picture', 'title', 'targetAmount', 'time', 'id', 'isApproved', 'isFail', 'isBacked'],
   methods: {
     deleteProject() {
-      this.$emit('deleteItem', this.index, this.id)
+      this.$emit('deleteItem', this.index, this.title, this.id)
     }
   }
 }

@@ -243,20 +243,20 @@ export default {
           }
         } catch (e) {}
 
-        that.$http.post(that.globalData.domain + that.url, formData, {
-          cache: false,
-          processData: false,
-          contentType: false
-        }).then(res => {
-          if (res.data.success) {
-            $('#myModal').modal('show')
-          } else {
-            that.alertInfo = res.data.message
-            $('#alert').modal('show')
-          }
-        }, error => {
-          console.info(error)
-        })
+        //        that.$http.post(that.globalData.domain + that.url, formData, {
+        //          cache: false,
+        //          processData: false,
+        //          contentType: false
+        //        }).then(res => {
+        //          if (res.data.success) {
+        //            $('#myModal').modal('show')
+        //          } else {
+        //            that.alertInfo = res.data.message
+        //            $('#alert').modal('show')
+        //          }
+        //        }, error => {
+        //          console.info(error)
+        //        })
 
         const eos = user.getEos()
         // 创建项目提交到链上
