@@ -3,8 +3,8 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-10 col-sm-offset-1">
-        <h4 class="title">{{$t('created_projects')}}</h4>
-        <div class="subtitle">{{$t('created_projects_subtitle')}}</div>
+        <h4 class="title">{{$t('support_projects')}}</h4>
+        <div class="subtitle">{{$t('support_projects_subtitle')}}</div>
         <div class="started">{{$t("started")}}</div>
         <div class="list" v-for="item in programs" :key="item.id">
           <myproject-list :isBacked="isBacked" :id="item.eosID" :isFail="item.isFail" :picture="item.img" :isApproved="item.isApproved" :title="item.title" :targetAmount="item.targetAmount" :time="item.releaseTime"></myproject-list>
@@ -17,96 +17,50 @@
 
 <script>
 import myprojectList from '@/base/myproject-list'
+import user from 'static/js/user'
 export default {
   data() {
     return {
       isBacked: true,
-      programs: [{
-          eosID: 1,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'I need your help to expand the reproduction of secret chili sauce',
-          isApproved: true,
-          isFail: false,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 2,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'A Plastic-free, Fuss-free lunch box',
-          isApproved: false,
-          isFail: false,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 3,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'I need your help to expand the reproduction of secret chili sauce',
-          isApproved: true,
-          isFail: false,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 4,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'A Plastic-free, Fuss-free lunch box',
-          isApproved: false,
-          isFail: true,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 5,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'I need your help to expand the reproduction of secret chili sauce',
-          isApproved: false,
-          isFail: true,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 6,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'A Plastic-free, Fuss-free lunch box',
-          isApproved: false,
-          isFail: true,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 7,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'I need your help to expand the reproduction of secret chili sauce',
-          isApproved: false,
-          isFail: true,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 8,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'A Plastic-free, Fuss-free lunch box',
-          isApproved: false,
-          isFail: true,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        },
-        {
-          eosID: 9,
-          img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-          title: 'I need your help to expand the reproduction of secret chili sauce',
-          isApproved: false,
-          isFail: true,
-          targetAmount: "10000",
-          releaseTime: '2018-12-30'
-        }
-      ]
+      currentAccount:'',
+      programs: []
     }
   },
   mounted() {
-
+    this.getSupported();
+  },
+  methods: {
+    getSupported(){
+      let _this = this;
+      user.getAccount().then((currentAccount) => {
+        _this.currentAccount = currentAccount.name;
+        // 从交易记录获取支持过的项目
+        $.get(_this.globalData.domain+'/apiCrowdfunding/supported',{account:_this.currentAccount},function(res){
+          if( res.success ){
+            $.each( res.data.transfer,function(index,event){
+              let memo = JSON.parse(event.data.memo.replace(/###/ig, ''));
+              let eosID = memo.ID;
+              // 通过编号查信息
+              if( eosID  ){
+                $.get( _this.globalData.domain+'/apiCrowdfunding/getInfo',{eosID:eosID},function(result){
+                  if( result.success ){
+                    let tmp = {
+                      eosID: result.data.eosID,
+                      img: result.data.photos,
+                      title: result.data.title,
+                      isApproved: false,
+                      isFail: true,
+                      releaseTime: result.data.releaseTime
+                    };
+                    _this.programs.push(tmp);
+                  }
+                },'json' )
+              }
+            })
+          }
+        },'json')  
+      })
+    }
   },
   components: {
     myprojectList
