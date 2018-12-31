@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: 'alert',
+  name: 'alertModal',
   props: ['title', 'info']
 }
 </script>

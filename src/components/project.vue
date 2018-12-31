@@ -22,36 +22,17 @@ export default {
     return {
       isAll: true,
       url: '/apiCrowdfunding/homePage?page=1',
-      programs: [{
-          "title": "这是一个众筹项目",
-          "crowdfundingNo": "ABC123455", // 项目编号
-          "eosID": "1", // 链上ID
-          "creator": "eosjiazechen", // 发起者
-          "targetToken": "SNC", // 目标筹集 Token
-          "targetAmount": "10000", // 目标筹集个数
-          "releaseTime": "2018-12-26 13:36:49", // 项目发起时间
-          "img": "http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg" // 图片
-        },
-        {
-          "title": "这是一个众筹项目",
-          "crowdfundingNo": "ABC123455", // 项目编号
-          "eosID": "2", // 链上ID
-          "creator": "eosjiazechen", // 发起者
-          "targetToken": "SNC", // 目标筹集 Token
-          "targetAmount": "10000", // 目标筹集个数
-          "releaseTime": "2018-12-26 13:36:49", // 项目发起时间
-          "img": "http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg" // 图片
-        },
-        {
-          "title": "这是一个众筹项目",
-          "crowdfundingNo": "ABC123455", // 项目编号
-          "eosID": "3", // 链上ID
-          "creator": "eosjiazechen", // 发起者
-          "targetToken": "SNC", // 目标筹集 Token
-          "targetAmount": "10000", // 目标筹集个数
-          "releaseTime": "2018-12-26 13:36:49", // 项目发起时间
-          "img": "http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg" // 图片
-        }
+      programs: [
+        //        {
+        //          "title": "这是一个众筹项目",
+        //          "crowdfundingNo": "ABC123455", // 项目编号
+        //          "eosID": "1", // 链上ID
+        //          "creator": "eosjiazechen", // 发起者
+        //          "targetToken": "SNC", // 目标筹集 Token
+        //          "targetAmount": "10000", // 目标筹集个数
+        //          "releaseTime": "2018-12-26 13:36:49", // 项目发起时间
+        //          "img": "http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg" // 图片
+        //        }
       ]
     }
   },

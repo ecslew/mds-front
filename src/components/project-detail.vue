@@ -76,12 +76,12 @@
       </div>
     </div>
   </div>
-  <alert :info='alertInfo' :title='alertTitle'></alert>
+  <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
 </div>
 </template>
 
 <script>
-import alert from '@/base/alert'
+import alertModal from '@/base/alert'
 import foot from '@/base/foot'
 import util from 'static/js/util'
 import user from 'static/js/user'
@@ -208,7 +208,6 @@ export default {
               to: _this.programs.targetAccount
             };
 
-
             $.post(url, args, function (res) {
               if (res.success) {
                 _this.alertInfo = _this.$t('success');
@@ -227,15 +226,13 @@ export default {
           }
         )
         // end 交易
-        
 
-      },error=>{
+      }, error => {
+        console.log(error);
         // 未安装 scatter 或 登录失败
         this.alertInfo = '连接scatter进行交易'
         $('#alert').modal('show')
       })
-
-      
 
     },
     getProjectInfo() {
@@ -243,6 +240,7 @@ export default {
       let _GET = util.getParams();
       let eosID = _GET.id;
       let _this = this;
+
       var url = _this.globalData.domain + '/apiCrowdfunding/getInfo?eosID='+eosID;
 
       $.get(url, {}, function (res) {
@@ -281,7 +279,7 @@ export default {
           }, 'json')
 
         }
-      },'json')
+      }, 'json')
 
     },
     getEosPrice() {
@@ -293,7 +291,7 @@ export default {
   },
   components: {
     foot,
-    alert
+    alertModal
   }
 
 }
