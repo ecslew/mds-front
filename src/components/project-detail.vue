@@ -47,7 +47,7 @@
             <div class="transfer-list" v-for="trans in programs.support" :key="trans.id">
               <img src="static/img/icon/web_icon_ID.png" width="48" class="trans-avator">
               <div class="trans-info">
-                <p class="trans-amount">{{trans.amount}} EOS</p>
+                <p class="trans-amount">{{trans.amount}}</p>
                 <p class="address">{{trans.address}}</p>
                 <p class="trans-comments">{{trans.comments}}</p>
                 <p class="trans-time">{{trans.time}}</p>
@@ -106,20 +106,7 @@ export default {
         backers: 0,
         release_time: 'loading...',
         restDays: 0,
-        support: [{
-            id: '1',
-            address: 'tangying1234',
-            amount: 20032,
-            comments: 'Make your own chili sauce, there must be a unique formula, should be very delicious, support!',
-            time: '2018-11-04  14:26:06'
-          },
-          {
-            id: '2',
-            address: 'evanlueoso01',
-            amount: 20032,
-            comments: 'Make your own chili sauce, there must be a unique formula, should be very delicious, support!',
-            time: '2018-11-04  14:26:06'
-          }
+        support: [
         ],
         info: '',
         crowdfundingNo: '',
@@ -250,16 +237,18 @@ export default {
     },
     getProjectInfo() {
 
+      let _GET = util.getParams();
+      let eosID = _GET.id;
       let _this = this;
-      var url = this.globalData.domain + '/apiCrowdfunding/getInfo?eosID=' + this.id;
+
+      var url = _this.globalData.domain + '/apiCrowdfunding/getInfo?eosID='+eosID;
 
       $.get(url, {}, function (res) {
         if (res.success) {
-          console.log(_this.programs)
           _this.programs.info = res.data.des; // 简介
           _this.programs.crowdfundingNo = res.data.crowdfundingNo; // 订单号
           _this.programs.img = res.data.photos; // 图片
-          _this.programs.complete = res.data.amount; // 总共
+          _this.programs.complete = parseFloat(res.data.amount).toFixed(4); // 总共
           _this.programs.title = res.data.title; // 标题
           _this.programs.address = res.data.creator; // 发起人
           _this.programs.restDays = res.data.endDate; // 还剩几天
@@ -268,19 +257,18 @@ export default {
           _this.programs.id = res.data.eosID; // eosID
 
           // transfer
-          $.get(this.globalData.domain + '/apiEos/getCrowdfundingTransfer', {
+          $.get(_this.globalData.domain + '/apiEos/getCrowdfundingTransfer', {
             'account': _this.programs.targetAccount
           }, function (res) {
 
             if (res.success) {
               $.each(res.data.transfer, function (index, event) {
-
                 _this.programs.support.push({
                   id: index + 1,
-                  address: event.data.data.from,
-                  amount: event.data.data.quantity, // 1.0000 EOS
-                  comments: JSON.parse(event.data.data.memo.replace('/###/ig', '')).comment, // ###{}### 需要过滤
-                  time: event.data.timestamp // 时间戳
+                  address: event.data.from,
+                  amount: event.data.quantity, // 1.0000 EOS
+                  comments: JSON.parse(event.data.memo.replace(/###/ig, '')).comment, // ###{}### 需要过滤
+                  time: util.timestampToDate(event.timestamp) // 时间戳
                 });
 
                 _this.programs.backers++;
