@@ -9,8 +9,8 @@
         <div class="col-xs-12 col-sm-4">
           <ul class="contact-list">
             <li class="col-xs-6 col-sm-12">
-              <a href="https://t.me/medishares" target="_blank">
-              <span class="contact-icon"><img src="static/img/icon/sns-icon-github@2x.png"></span>
+              <a :href="$t('telegram_link')" target="_blank">
+              <span class="contact-icon"><img src="static/img/icon/sns_icon_telegram@2x.png"></span>
               <span>Telegram</span>
             </a>
             </li>
@@ -21,34 +21,41 @@
             </a>
             </li>
             <li class="col-xs-6 col-sm-12">
-              <a href="https://twitter.com/MediShares" target="_blank">
+              <a :href="$t('twitter_link')" target="_blank">
               <span class="contact-icon"><img src="static/img/icon/sns_icon_twitter@2x.png"></span>
               <span>Twitter</span>
             </a>
             </li>
             <li class="col-xs-6 col-sm-12">
-              <a href="http://weibo.com/MediShares" target="_blank">
-              <span class="contact-icon"><img src="static/img/icon/sns_icon_weibo@2x.png"></span>
-              <span>weibo</span>
+              <a :href="$t('weibo_kakao_link')" target="_blank">
+              <span class="contact-icon"><img :src="$t('weibo_kakao_icon')"></span>
+              <span>{{$t('weibo_kakao')}}</span>
             </a>
             </li>
             <li class="col-xs-6 col-sm-12">
               <a href="mailto:hello@medishares.org">
               <span class="contact-icon"><img src="static/img/icon/sns_icon_email@2x.png"></span>
-              <span>Email</span>
+              <span>{{$t('email')}}</span>
             </a>
             </li>
             <li class="col-xs-6 col-sm-12">
-              <a href="http://blog.medishares.org/" target="_blank">
+              <a :href="$t('blog_link')" target="_blank">
               <span class="contact-icon"><img src="static/img/icon/sns_icon_blog@2x.png"></span>
-              <span>Blog</span>
+              <span>{{$t('blog')}}</span>
+              </a>
+            </li>
+            <li class="col-xs-6 col-sm-12">
+              <a href="javascript:;" class="qq" @mouseover="qrcodeShow" @mouseout="qrcodeHide">
+              <span class="contact-icon"><img :src="$t('qq_kakao_icon')"></span>
+              <span>{{$t('qq_kakao')}}</span>
+              <div class="qq-code" v-show='isShow_qq'><img :src="$t('qq_kakao_code')" width="100%"></div>
             </a>
             </li>
           </ul>
         </div>
         <div class="col-xs-8 col-sm-2 code-img">
-          <img src="http://medishares.oss-cn-hongkong.aliyuncs.com/logo/qr_code.png" width="100%">
-          <div class="code-tip">Join the wechat group</div>
+          <img :src="$t('group_icon')" width="100%">
+          <div class="code-tip">{{$t('join_group')}}</div>
         </div>
       </div>
       <div class="center-align copyright">© 2017 MediShares Foundation Ltd. All rights reserved. <a style="color:#607d8b;text-decoration: underline;" href="http://medishares.oss-cn-hongkong.aliyuncs.com/media/MDS_media_kit.zip">Download Media Kit</a></div>
@@ -58,7 +65,19 @@
 
 <script>
 export default {
-
+  data() {
+    return {
+      isShow_qq: false
+    }
+  },
+  methods: {
+    qrcodeShow() {
+      this.isShow_qq = true
+    },
+    qrcodeHide() {
+      this.isShow_qq = false
+    }
+  }
 }
 </script>
 
@@ -90,7 +109,6 @@ footer .contact-list .qq-code {
   left: 15px;
   bottom: 50px;
   width: 200px;
-  display: none;
 }
 
 footer .contact-list>li:first-of-type {

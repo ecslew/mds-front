@@ -10,17 +10,20 @@
   </a>
 </div>
 </template>
+
 <script>
 export default {
 
 }
 </script>
+
 <style scoped>
-.contact{
+.contact {
   background: #00d102;
   padding: 32px 0;
 }
-.contact a{
+
+.contact a {
   color: #fff;
   font-size: 20px;
   line-height: 1.2;
@@ -29,10 +32,11 @@ export default {
   padding-left: 92px;
   max-width: 800px;
 }
-.contact .icon{
+
+.contact .icon {
   width: 68px;
   height: 68px;
-  font-size:36px;
+  font-size: 36px;
   padding: 17px 0 0 15px;
   border-radius: 50%;
   background: #fff;
@@ -41,10 +45,33 @@ export default {
   top: 50%;
   transform: translateY(-50%);
 }
-h4{
+
+h4 {
   font-size: 32px;
   padding-bottom: 8px;
   font-family: Gotham-Medium;
   line-height: 1;
+}
+
+@media(max-width: 768px) {
+  .contact{
+    padding: 24px 0;
+  }
+  .contact a {
+    font-size: 14px;
+    padding-left: 75px;
+  }
+
+  .contact .icon {
+    left: 15px;
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+    padding: 12px 0 0 10px;
+  }
+
+  h4 {
+    font-size: 24px;
+  }
 }
 </style>

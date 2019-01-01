@@ -9,17 +9,17 @@
   <div class="info">
     <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
     <div class="progress">
-      <p class="progress-bar" :style="'width:'+parseFloat(1200/targetAmount*100)+'%'"></p>
+      <p class="progress-bar" :style="'width:'+parseFloat(amount/targetAmount*100)+'%'"></p>
     </div>
     <div class="complete">{{$t('complete')}}: {{targetAmount}} EOS</div>
     <div class="time">{{$t('release_time')}}: {{time.slice(0,10)}}</div>
-    </div>
+  </div>
 </router-link>
 </template>
 
 <script>
 export default {
-  props: ['picture', 'title', 'targetAmount', 'time', 'id']
+  props: ['picture', 'title', 'targetAmount', 'amount', 'time', 'id']
 }
 </script>
 

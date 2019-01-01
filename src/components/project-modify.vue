@@ -32,7 +32,7 @@
           <div class='photo' :style="{background: modify.photos?'url(' + modify.photos +')no-repeat center/cover':'#e1e6e9'}">
             <input name="photos[]" type="file" @change="uploadPic">
             <template v-if='!isLoad'>
-              <img src="static/img/icon/web_con_pic.png" width="72">
+              <img src="static/img/icon/web_icon_pic.png" width="72">
               <h5>{{$t('position_photo_pl')}}</h5>
               <p>{{$t('position_photo_tip')}}</p>
             </template>
@@ -199,6 +199,9 @@ export default {
       user.getAccount().then((res) => {
         this.modify.creator = res.name
         this.modify.targetAccount = res.name
+        $(".login").hide()
+        $(".personal").show()
+        $(".currentAccount").html(res.name)
 
         // 表单匹配
         if (!this.modify.title) {
@@ -242,21 +245,6 @@ export default {
             }
           }
         } catch (e) {}
-
-        //        that.$http.post(that.globalData.domain + that.url, formData, {
-        //          cache: false,
-        //          processData: false,
-        //          contentType: false
-        //        }).then(res => {
-        //          if (res.data.success) {
-        //            $('#myModal').modal('show')
-        //          } else {
-        //            that.alertInfo = res.data.message
-        //            $('#alert').modal('show')
-        //          }
-        //        }, error => {
-        //          console.info(error)
-        //        })
 
         const eos = user.getEos()
         // 创建项目提交到链上

@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       isBacked: true,
-      currentAccount:'',
+      currentAccount: '',
       programs: []
     }
   },
@@ -30,20 +30,24 @@ export default {
     this.getSupported();
   },
   methods: {
-    getSupported(){
+    getSupported() {
       let _this = this;
       user.getAccount().then((currentAccount) => {
         _this.currentAccount = currentAccount.name;
         // 从交易记录获取支持过的项目
-        $.get(_this.globalData.domain+'/apiCrowdfunding/supported',{account:_this.currentAccount},function(res){
-          if( res.success ){
-            $.each( res.data.transfer,function(index,event){
+        $.get(_this.globalData.domain + '/apiCrowdfunding/supported', {
+          account: _this.currentAccount
+        }, function (res) {
+          if (res.success) {
+            $.each(res.data.transfer, function (index, event) {
               let memo = JSON.parse(event.data.memo.replace(/###/ig, ''));
               let eosID = memo.ID;
               // 通过编号查信息
-              if( eosID  ){
-                $.get( _this.globalData.domain+'/apiCrowdfunding/getInfo',{eosID:eosID},function(result){
-                  if( result.success ){
+              if (eosID) {
+                $.get(_this.globalData.domain + '/apiCrowdfunding/getInfo', {
+                  eosID: eosID
+                }, function (result) {
+                  if (result.success) {
                     let tmp = {
                       eosID: result.data.eosID,
                       img: result.data.photos,
@@ -54,11 +58,11 @@ export default {
                     };
                     _this.programs.push(tmp);
                   }
-                },'json' )
+                }, 'json')
               }
             })
           }
-        },'json')  
+        }, 'json')
       })
     }
   },
