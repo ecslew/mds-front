@@ -238,11 +238,12 @@ export default {
     margin-top: 0px!important;
   }
   .scroll-box>ul {
-    padding: 40px 32px 0 42px;
+    padding: 0 32px 0 42px;
   }
 
   .roadmap {
     height: auto;
+    padding: 40px 0;
   }
 
   #wrapper {

@@ -11,12 +11,12 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <div class="mobile-login hidden-sm hidden-md hidden-lg" @click="login" v-show='!isLogin'>{{$t("login")}}</div>
-        <div class="dropdown personal hidden-sm hidden-md hidden-lg" v-show='isLogin'>
+        <div class="login mobile-login hidden-sm hidden-md hidden-lg" @click="login">{{$t("login")}}</div>
+        <div class="dropdown personal hidden-sm hidden-md hidden-lg">
           <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount">{{currentAccount?currentAccount.name:''}}</span><span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li>
-              <router-link to="/projectCreate">{{$t("create_a_project")}}</router-link>
+              <router-link to="/projectRelease">{{$t("create_a_project")}}</router-link>
             </li>
             <li>
               <router-link to="/myProject">{{$t("my_projects")}}</router-link>
@@ -45,8 +45,8 @@
               <li><a href="javascript:;" name="ko" @click="changeLang">한국어</a></li>
             </ul>
           </div>
-          <div class="login pull-left hidden-xs" @click="login" v-show='!isLogin'>{{$t("login")}}</div>
-          <div class="dropdown personal hidden-xs" v-show='isLogin'>
+          <div class="login pc-login pull-left hidden-xs" @click="login">{{$t("login")}}</div>
+          <div class="dropdown personal hidden-xs">
             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount">{{currentAccount?currentAccount.name:''}}</span><span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li @click="removeWh100">
@@ -86,8 +86,7 @@ export default {
   data() {
     return {
       isHome: false,
-      isLogin: false,
-      currentAccount: null
+      currentAccount: this.globalData.currentAccount
     }
   },
   created() {
@@ -121,7 +120,9 @@ export default {
       user.getAccount().then((currentAccount) => {
         this.currentAccount = currentAccount;
         $('#login').modal('hide')
-        this.isLogin = true
+        $(".login").hide()
+        $(".personal").show()
+        // this.isLogin = true
       }, (err) => {
         alert(err);
       });
@@ -129,7 +130,9 @@ export default {
     logout() {
       user.logout().then((currentAccount) => {
         this.currentAccount = currentAccount
-        this.isLogin = false
+        // this.isLogin = false
+        $(".login").show()
+        $(".personal").hide()
       }, (err) => {
         alert(err);
       });
@@ -199,6 +202,10 @@ export default {
   text-transform: capitalize;
 }
 
+.personal {
+  display: none;
+}
+
 .personal>a {
   text-transform: none;
 }
@@ -247,7 +254,7 @@ nav .open>a {
   line-height: 20px;
 }
 
-.login {
+.pc-login {
   padding: 6px 10px;
   border: 1px solid #2c363f;
   border-radius: 4px;
@@ -255,7 +262,7 @@ nav .open>a {
   text-transform: capitalize;
 }
 
-.ishome .login {
+.ishome .pc-login {
   border: 1px solid #fff;
   color: #fff;
 }
@@ -347,6 +354,9 @@ nav .open>a {
 
   .dropdown a {
     padding: 15px;
+  }
+  .personal {
+    display: none;
   }
 }
 </style>

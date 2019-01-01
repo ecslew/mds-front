@@ -24,12 +24,6 @@ export default {
   data() {
     return {
       url: 'http://kylin.meet.one:8888/v1/chain/get_table_rows',
-      params: {
-        "code": "eostest51111",
-        "scope": "eostest51112",
-        "table": "item",
-        "json": true
-      },
       alertInfo: '',
       alertTitle: '',
       isBacked: false,
@@ -73,11 +67,23 @@ export default {
   },
   methods: {
     getProject() {
-      this.$http.post(this.url, this.params).then(res => {
-        this.programs = res.data.rows
-        console.log(res);
-      }, err => {
-        console.log('error:' + err);
+      user.getAccount().then((res) => {
+        $(".login").hide()
+        $(".personal").show()
+        $(".currentAccount").html(res.name)
+        this.$http.post(this.url, {
+          "code": res.name,
+          "scope": res.name,
+          "table": "item",
+          "json": true
+        }).then(res => {
+          this.programs = res.data.rows
+          console.log(res);
+        }, err => {
+          console.log('error:' + err);
+        })
+      }, (err) => {
+        alert(err)
       })
     },
     deleteProject(val, title, id) {

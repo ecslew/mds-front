@@ -168,7 +168,9 @@ export default {
       // 判断登录
       user.getAccount().then((currentAccount) => {
         _this.currentAccount = currentAccount.name;
-
+        $(".login").hide()
+        $(".personal").show()
+        $(".currentAccount").html(currentAccount.name)
         // 交易
         user.getEos().transaction({
           actions: [{
