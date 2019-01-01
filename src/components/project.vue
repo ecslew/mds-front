@@ -5,7 +5,7 @@
     <div class="subtitle text-center">{{$t('projects_list')}}</div>
     <ul class="row project-list">
       <li class="col-sm-4 col-xs-12" v-for="item in programs" :key="item.id">
-        <project-list :id="item.eosID" :picture="item.img" :title="item.title" :targetAmount="item.targetAmount" :time="item.releaseTime"></project-list>
+        <project-list :id="item.eosID" :picture="item.img" :title="item.title" :targetAmount="item.targetAmount" :amount="item.amount" :time="item.releaseTime"></project-list>
       </li>
     </ul>
     <div class="load-more" v-show="!isAll"><span>{{$t("load_more")}}</span></div>
@@ -22,28 +22,39 @@ export default {
     return {
       isAll: true,
       url: '/apiCrowdfunding/homePage?page=1',
-      programs: [
-        //        {
-        //          "title": "这是一个众筹项目",
-        //          "crowdfundingNo": "ABC123455", // 项目编号
-        //          "eosID": "1", // 链上ID
-        //          "creator": "eosjiazechen", // 发起者
-        //          "targetToken": "SNC", // 目标筹集 Token
-        //          "targetAmount": "10000", // 目标筹集个数
-        //          "releaseTime": "2018-12-26 13:36:49", // 项目发起时间
-        //          "img": "http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg" // 图片
-        //        }
-      ]
+      transferUrl: '/apiEos/getCrowdfundingTransfer?account=',
+      programs: []
     }
   },
   mounted() {
-    this.$http.get(this.globalData.domain + this.url).then((res) => {
-      if (res.data.success) {
-        this.programs = res.data.data.pageData
-      }
-    }, (err) => {
-      console.log('err' + err);
-    })
+    this.getPrograms()
+  },
+  methods: {
+    getPrograms() {
+      this.$http.get(this.globalData.domain + this.url).then((res) => {
+        if (res.data.success) {
+          const pageData = res.data.data.pageData
+          $.each(pageData, (index, project) => {
+            project.amount = 0
+            this.getTranster(project)
+          })
+          this.programs = pageData
+        }
+      }, (err) => {
+        console.log('err' + err);
+      })
+    },
+    getTranster(project) {
+      this.$http.get(this.globalData.domain + this.transferUrl + project.creator).then((res) => {
+        if (res.data.success) {
+          $.each(res.data.data.transfer, (index, event) => {
+            project.amount += parseFloat(event.data.quantity)
+          });
+        }
+      }, (err) => {
+        console.log('err' + err);
+      })
+    }
   },
   components: {
     foot,

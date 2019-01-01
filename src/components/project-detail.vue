@@ -102,12 +102,11 @@ export default {
         img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
         title: 'I need your help to expand the reproduction of secret chili sauce',
         complete: 0,
-        amount: 10,
+        amount: 0,
         backers: 0,
         release_time: 'loading...',
         restDays: 0,
-        support: [
-        ],
+        support: [],
         info: '',
         crowdfundingNo: '',
         targetAccount: ''
@@ -118,16 +117,7 @@ export default {
     }
   },
   mounted() {
-
     this.copyBtn = new this.clipboard(this.$refs.copy);
-    this.$http.get('').then((res) => {
-      console.log(res);
-
-    }, (err) => {
-      console.log(err);
-
-    })
-
     this.getProjectInfo();
   },
   methods: {
@@ -241,7 +231,7 @@ export default {
       let eosID = _GET.id;
       let _this = this;
 
-      var url = _this.globalData.domain + '/apiCrowdfunding/getInfo?eosID='+eosID;
+      var url = _this.globalData.domain + '/apiCrowdfunding/getInfo?eosID=' + eosID;
 
       $.get(url, {}, function (res) {
         if (res.success) {
@@ -270,7 +260,7 @@ export default {
                   comments: JSON.parse(event.data.memo.replace(/###/ig, '')).comment, // ###{}### 需要过滤
                   time: util.timestampToDate(event.timestamp) // 时间戳
                 });
-
+                _this.programs.amount += parseFloat(event.data.quantity)
                 _this.programs.backers++;
 
               });
