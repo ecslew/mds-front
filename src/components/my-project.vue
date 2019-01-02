@@ -61,7 +61,7 @@ export default {
     },
     deleteProject(val, title, id) {
       let that = this;
-      this.programs.splice(val, 1)
+      
       // 判断是否登录
       user.getAccount().then((res) => {
         const eos = user.getEos()
@@ -81,8 +81,9 @@ export default {
           }]
         }).then(
           result => {
+            this.programs.splice(val, 1)
             // 成功，调用我们的接口
-            this.$http.post(this.globalData.domain + this.deleteUrl + id).then(res => {
+            this.$http.get(this.globalData.domain + this.deleteUrl + id).then(res => {
               if (res.data.success) {
                 this.alertInfo = "successfully deleted"
                 $('#alert').modal('show')
