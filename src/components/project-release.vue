@@ -284,7 +284,6 @@ export default {
               processData: false,
               contentType: false
             }).then(res => {
-              console.log(res)
               if (res.data.success) {
                 $('#myModal').modal('show')
               } else {
