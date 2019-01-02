@@ -157,5 +157,9 @@ module.exports = {
   form_match_amount: "모금 목표 금액을 입력하십시오.",
   form_match_endTime: "종료 시간을 선택하십시오.",
   form_match_low: "최소값은 최대 값보다 클 수 없습니다.",
-  form_match_high: "최대 값은 목표 금액보다 클 수 없습니다"
+  form_match_high: "최대 값은 목표 금액보다 클 수 없습니다",
+  contact_title: "Like what we are building?",
+  contact_info: "Welcome mutual aid organization, inclusive finance organization and volunteer contact us! Send Email to us:hello@medishares.org",
+  deleted_success: "successfully deleted",
+  confirm: "Confirm"
 }

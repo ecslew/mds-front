@@ -45,7 +45,7 @@
           <input name="targetAmount" class="basic-input" type="number" v-model="addData.amount" :placeholder="$t('target_amount_pl')">
         </div>
           <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
-          <template v-if="isShow">
+          <div v-show="isShow">
             <label>{{$t('transfer_limit')}}</label>
             <div class="row">
               <!-- 最低筹款金额 ，非必须 low  -->
@@ -57,7 +57,7 @@
                   <input class="basic-input" type="number" v-model="addData.high" :placeholder="$t('high_amount_pl')">
               </p>
             </div>
-          </template>
+          </div>
           <!-- 筹款结束时间 endDate-->
           <label>{{$t('end_date')}}</label>
           <input class="basic-input" type="date" v-model="addData.endTime" :placeholder="$t('end_date_pl')" @change="dateToStamp">
@@ -78,7 +78,7 @@
         <img src="static/img/icon/web_icon_success.png" width="92">
         <h4 class="modal-title">{{$t('release_success')}}</h4>
         <p>{{$t('release_success_tip')}}</p>
-        <!-- <router-link to="/" data-dismiss="modal">{{$t('view_project')}}</router-link> -->
+        <router-link to="/" data-dismiss="modal">{{$t('confirm')}}</router-link>
       </div>
     </div>
   </div>
@@ -317,7 +317,7 @@ export default {
       this.isLoad = false
     },
     toggleShow() {
-      this.isShow = true
+      this.isShow = !this.isShow
     },
     dateToStamp() {
       this.addData.endTimeStamp = (new Date(this.addData.endTime)).getTime() / 1000
@@ -452,7 +452,6 @@ export default {
   font-size: 16px;
   margin: 8px 0 196px;
 }
-
 @media (max-width: 768px) {
   .basic {
     padding: 24px 16px 32px;

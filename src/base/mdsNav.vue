@@ -200,6 +200,7 @@ export default {
 .header-nav a {
   color: #2c363f;
   text-transform: capitalize;
+  display: inline-block;
 }
 
 .personal {
@@ -215,7 +216,7 @@ export default {
 }
 
 .ishome a {
-  color: #fff;
+  color: #fff!important;
 }
 
 .ishome .navbar-toggle .icon-bar {
@@ -225,13 +226,8 @@ export default {
 .navbar-brand {
   font-size: 20px;
 }
-
-.navbar-right .dropdown-menu {
-  min-width: auto;
-  text-align: center;
-  border: none;
-  padding: 10px 16px;
-  right: auto;
+.ishome .navbar-brand{
+  color: #fff!important;
 }
 
 .navbar-brand:after {
@@ -244,14 +240,16 @@ nav .open>a {
   background: transparent !important;
 }
 
-.navbar-nav .dropdown-menu>li>a {
-  padding: 4px 0;
+.header-nav .dropdown-menu {
+  min-width: auto;
+  text-align: center;
+  border: none;
+  padding: 10px 16px;
+  right: auto;
 }
-
-.dropdown a {
-  padding: 10px 15px;
-  display: block;
-  line-height: 20px;
+.header-nav .dropdown-menu>li>a {
+  padding: 4px 0;
+  color: #2c363f!important;
 }
 
 .pc-login {
@@ -311,7 +309,7 @@ nav .open>a {
   }
 
   #mds-nav a {
-    color: #2c363f;
+    color: #2c363f!important;
     padding: 0;
     height: 60px;
     line-height: 60px;

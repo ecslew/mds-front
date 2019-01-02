@@ -157,5 +157,9 @@ module.exports = {
   form_match_amount: "Please fill in the fundraising target amount",
   form_match_endTime: "Please select the end time",
   form_match_low: "The minimum value cannot be greater than the maximum value",
-  form_match_high: "The maximum value cannot be greater than the target amount"
+  form_match_high: "The maximum value cannot be greater than the target amount",
+  contact_title: "Like what we are building?",
+  contact_info: "Welcome mutual aid organization, inclusive finance organization and volunteer contact us! Send Email to us:hello@medishares.org",
+  deleted_success: "successfully deleted",
+  confirm: "Confirm"
 }
