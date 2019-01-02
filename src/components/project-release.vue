@@ -108,7 +108,7 @@ export default {
       adddData: {
         desHash: '', //【 简介做 MD5 后的值 】
         endTimeStamp: '', //【 筹款结束时间 时间戳s 】
-        amount: '', //【 筹款金额 】
+        amount: 0, //【 筹款金额 】
         creator: '', //【 项目发起者 】
         des: '', //【 项目简介 】
         endTime: '', //【  筹款结束时间 时间 】
@@ -117,8 +117,8 @@ export default {
         targetToken: 'EOS', //【 筹款Token,比如：EOS，IQ，MEV 】
         targetTokenContract: 'eosio.token', //【 筹款 Token 合约，EOS 请填写 eosio.token 】
         title: "", //【 项目名称 】
-        low: '', //【 最低筹款金额 ，非必须 】
-        high: '' //【 最高筹款金额 ，非必须 】
+        low: 0, //【 最低筹款金额 ，非必须 】
+        high: 0 //【 最高筹款金额 ，非必须 】
       }
     }
   },
@@ -191,7 +191,7 @@ export default {
           $('#alert').modal('show')
           return false
         }
-        if (!this.adddData.amount) {
+        if (this.adddData.amount == 0) {
           this.alertInfo = "请填写筹款目标金额"
           $('#alert').modal('show')
           return false
@@ -206,6 +206,23 @@ export default {
           $('#alert').modal('show')
           return false
         }
+        if ( this.adddData.low == 0 ) {
+          this.adddData.low = 0.0001;
+        }
+        if (this.adddData.low > this.adddData.high) {
+          this.alertInfo = '最小值不能大于最大值';
+          $('#alert').modal('show')
+          return false
+        }
+        if ( this.adddData.high == 0 ) {
+          this.adddData.high = this.adddData.amount;
+        }
+        if (this.adddData.high > this.adddData.amount) {
+          this.alertInfo = '最大值不能大于目标金额';
+          $('#alert').modal('show')
+          return false
+        }
+
         // 生成表单数据
         const formData = new FormData(this.$refs.form)
         formData.append("creator", res.name)
@@ -220,10 +237,11 @@ export default {
         } catch (e) {}
 
         const eos = user.getEos()
+
         // 创建项目提交到链上
         eos.transaction({
           actions: [{
-            account: 'medishareeos', // 合约名
+            account: that.globalData.contract, // 合约名
             name: 'add', // 合约方法
             authorization: [{
               actor: that.adddData.creator, // 登录当前账户
@@ -232,18 +250,18 @@ export default {
             data: {
               "initiator": that.adddData.creator, // 项目发起人
               "name": that.adddData.title, // 项目名称
-              "item_digest": that.adddData.desHash, // 项目简介md5 后的值 32 位
+              "item_digest": 'f4734448c81e0817d25416b2985cd6f9ba5d8c5756e1892353265ea109dcfc61',//that.adddData.desHash, // 项目简介md5 后的值 32 位
               "receiver": that.adddData.targetAccount, // 收款人
               "min_fund": {
-                "quantity": that.adddData.low + " EOS", // 金额 注意格式
+                "quantity": parseFloat( that.adddData.low ).toFixed(4) + " EOS", // 金额 注意格式
                 "contract": "eosio.token" // 代币合约 eos 为 eosio.token
               },
               "max_fund": {
-                "quantity": that.adddData.high + " EOS", // 金额 注意格式
+                "quantity": parseFloat( that.adddData.high ).toFixed(4)+ " EOS", // 金额 注意格式
                 "contract": "eosio.token" // 代币合约 eos 为 eosio.token
               },
               "target_fund": {
-                "quantity": that.adddData.amount + " EOS", // 金额 注意格式
+                "quantity": parseFloat( that.adddData.amount ).toFixed(4) + " EOS", // 金额 注意格式
                 "contract": "eosio.token" // 代币合约 eos 为 eosio.token
               },
               "deadline": that.adddData.endTimeStamp // 结束时间 时间戳(s)

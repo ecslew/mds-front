@@ -87,6 +87,7 @@ export default {
       })
     },
     deleteProject(val, title, id) {
+      let that = this;
       this.programs.splice(val, 1)
       // 判断是否登录
       user.getAccount().then((res) => {
@@ -94,7 +95,7 @@ export default {
         // 删除项目提交到链上
         eos.transaction({
           actions: [{
-            account: 'medishareeos', // 合约名
+            account: that.globalData.contract, // 合约名
             name: 'erase', // 合约方法
             authorization: [{
               actor: res.name, // 登录当前账户
