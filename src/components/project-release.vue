@@ -160,7 +160,7 @@ export default {
       editor.customConfig.onchange = function (html) {
         that.isFocus = true
         that.adddData.des = html.replace(/<div class="story_pl">&\s*\S*&<\/div>/g, '')
-        that.adddData.desHash = sha.sha256('that.adddData.des')
+        that.adddData.desHash = sha.sha256(that.adddData.des)
       }
       editor.create()
     },
