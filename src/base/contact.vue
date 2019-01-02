@@ -4,8 +4,8 @@
   <a href="mailto:hello@medishares.org" class="container">
     <div class="icon">👏</div>
     <div class="contact-info">
-      <h4>Like what we are building?</h4>
-      <p>Welcome mutual aid organization, inclusive finance organization and volunteer contact us! Send Email to us:hello@medishares.org </p>
+      <h4>{{$t('contact_title')}}</h4>
+      <p>{{$t('contact_info')}}</p>
     </div>
   </a>
 </div>

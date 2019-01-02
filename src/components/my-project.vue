@@ -84,7 +84,7 @@ export default {
             // 成功，调用我们的接口
             this.$http.post(this.globalData.domain + this.deleteUrl + id).then(res => {
               if (res.data.success) {
-                this.alertInfo = "successfully deleted"
+                this.alertInfo = this.$t('deleted_success')
                 $('#alert').modal('show')
               } else {
                 console.log(res.data.message);

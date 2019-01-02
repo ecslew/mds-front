@@ -157,5 +157,9 @@ module.exports = {
   form_match_amount: "请填写筹款目标金额",
   form_match_endTime: "请选择结束时间",
   form_match_low: "最小值不能大于最大值",
-  form_match_high: "最大值不能大于目标金额"
+  form_match_high: "最大值不能大于目标金额",
+  contact_title: "喜欢我们正在做的事情？",
+  contact_info: "欢迎世界各地的互助组织、普惠金融机构和个人与我们联系！联系我们:hello@medishares.org",
+  deleted_success: "删除成功",
+  confirm: "确定"
 }

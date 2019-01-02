@@ -6,8 +6,8 @@
   <div id="wrapper">
     <div id="scroller">
       <div class="scroll-box">
-        <ul class="row  mt-170">
-          <li class="col-xs-12  mds-develop-list">
+        <ul class="clearfix">
+          <li class="mds-develop-list">
             <div class="develop-box">
               <div class="dev-date">2018 Q1</div>
               <div class="dev-des">
@@ -19,7 +19,7 @@
               </div>
             </div>
           </li>
-          <li class="col-xs-12  mds-develop-list">
+          <li class="mds-develop-list">
             <div class="develop-box">
               <div class="dev-date">2018 Q2</div>
               <div class="dev-des">
@@ -37,7 +37,7 @@
               </div>
             </div>
           </li>
-          <li class="col-xs-12  mds-develop-list">
+          <li class="mds-develop-list">
             <div class="develop-box">
               <div class="dev-date">2018 Q3</div>
               <div class="dev-des">
@@ -52,7 +52,7 @@
               </div>
             </div>
           </li>
-          <li class="col-xs-12  mds-develop-list">
+          <li class="mds-develop-list">
             <div class="develop-box">
               <div class="dev-date">2018 Q4</div>
               <div class="dev-des">
@@ -67,7 +67,7 @@
               </div>
             </div>
           </li>
-          <li class="col-xs-12  mds-develop-list">
+          <li class="mds-develop-list">
             <div class="develop-box">
               <div class="dev-date">2019 Q1</div>
               <div class="dev-des">
@@ -85,7 +85,7 @@
               </div>
             </div>
           </li>
-          <li class="col-xs-12  mds-develop-list">
+          <li class="mds-develop-list">
             <div class="develop-box">
               <div class="dev-date">2019 Q2</div>
               <div class="dev-des">
@@ -103,7 +103,7 @@
               </div>
             </div>
           </li>
-          <li class="col-xs-12  mds-develop-list">
+          <li class="mds-develop-list">
             <div class="develop-box">
               <div class="dev-date">2019 Q3</div>
               <div class="dev-des">
@@ -233,12 +233,10 @@ export default {
   text-size-adjust: none;
 }
 
-@media(max-width: 768px) {
-  .mt-170{
-    margin-top: 0px!important;
-  }
+@media(max-width: 767px) {
   .scroll-box>ul {
     padding: 0 32px 0 42px;
+    margin-top: 0;
   }
 
   .roadmap {
@@ -303,6 +301,7 @@ export default {
     width: 2100px;
     border-top: 4px solid #c8d2d7;
     padding-left: 132px;
+    margin-top:170px;
   }
 
   .mds-develop-list {
@@ -310,6 +309,8 @@ export default {
     position: relative;
     border-left: 1px solid #c8d2d7;
     min-height: 170px;
+    float: left;
+    padding: 0 15px;
   }
 
   .mds-develop-list:nth-of-type(2n+1) {
