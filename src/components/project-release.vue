@@ -217,7 +217,8 @@ export default {
         if ( this.adddData.high == 0 ) {
           this.adddData.high = this.adddData.amount;
         }
-        if (this.adddData.high > this.adddData.amount) {
+
+        if ( this.adddData.high-0 > this.adddData.amount-0 ) {
           this.alertInfo = '最大值不能大于目标金额';
           $('#alert').modal('show')
           return false
@@ -252,17 +253,26 @@ export default {
               "name": that.adddData.title, // 项目名称
               "item_digest": 'f4734448c81e0817d25416b2985cd6f9ba5d8c5756e1892353265ea109dcfc61',//that.adddData.desHash, // 项目简介md5 后的值 32 位
               "receiver": that.adddData.targetAccount, // 收款人
-              "min_fund": {
-                "quantity": parseFloat( that.adddData.low ).toFixed(4) + " EOS", // 金额 注意格式
-                "contract": "eosio.token" // 代币合约 eos 为 eosio.token
+              "min_fund": 
+              {
+                      amount: parseFloat( that.adddData.low ).toFixed(4),
+                      precision: 4,
+                      symbol: that.adddData.targetToken,
+                      contract: that.adddData.targetTokenContract
               },
-              "max_fund": {
-                "quantity": parseFloat( that.adddData.high ).toFixed(4)+ " EOS", // 金额 注意格式
-                "contract": "eosio.token" // 代币合约 eos 为 eosio.token
-              },
-              "target_fund": {
-                "quantity": parseFloat( that.adddData.amount ).toFixed(4) + " EOS", // 金额 注意格式
-                "contract": "eosio.token" // 代币合约 eos 为 eosio.token
+              "max_fund": 
+                    {
+                      amount: parseFloat( that.adddData.high ).toFixed(4),
+                      precision: 4,
+                      symbol: that.adddData.targetToken,
+                      contract: that.adddData.targetTokenContract
+                    },
+              "target_fund": 
+              {
+                amount: parseFloat( that.adddData.amount ).toFixed(4),
+                precision: 4,
+                symbol: that.adddData.targetToken,
+                contract: that.adddData.targetTokenContract
               },
               "deadline": that.adddData.endTimeStamp // 结束时间 时间戳(s)
             }
