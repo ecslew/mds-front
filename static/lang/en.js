@@ -150,5 +150,12 @@ module.exports = {
   low_amount_pl: "Enter the minimum amount",
   high_amount_pl: "Enter the maximum amount",
   modify_success: "Successfully modified",
-  modify_success_tip: "Your project has been modified successfully, please wait for the review patiently."
+  modify_success_tip: "Your project has been modified successfully, please wait for the review patiently.",
+  form_match_title: "Please fill in the title",
+  form_match_des: "Please fill in the introduction",
+  form_match_photos: "Please upload your picture",
+  form_match_amount: "Please fill in the fundraising target amount",
+  form_match_endTime: "Please select the end time",
+  form_match_low: "The minimum value cannot be greater than the maximum value",
+  form_match_high: "The maximum value cannot be greater than the target amount"
 }

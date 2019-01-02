@@ -24,7 +24,7 @@
           <div v-if="!isFocus" class="story_pl">{{$t('tell_story_pl')}}</div>
         </div>
         <textarea name="des" class="hide" v-model="modify.des"></textarea>
-        <!-- 简介做 MD5 后的值 desHash -->
+        <!-- 简介做 sha256 后的值 desHash -->
         <input name="desHash" type="text" class="hide" v-model="desHash">
         <!-- 封面图片，注意name为数组，以后可能要传多张 photos[]-->
         <label>{{$t('position_photo')}}</label>
@@ -96,7 +96,7 @@
 import alertModal from '@/base/alert'
 import 'wangeditor/release/wangEditor.css'
 import E from 'wangeditor'
-import md5 from 'js-md5'
+import sha from 'js-sha256'
 import user from 'static/js/user'
 export default {
   props: ['eosID'],
@@ -110,7 +110,7 @@ export default {
       isLoad: false, //是否上传封面图片
       isFocus: false, //富文本是否填写内容
       isShow: false, //金额设置是否展示
-      desHash: '', //【 简介做 MD5 后的值 】
+      desHash: '', //【 简介做 sha256 后的值 】
       endTimeStamp: '', //【 筹款结束时间 时间戳s 】
       modify: {
         amount: 0, //【 筹款金额 】
@@ -167,7 +167,7 @@ export default {
     editor.customConfig.onchange = function (html) {
       that.isFocus = true
       that.modify.des = html.replace(/<div class="story_pl">&\s*\S*&<\/div>/g, '')
-      that.desHash = md5(that.modify.des)
+      that.desHash = sha.sha256(that.modify.des)
     }
     editor.create()
 
@@ -180,7 +180,7 @@ export default {
         }
         if (this.modify.des) {
           editor.txt.html(this.modify.des)
-          this.desHash = md5(this.modify.des)
+          this.desHash = sha.sha256(this.modify.des)
         }
         if (this.modify.endTime) {
           this.modify.endTime = res.data.data.endTime.slice(0, 10)
@@ -204,28 +204,29 @@ export default {
         $(".currentAccount").html(res.name)
 
         // 表单匹配
+        // 表单匹配
         if (!this.modify.title) {
-          this.alertInfo = "请填写标题"
+          this.alertInfo = this.$t('form_match_title')
           $('#alert').modal('show')
           return false
         }
         if (!this.modify.des) {
-          this.alertInfo = "请填写简介"
+          this.alertInfo = this.$t('form_match_des')
           $('#alert').modal('show')
           return false
         }
         if (!this.modify.photos) {
-          this.alertInfo = "请上传您的图片"
+          this.alertInfo = this.$t('form_match_photos')
           $('#alert').modal('show')
           return false
         }
         if (this.modify.amount == 0) {
-          this.alertInfo = "请填写筹款目标金额"
+          this.alertInfo = this.$t('form_match_amount')
           $('#alert').modal('show')
           return false
         }
         if (!this.modify.endTime) {
-          this.alertInfo = "请选择结束时间"
+          this.alertInfo = this.$t('form_match_endTime')
           $('#alert').modal('show')
           return false
         }
@@ -234,19 +235,19 @@ export default {
           $('#alert').modal('show')
           return false
         }
-        if ( this.modify.low == 0 ) {
+        if (this.modify.low == 0) {
           this.modify.low = 0.0001;
         }
-        if (this.modify.low > this.modify.high) {
-          this.alertInfo = '最小值不能大于最大值';
+        if (this.modify.high == 0) {
+          this.modify.high = this.modify.amount;
+        }
+        if (this.modify.low - 0 > this.modify.high - 0) {
+          this.alertInfo = this.$t('form_match_low')
           $('#alert').modal('show')
           return false
         }
-        if ( this.modify.high == 0 ) {
-          this.modify.high = this.modify.amount;
-        }
-        if (this.modify.high > this.modify.amount) {
-          this.alertInfo = '最大值不能大于目标金额';
+        if (this.modify.high - 0 > this.modify.amount - 0) {
+          this.alertInfo = this.$t('form_match_high')
           $('#alert').modal('show')
           return false
         }
@@ -275,18 +276,18 @@ export default {
               "initiator": that.modify.creator, // 项目发起人
               "id": that.modify.eosID,
               "name": that.modify.title, // 项目名称
-              "item_digest": that.desHash, // 项目简介md5 后的值 32 位
+              "item_digest": that.desHash, // 项目简介sha256 后的值 64 位
               "receiver": that.modify.targetAccount, // 收款人
               "min_fund": {
-                "quantity": parseFloat( that.modify.low ).toFixed(4) + " EOS", // 金额 注意格式
+                "quantity": parseFloat(that.modify.low).toFixed(4) + " EOS", // 金额 注意格式
                 "contract": "eosio.token" // 代币合约 eos 为 eosio.token
               },
               "max_fund": {
-                "quantity": parseFloat( that.modify.high ).toFixed(4) + " EOS", // 金额 注意格式
+                "quantity": parseFloat(that.modify.high).toFixed(4) + " EOS", // 金额 注意格式
                 "contract": "eosio.token" // 代币合约 eos 为 eosio.token
               },
               "target_fund": {
-                "quantity": parseFloat( that.modify.amount ).toFixed(4) + " EOS", // 金额 注意格式
+                "quantity": parseFloat(that.modify.amount).toFixed(4) + " EOS", // 金额 注意格式
                 "contract": "eosio.token" // 代币合约 eos 为 eosio.token
               },
               "deadline": that.endTimeStamp // 结束时间 时间戳(s)

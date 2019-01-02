@@ -150,5 +150,12 @@ module.exports = {
   low_amount_pl: "Enter the minimum amount",
   high_amount_pl: "Enter the maximum amount",
   modify_success: "Successfully modified",
-  modify_success_tip: "Your project has been modified successfully, please wait for the review patiently."
+  modify_success_tip: "Your project has been modified successfully, please wait for the review patiently.",
+  form_match_title: "제목을 작성하십시오.",
+  form_match_des: "소개를 작성하십시오",
+  form_match_photos: "사진을 업로드하십시오.",
+  form_match_amount: "모금 목표 금액을 입력하십시오.",
+  form_match_endTime: "종료 시간을 선택하십시오.",
+  form_match_low: "최소값은 최대 값보다 클 수 없습니다.",
+  form_match_high: "최대 값은 목표 금액보다 클 수 없습니다"
 }
