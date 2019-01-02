@@ -6,24 +6,24 @@
       <div class="subtitle">{{$t('submit_information')}}</div>
       <form class="basic-form" accept-charset="utf-8" ref="form" enctype="multipart/form-data">
         <!-- 筹款Token,比如：EOS，IQ，MEV. targetToken -->
-        <input name="targetToken" type="text" v-model="adddData.targetToken" class="hide">
+        <input name="targetToken" type="text" v-model="addData.targetToken" class="hide">
         <!-- 筹款 Token 合约，EOS 请填写 eosio.token   targetTokenContract-->
-        <input name="targetTokenContract" type="text" v-model="adddData.targetTokenContract" class="hide">
+        <input name="targetTokenContract" type="text" v-model="addData.targetTokenContract" class="hide">
         <!-- 项目名称 title-->
         <label>{{$t('project_title')}}</label>
-        <input name="title" type="text" class="basic-input" v-model="adddData.title" :placeholder="$t('project_title_pl')">
+        <input name="title" type="text" class="basic-input" v-model="addData.title" :placeholder="$t('project_title_pl')">
         <!-- 项目简介 des -->
         <label>{{$t('tell_story')}}</label>
         <div id="story">
           <div v-if="!isFocus" class="story_pl">{{$t('tell_story_pl')}}</div>
         </div>
-        <textarea name="des" class="hide" v-model="adddData.des"></textarea>
+        <textarea name="des" class="hide" v-model="addData.des"></textarea>
         <!-- 简介做 sha256 后的值 desHash -->
-        <input name="desHash" type="text" class="hide" v-model="adddData.desHash">
+        <input name="desHash" type="text" class="hide" v-model="addData.desHash">
         <!-- 封面图片，注意name为数组，以后可能要传多张 photos[]-->
         <label>{{$t('position_photo')}}</label>
         <div class="photo-container">
-          <div class='photo' :style="{background: adddData.photos?'url(' + adddData.photos +')no-repeat center/cover':'#e1e6e9'}">
+          <div class='photo' :style="{background: addData.photos?'url(' + addData.photos +')no-repeat center/cover':'#e1e6e9'}">
             <input name="photos[]" type="file" @change="uploadPic">
             <template v-if='!isLoad'>
               <img src="static/img/icon/web_icon_pic.png" width="72">
@@ -42,7 +42,7 @@
         <!-- 筹款金额 targetAmount-->
         <label>{{$t('target_amount')}}</label>
         <div class="basic-group">
-          <input name="targetAmount" class="basic-input" type="number" v-model="adddData.amount" :placeholder="$t('target_amount_pl')">
+          <input name="targetAmount" class="basic-input" type="number" v-model="addData.amount" :placeholder="$t('target_amount_pl')">
         </div>
           <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
           <template v-if="isShow">
@@ -50,18 +50,18 @@
             <div class="row">
               <!-- 最低筹款金额 ，非必须 low  -->
               <p class="col-sm-6 basic-group">
-                <input name="low" class="basic-input" type="number" v-model="adddData.low" :placeholder="$t('low_amount_pl')">
+                <input class="basic-input" type="number" v-model="addData.low" :placeholder="$t('low_amount_pl')">
               </p>
                 <!-- 最高筹款金额 ，非必须 high-->
                 <p class="col-sm-6 basic-group">
-                  <input name="high" class="basic-input" type="number" v-model="adddData.high" :placeholder="$t('high_amount_pl')">
+                  <input class="basic-input" type="number" v-model="addData.high" :placeholder="$t('high_amount_pl')">
               </p>
             </div>
           </template>
           <!-- 筹款结束时间 endDate-->
           <label>{{$t('end_date')}}</label>
-          <input class="basic-input" type="date" v-model="adddData.endTime" :placeholder="$t('end_date_pl')" @change="dateToStamp">
-          <input name="endDate" class="hide" type="text" v-model="adddData.endTimeStamp" >
+          <input class="basic-input" type="date" v-model="addData.endTime" :placeholder="$t('end_date_pl')" @change="dateToStamp">
+          <input name="endDate" class="hide" type="text" v-model="addData.endTimeStamp" >
           <div class="agree">
             <input type="checkbox" v-model="checked">
             <div>{{$t('fundraising_rules')}}</div>
@@ -105,7 +105,7 @@ export default {
       isLoad: false, //是否上传封面图片
       isFocus: false, //富文本是否填写内容
       isShow: false, //金额设置是否展示
-      adddData: {
+      addData: {
         desHash: '', //【 简介做 sha256 后的值 】
         endTimeStamp: '', //【 筹款结束时间 时间戳s 】
         amount: 0, //【 筹款金额 】
@@ -159,8 +159,8 @@ export default {
       }
       editor.customConfig.onchange = function (html) {
         that.isFocus = true
-        that.adddData.des = html.replace(/<div class="story_pl">&\s*\S*&<\/div>/g, '')
-        that.adddData.desHash = sha.sha256(that.adddData.des)
+        that.addData.des = html.replace(/<div class="story_pl">&\s*\S*&<\/div>/g, '')
+        that.addData.desHash = sha.sha256(that.addData.des)
       }
       editor.create()
     },
@@ -169,34 +169,34 @@ export default {
       const that = this
       // 判断是否登录
       user.getAccount().then((res) => {
-        this.adddData.creator = res.name
-        this.adddData.targetAccount = res.name
+        this.addData.creator = res.name
+        this.addData.targetAccount = res.name
         $(".login").hide()
         $(".personal").show()
         $(".currentAccount").html(res.name)
 
         // 表单匹配
-        if (!this.adddData.title) {
+        if (!this.addData.title) {
           this.alertInfo = this.$t('form_match_title')
           $('#alert').modal('show')
           return false
         }
-        if (!this.adddData.des) {
+        if (!this.addData.des) {
           this.alertInfo = this.$t('form_match_des')
           $('#alert').modal('show')
           return false
         }
-        if (!this.adddData.photos) {
+        if (!this.addData.photos) {
           this.alertInfo = this.$t('form_match_photos')
           $('#alert').modal('show')
           return false
         }
-        if (this.adddData.amount == 0) {
+        if (this.addData.amount == 0) {
           this.alertInfo = this.$t('form_match_amount')
           $('#alert').modal('show')
           return false
         }
-        if (!this.adddData.endTime) {
+        if (!this.addData.endTime) {
           this.alertInfo = this.$t('form_match_endTime')
           $('#alert').modal('show')
           return false
@@ -206,19 +206,18 @@ export default {
           $('#alert').modal('show')
           return false
         }
-        if (this.adddData.low == 0) {
-          this.adddData.low = 0.0001;
+        if (this.addData.low == 0) {
+          this.addData.low = 0.0001;
         }
-        if (this.adddData.high == 0) {
-          this.adddData.high = this.adddData.amount;
+        if (this.addData.high == 0) {
+          this.addData.high = this.addData.amount;
         }
-        if (this.adddData.low - 0 > this.adddData.high - 0) {
+        if (this.addData.low - 0 > this.addData.high - 0) {
           this.alertInfo = this.$t('form_match_low')
           $('#alert').modal('show')
           return false
         }
-
-        if (this.adddData.high - 0 > this.adddData.amount - 0) {
+        if (this.addData.high - 0 > this.addData.amount - 0) {
           this.alertInfo = '最大值不能大于目标金额';
           $('#alert').modal('show')
           return false
@@ -228,6 +227,9 @@ export default {
         const formData = new FormData(this.$refs.form)
         formData.append("creator", res.name)
         formData.append("targetAccount", res.name)
+        formData.append("low", this.addData.low)
+        formData.append("high", this.addData.high)
+
         // 去除空文件元素
         try {
           for (let pair of formData.entries()) {
@@ -244,46 +246,44 @@ export default {
             account: that.globalData.contract, // 合约名
             name: 'add', // 合约方法
             authorization: [{
-              actor: that.adddData.creator, // 登录当前账户
+              actor: that.addData.creator, // 登录当前账户
               permission: 'active'
             }],
             data: {
-              "initiator": that.adddData.creator, // 项目发起人
-              "name": that.adddData.title, // 项目名称
-              "item_digest": that.adddData.desHash, //that.adddData.desHash, // 项目简介sha256 后的值 64 位
-              "receiver": that.adddData.targetAccount, // 收款人
+              "initiator": that.addData.creator, // 项目发起人
+              "name": that.addData.title, // 项目名称
+              "item_digest": that.addData.desHash, //that.addData.desHash, // 项目简介sha256 后的值 64 位
+              "receiver": that.addData.targetAccount, // 收款人
               "min_fund": {
-                amount: parseFloat(that.adddData.low).toFixed(4),
+                amount: parseFloat(that.addData.low).toFixed(4),
                 precision: 4,
-                symbol: that.adddData.targetToken,
-                contract: that.adddData.targetTokenContract
+                symbol: that.addData.targetToken,
+                contract: that.addData.targetTokenContract
               },
               "max_fund": {
-                amount: parseFloat(that.adddData.high).toFixed(4),
+                amount: parseFloat(that.addData.high).toFixed(4),
                 precision: 4,
-                symbol: that.adddData.targetToken,
-                contract: that.adddData.targetTokenContract
+                symbol: that.addData.targetToken,
+                contract: that.addData.targetTokenContract
               },
               "target_fund": {
-                amount: parseFloat(that.adddData.amount).toFixed(4),
+                amount: parseFloat(that.addData.amount).toFixed(4),
                 precision: 4,
-                symbol: that.adddData.targetToken,
-                contract: that.adddData.targetTokenContract
+                symbol: that.addData.targetToken,
+                contract: that.addData.targetTokenContract
 
               },
-              "deadline": that.adddData.endTimeStamp // 结束时间 时间戳(s)
+              "deadline": that.addData.endTimeStamp // 结束时间 时间戳(s)
             }
           }]
         }).then(
           result => {
-            console.log(result);
             // 成功，调用我们的接口
             that.$http.post(that.globalData.domain + that.url, formData, {
               cache: false,
               processData: false,
               contentType: false
             }).then(res => {
-              console.log(res)
               if (res.data.success) {
                 $('#myModal').modal('show')
               } else {
@@ -308,19 +308,19 @@ export default {
       //获取的图片文件
       var fileList = event.target.files[0];
       if (fileList) {
-        this.adddData.photos = window.URL.createObjectURL(fileList);
+        this.addData.photos = window.URL.createObjectURL(fileList);
         this.isLoad = true
       }
     },
     deletePic(event) {
-      this.adddData.photos = ''
+      this.addData.photos = ''
       this.isLoad = false
     },
     toggleShow() {
       this.isShow = true
     },
     dateToStamp() {
-      this.adddData.endTimeStamp = (new Date(this.adddData.endTime)).getTime() / 1000
+      this.addData.endTimeStamp = (new Date(this.addData.endTime)).getTime() / 1000
     }
   },
   components: {
