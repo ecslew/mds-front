@@ -150,5 +150,12 @@ module.exports = {
   low_amount_pl: "请输入最低额度",
   high_amount_pl: "请输入最高额度",
   modify_success: "修改成功",
-  modify_success_tip: "您的项目修改成功了，我们会尽快审核，请耐心等待"
+  modify_success_tip: "您的项目修改成功了，我们会尽快审核，请耐心等待",
+  form_match_title: "请填写标题",
+  form_match_des: "请填写简介",
+  form_match_photos: "请上传您的图片",
+  form_match_amount: "请填写筹款目标金额",
+  form_match_endTime: "请选择结束时间",
+  form_match_low: "最小值不能大于最大值",
+  form_match_high: "最大值不能大于目标金额"
 }

@@ -18,7 +18,7 @@
           <div v-if="!isFocus" class="story_pl">{{$t('tell_story_pl')}}</div>
         </div>
         <textarea name="des" class="hide" v-model="adddData.des"></textarea>
-        <!-- 简介做 MD5 后的值 desHash -->
+        <!-- 简介做 sha256 后的值 desHash -->
         <input name="desHash" type="text" class="hide" v-model="adddData.desHash">
         <!-- 封面图片，注意name为数组，以后可能要传多张 photos[]-->
         <label>{{$t('position_photo')}}</label>
@@ -90,7 +90,7 @@
 import alertModal from '@/base/alert'
 import 'wangeditor/release/wangEditor.css'
 import E from 'wangeditor'
-import md5 from 'js-md5'
+import sha from 'js-sha256'
 import user from 'static/js/user'
 import mdsNav from '@/base/mdsNav'
 export default {
@@ -106,7 +106,7 @@ export default {
       isFocus: false, //富文本是否填写内容
       isShow: false, //金额设置是否展示
       adddData: {
-        desHash: '', //【 简介做 MD5 后的值 】
+        desHash: '', //【 简介做 sha256 后的值 】
         endTimeStamp: '', //【 筹款结束时间 时间戳s 】
         amount: 0, //【 筹款金额 】
         creator: '', //【 项目发起者 】
@@ -160,7 +160,7 @@ export default {
       editor.customConfig.onchange = function (html) {
         that.isFocus = true
         that.adddData.des = html.replace(/<div class="story_pl">&\s*\S*&<\/div>/g, '')
-        that.adddData.desHash = md5(that.adddData.des)
+        that.adddData.desHash = sha.sha256('that.adddData.des')
       }
       editor.create()
     },
@@ -177,27 +177,27 @@ export default {
 
         // 表单匹配
         if (!this.adddData.title) {
-          this.alertInfo = "请填写标题"
+          this.alertInfo = this.$t('form_match_title')
           $('#alert').modal('show')
           return false
         }
         if (!this.adddData.des) {
-          this.alertInfo = "请填写简介"
+          this.alertInfo = this.$t('form_match_des')
           $('#alert').modal('show')
           return false
         }
         if (!this.adddData.photos) {
-          this.alertInfo = "请上传您的图片"
+          this.alertInfo = this.$t('form_match_photos')
           $('#alert').modal('show')
           return false
         }
         if (this.adddData.amount == 0) {
-          this.alertInfo = "请填写筹款目标金额"
+          this.alertInfo = this.$t('form_match_amount')
           $('#alert').modal('show')
           return false
         }
         if (!this.adddData.endTime) {
-          this.alertInfo = "请选择结束时间"
+          this.alertInfo = this.$t('form_match_endTime')
           $('#alert').modal('show')
           return false
         }
@@ -206,19 +206,19 @@ export default {
           $('#alert').modal('show')
           return false
         }
-        if ( this.adddData.low == 0 ) {
+        if (this.adddData.low == 0) {
           this.adddData.low = 0.0001;
         }
-        if (this.adddData.low > this.adddData.high) {
-          this.alertInfo = '最小值不能大于最大值';
+        if (this.adddData.high == 0) {
+          this.adddData.high = this.adddData.amount;
+        }
+        if (this.adddData.low - 0 > this.adddData.high - 0) {
+          this.alertInfo = this.$t('form_match_low')
           $('#alert').modal('show')
           return false
         }
-        if ( this.adddData.high == 0 ) {
-          this.adddData.high = this.adddData.amount;
-        }
 
-        if ( this.adddData.high-0 > this.adddData.amount-0 ) {
+        if (this.adddData.high - 0 > this.adddData.amount - 0) {
           this.alertInfo = '最大值不能大于目标金额';
           $('#alert').modal('show')
           return false
@@ -238,7 +238,6 @@ export default {
         } catch (e) {}
 
         const eos = user.getEos()
-
         // 创建项目提交到链上
         eos.transaction({
           actions: [{
@@ -251,28 +250,26 @@ export default {
             data: {
               "initiator": that.adddData.creator, // 项目发起人
               "name": that.adddData.title, // 项目名称
-              "item_digest": 'f4734448c81e0817d25416b2985cd6f9ba5d8c5756e1892353265ea109dcfc61',//that.adddData.desHash, // 项目简介md5 后的值 32 位
+              "item_digest": that.adddData.desHash, //that.adddData.desHash, // 项目简介sha256 后的值 64 位
               "receiver": that.adddData.targetAccount, // 收款人
-              "min_fund": 
-              {
-                      amount: parseFloat( that.adddData.low ).toFixed(4),
-                      precision: 4,
-                      symbol: that.adddData.targetToken,
-                      contract: that.adddData.targetTokenContract
-              },
-              "max_fund": 
-                    {
-                      amount: parseFloat( that.adddData.high ).toFixed(4),
-                      precision: 4,
-                      symbol: that.adddData.targetToken,
-                      contract: that.adddData.targetTokenContract
-                    },
-              "target_fund": 
-              {
-                amount: parseFloat( that.adddData.amount ).toFixed(4),
+              "min_fund": {
+                amount: parseFloat(that.adddData.low).toFixed(4),
                 precision: 4,
                 symbol: that.adddData.targetToken,
                 contract: that.adddData.targetTokenContract
+              },
+              "max_fund": {
+                amount: parseFloat(that.adddData.high).toFixed(4),
+                precision: 4,
+                symbol: that.adddData.targetToken,
+                contract: that.adddData.targetTokenContract
+              },
+              "target_fund": {
+                amount: parseFloat(that.adddData.amount).toFixed(4),
+                precision: 4,
+                symbol: that.adddData.targetToken,
+                contract: that.adddData.targetTokenContract
+
               },
               "deadline": that.adddData.endTimeStamp // 结束时间 时间戳(s)
             }
