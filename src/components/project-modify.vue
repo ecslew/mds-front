@@ -56,11 +56,11 @@
             <div class="row">
               <!-- 最低筹款金额 ，非必须 low  -->
               <p class="col-sm-6 basic-group">
-                <input name="low" class="basic-input" type="number" v-model="modify.low" :placeholder="$t('low_amount_pl')">
+                <input class="basic-input" type="number" v-model="modify.low" :placeholder="$t('low_amount_pl')">
               </p>
                 <!-- 最高筹款金额 ，非必须 high-->
                 <p class="col-sm-6 basic-group">
-                  <input name="high" class="basic-input" type="number" v-model="modify.high" :placeholder="$t('high_amount_pl')">
+                  <input class="basic-input" type="number" v-model="modify.high" :placeholder="$t('high_amount_pl')">
               </p>
             </div>
           </template>
@@ -204,7 +204,6 @@ export default {
         $(".currentAccount").html(res.name)
 
         // 表单匹配
-        // 表单匹配
         if (!this.modify.title) {
           this.alertInfo = this.$t('form_match_title')
           $('#alert').modal('show')
@@ -253,6 +252,9 @@ export default {
         }
         // 生成表单数据
         const formData = new FormData(this.$refs.form);
+        formData.append("low", this.modify.low)
+        formData.append("high", this.modify.high)
+
         // 去除空文件元素
         try {
           for (let pair of formData.entries()) {
@@ -279,23 +281,28 @@ export default {
               "item_digest": that.desHash, // 项目简介sha256 后的值 64 位
               "receiver": that.modify.targetAccount, // 收款人
               "min_fund": {
-                "quantity": parseFloat(that.modify.low).toFixed(4) + " EOS", // 金额 注意格式
-                "contract": "eosio.token" // 代币合约 eos 为 eosio.token
+                amount: parseFloat(that.modify.low).toFixed(4),
+                precision: 4,
+                symbol: that.modify.targetToken,
+                contract: that.modify.targetTokenContract // 代币合约 eos 为 eosio.token
               },
               "max_fund": {
-                "quantity": parseFloat(that.modify.high).toFixed(4) + " EOS", // 金额 注意格式
-                "contract": "eosio.token" // 代币合约 eos 为 eosio.token
+                amount: parseFloat(that.modify.high).toFixed(4),
+                precision: 4,
+                symbol: that.modify.targetToken,
+                contract: that.modify.targetTokenContract
               },
               "target_fund": {
-                "quantity": parseFloat(that.modify.amount).toFixed(4) + " EOS", // 金额 注意格式
-                "contract": "eosio.token" // 代币合约 eos 为 eosio.token
+                amount: parseFloat(that.modify.amount).toFixed(4),
+                precision: 4,
+                symbol: that.modify.targetToken,
+                contract: that.modify.targetTokenContract
               },
               "deadline": that.endTimeStamp // 结束时间 时间戳(s)
             }
           }]
         }).then(
           result => {
-            console.log(result);
             // 成功，调用我们的接口
             that.$http.post(that.globalData.domain + that.url, formData, {
               cache: false,

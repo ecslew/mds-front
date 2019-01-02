@@ -1,14 +1,15 @@
 <template>
 <div class="myproject-list">
-  <div class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + picture +')'}">
-    <!-- 我的项目:未发布的项目 -->
-    <div class="status" v-if='(!isBacked)&&(!isApproved)'>
-      <!-- 审核未通过 -->
-      <div v-if="isFail">
+  <div class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + photos +')'}">
+    <!-- 项目状态，0：待审核，1：待修改，2：筹款中，3：筹款结束 -->
+    <!-- 0：待审核 -->
+    <div class="status" v-if='status==0'>
+      <!-- 审核未通过 1：待修改-->
+      <div v-if="status==1">
         <p>{{$t('Audit_failed')}}</p>
         <!-- <p class="why">{{$t('not_pass_reason')}}</p> -->
       </div>
-      <!-- 正在审核 -->
+      <!-- 审核中 -->
       <div v-else>
         <p>{{$t('in_review')}}</p>
       </div>
@@ -16,48 +17,66 @@
   </div>
   <div class="info col-sm-9">
     <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
-    <div class="time">{{$t('release_time')}}: {{time.slice(0,10)}}</div>
-    <div class="btn-box">
-      <!-- 支持项目 -->
-      <template v-if='isBacked'>
-        <router-link :to="{
+    <div class="time">{{$t('release_time')}}: {{time}}</div>
+      <div class="btn-box">
+        <!-- 我支持的项目 -->
+        <template v-if="isBacked">
+          <router-link :to="{
             path: '/projectDetail',
             query: {
               id: id
             }
           }">{{$t('view_project')}}</router-link>
-      </template>
-      <!-- 我的项目 -->
-      <template v-else>
-        <!-- 已发布 -->
-        <template v-if="isApproved">
-          <router-link :to="{
+        </template>
+        <!-- 我的项目 -->
+        <template v-else>
+          <!-- 审核通过 -->
+          <template v-if="status==2||status==3">
+            <router-link :to="{
               path: '/projectDetail',
               query: {
                 id: id
               }
             }" class="main-color">{{$t('approved')}}</router-link>
-        </template>
-        <!-- 未发布 -->
-        <template v-else>
-          <router-link class="editor" :to="{
+          </template>
+          <!-- 0：待审核 -->
+          <template v-else>
+            <router-link class="editor" :to="{
               path: '/projectModify',
               query: {
                 eosID: id
               }
             }">{{$t('editor')}}</router-link>
-          <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
+            <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
+          </template>
         </template>
-      </template>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
 export default {
-  props: ['index', 'picture', 'title', 'targetAmount', 'time', 'id', 'isApproved', 'isFail', 'isBacked'],
+  props: ['index', 'title', 'time', 'id', 'status', 'isBacked'],
+  data() {
+    return {
+      url: '/apiCrowdfunding/getInfo?eosID=',
+      photos: ''
+    }
+  },
+  mounted() {
+    this.getPic()
+  },
   methods: {
+    getPic() {
+      this.$http.get(this.globalData.domain + this.url + this.id).then((res) => {
+        if (res.data.success) {
+          this.photos = res.data.data.photos
+        }
+      }, (err) => {
+        console.log(err);
+      })
+    },
     deleteProject() {
       this.$emit('deleteItem', this.index, this.title, this.id)
     }

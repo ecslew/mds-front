@@ -7,7 +7,7 @@
         <div class="subtitle">{{$t('support_projects_subtitle')}}</div>
         <div class="started">{{$t("started")}}</div>
         <div class="list" v-for="item in programs" :key="item.id">
-          <myproject-list :isBacked="isBacked" :id="item.eosID" :isFail="item.isFail" :picture="item.img" :isApproved="item.isApproved" :title="item.title" :targetAmount="item.targetAmount" :time="item.releaseTime"></myproject-list>
+          <myproject-list :isBacked="isBacked" :id="item.eosID" :title="item.title" :time="item.releaseTime"></myproject-list>
         </div>
       </div>
     </div>
@@ -34,6 +34,9 @@ export default {
       let _this = this;
       user.getAccount().then((currentAccount) => {
         _this.currentAccount = currentAccount.name;
+        $(".login").hide()
+        $(".personal").show()
+        $(".currentAccount").html(currentAccount.name)
         // 从交易记录获取支持过的项目
         $.get(_this.globalData.domain + '/apiCrowdfunding/supported', {
           account: _this.currentAccount
@@ -48,15 +51,7 @@ export default {
                   eosID: eosID
                 }, function (result) {
                   if (result.success) {
-                    let tmp = {
-                      eosID: result.data.eosID,
-                      img: result.data.photos,
-                      title: result.data.title,
-                      isApproved: false,
-                      isFail: true,
-                      releaseTime: result.data.releaseTime
-                    };
-                    _this.programs.push(tmp);
+                    _this.programs.push(result.data);
                   }
                 }, 'json')
               }
