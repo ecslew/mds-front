@@ -13,7 +13,7 @@
         </button>
         <div class="login mobile-login hidden-sm hidden-md hidden-lg" @click="login">{{$t("login")}}</div>
         <div class="dropdown personal hidden-sm hidden-md hidden-lg">
-          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount">{{currentAccount?currentAccount.name:''}}</span><span class="caret"></span></a>
+          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li>
               <router-link to="/projectRelease">{{$t("create_a_project")}}</router-link>
@@ -47,7 +47,7 @@
           </div>
           <div class="login pc-login pull-left hidden-xs" @click="login">{{$t("login")}}</div>
           <div class="dropdown personal hidden-xs">
-            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount">{{currentAccount?currentAccount.name:''}}</span><span class="caret"></span></a>
+            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li @click="removeWh100">
                 <router-link to="/projectRelease">{{$t("create_a_project")}}</router-link>
@@ -85,16 +85,11 @@ export default {
   name: 'mdsNav',
   data() {
     return {
-      isHome: false,
-      currentAccount: this.globalData.currentAccount
+      isHome: false
     }
-  },
-  created() {
-    this.isHomePage()
   },
   mounted() {
     this.isHomePage()
-    this.loginByScatter()
     // 导航固定
     this.navFix();
     $(window).scroll(() => {
@@ -117,20 +112,21 @@ export default {
       $("#login").modal('show');
     },
     loginByScatter() {
-      user.getAccount().then((currentAccount) => {
-        this.currentAccount = currentAccount;
+      user.getAccount().then((res) => {
+        if (this.$route.path == '/myProject' || this.$route.path == '/projectBacked') {
+          this.$router.go(0)
+        }
+        $(".currentAccount").html(res.name)
         $('#login').modal('hide')
         $(".login").hide()
         $(".personal").show()
-        // this.isLogin = true
       }, (err) => {
         alert(err);
       });
     },
     logout() {
-      user.logout().then((currentAccount) => {
-        this.currentAccount = currentAccount
-        // this.isLogin = false
+      user.logout().then((res) => {
+        $(".currentAccount").html('')
         $(".login").show()
         $(".personal").hide()
       }, (err) => {
@@ -160,6 +156,9 @@ export default {
         this.isHome = true
       } else {
         this.isHome = false
+      }
+      if (this.$route.path != '/myProject' && this.$route.path != '/projectBacked') {
+        this.loginByScatter()
       }
     }
   }
@@ -216,7 +215,7 @@ export default {
 }
 
 .ishome a {
-  color: #fff!important;
+  color: #fff !important;
 }
 
 .ishome .navbar-toggle .icon-bar {
@@ -226,8 +225,9 @@ export default {
 .navbar-brand {
   font-size: 20px;
 }
-.ishome .navbar-brand{
-  color: #fff!important;
+
+.ishome .navbar-brand {
+  color: #fff !important;
 }
 
 .navbar-brand:after {
@@ -247,9 +247,10 @@ nav .open>a {
   padding: 10px 16px;
   right: auto;
 }
+
 .header-nav .dropdown-menu>li>a {
   padding: 4px 0;
-  color: #2c363f!important;
+  color: #2c363f !important;
 }
 
 .pc-login {
@@ -309,7 +310,7 @@ nav .open>a {
   }
 
   #mds-nav a {
-    color: #2c363f!important;
+    color: #2c363f !important;
     padding: 0;
     height: 60px;
     line-height: 60px;
@@ -353,6 +354,7 @@ nav .open>a {
   .dropdown a {
     padding: 15px;
   }
+
   .personal {
     display: none;
   }

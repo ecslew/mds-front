@@ -1,23 +1,22 @@
 <template>
 <div class="myproject-list">
   <div class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + photos +')'}">
-    <!-- 项目状态，0：待审核，1：待修改，2：筹款中，3：筹款结束 -->
-    <!-- 0：待审核 -->
-    <div class="status" v-if='status==0'>
-      <!-- 审核未通过 1：待修改-->
+    <!-- 项目状态，0：审核中，1：审核未通过，2：筹款中，3：筹款结束 -->
+    <div class="status">
+      <!-- 审核未通过 1-->
       <div v-if="status==1">
         <p>{{$t('Audit_failed')}}</p>
-        <!-- <p class="why">{{$t('not_pass_reason')}}</p> -->
+        <p class="why" data-toggle="modal" data-target="#reason">{{$t('not_pass_reason')}}</p>
       </div>
       <!-- 审核中 -->
-      <div v-else>
+      <div v-if='status==0'>
         <p>{{$t('in_review')}}</p>
       </div>
     </div>
   </div>
   <div class="info col-sm-9">
     <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
-    <div class="time">{{$t('release_time')}}: {{time}}</div>
+    <p class="time">{{$t('release_time')}}: {{time}}</p>
       <div class="btn-box">
         <!-- 我支持的项目 -->
         <template v-if="isBacked">
@@ -39,7 +38,7 @@
               }
             }" class="main-color">{{$t('approved')}}</router-link>
           </template>
-          <!-- 0：待审核 -->
+          <!-- 待审核 -->
           <template v-else>
             <router-link class="editor" :to="{
               path: '/projectModify',
@@ -51,8 +50,17 @@
           </template>
         </template>
       </div>
+  </div>
+  <div class="modal text-center" id="reason">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <div class="info">{{comment}}</div>
+        <div class="start" data-dismiss="modal">{{$t("confirm")}}</div>
+      </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -61,7 +69,8 @@ export default {
   data() {
     return {
       url: '/apiCrowdfunding/getInfo?eosID=',
-      photos: ''
+      photos: '',
+      comment: 'reason'
     }
   },
   mounted() {
@@ -72,6 +81,7 @@ export default {
       this.$http.get(this.globalData.domain + this.url + this.id).then((res) => {
         if (res.data.success) {
           this.photos = res.data.data.photos
+          this.comment = res.data.data.comment
         }
       }, (err) => {
         console.log(err);
@@ -163,10 +173,15 @@ export default {
   font-family: Gotham-Book;
 }
 
+#reason .start {
+  margin-top: 40px;
+  padding: 16px 60px;
+}
+
 @media (max-width: 767px) {
-  .list-pic {
+  /* .list-pic {
     height: 228px;
-  }
+  } */
 
   .info .complete {
     padding-bottom: 28px;

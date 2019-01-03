@@ -6,16 +6,22 @@
         <h4 class="title">{{$t('support_projects')}}</h4>
         <div class="subtitle">{{$t('support_projects_subtitle')}}</div>
         <div class="started">{{$t("started")}}</div>
-        <div class="list" v-for="item in programs" :key="item.id">
-          <myproject-list :isBacked="isBacked" :id="item.eosID" :title="item.title" :time="item.releaseTime"></myproject-list>
-        </div>
+        <template v-if="programs.length>0">
+          <div class="list" v-for="item in programs" :key="item.id">
+            <myproject-list :isBacked="isBacked" :id="item.eosID" :title="item.title" :time="item.releaseTime"></myproject-list>
+          </div>
+        </template>
+        <blank-page v-else></blank-page>
       </div>
     </div>
   </div>
+  <loading v-if="!isLoaded"></loading>
 </div>
 </template>
 
 <script>
+import loading from '@/base/loading'
+import blankPage from '@/base/blank-page'
 import myprojectList from '@/base/myproject-list'
 import user from 'static/js/user'
 export default {
@@ -23,7 +29,8 @@ export default {
     return {
       isBacked: true,
       currentAccount: '',
-      programs: []
+      programs: [],
+      isLoaded: false
     }
   },
   mounted() {
@@ -42,6 +49,7 @@ export default {
           account: _this.currentAccount
         }, function (res) {
           if (res.success) {
+            _this.isLoaded = true
             $.each(res.data.transfer, function (index, event) {
               let memo = JSON.parse(event.data.memo.replace(/###/ig, ''));
               let eosID = memo.ID;
@@ -62,7 +70,9 @@ export default {
     }
   },
   components: {
-    myprojectList
+    myprojectList,
+    loading,
+    blankPage
   }
 }
 </script>

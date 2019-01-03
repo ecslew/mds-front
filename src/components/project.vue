@@ -3,18 +3,22 @@
   <div class="container">
     <h4 class="title text-center">{{$t('all_projects')}}</h4>
     <div class="subtitle text-center">{{$t('projects_list')}}</div>
-    <ul class="row project-list">
+    <ul class="row project-list" v-if="programs.length>0">
       <li class="col-sm-4 col-xs-12" v-for="item in programs" :key="item.id">
         <project-list :id="item.eosID" :picture="item.img" :title="item.title" :targetAmount="item.targetAmount" :amount="item.amount" :time="item.releaseTime"></project-list>
       </li>
     </ul>
+    <blank-page v-else></blank-page>
     <div class="load-more" v-show="!isAll"><span>{{$t("load_more")}}</span></div>
   </div>
   <foot></foot>
+  <loading v-if="!isLoaded"></loading>
 </div>
 </template>
 
 <script>
+import loading from '@/base/loading'
+import blankPage from '@/base/blank-page'
 import projectList from '@/base/project-list'
 import foot from '@/base/foot'
 export default {
@@ -23,7 +27,8 @@ export default {
       isAll: true,
       url: '/apiCrowdfunding/homePage?page=1',
       transferUrl: '/apiEos/getCrowdfundingTransfer?account=',
-      programs: []
+      programs: [],
+      isLoaded: false
     }
   },
   mounted() {
@@ -33,6 +38,7 @@ export default {
     getPrograms() {
       this.$http.get(this.globalData.domain + this.url).then((res) => {
         if (res.data.success) {
+          this.isLoaded = true
           const pageData = res.data.data.pageData
           $.each(pageData, (index, project) => {
             project.amount = 0
@@ -58,7 +64,9 @@ export default {
   },
   components: {
     foot,
-    projectList
+    projectList,
+    loading,
+    blankPage
   }
 }
 </script>
