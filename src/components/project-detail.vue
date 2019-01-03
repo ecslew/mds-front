@@ -110,8 +110,8 @@ export default {
         info: '',
         crowdfundingNo: '',
         targetAccount: '',
-        low : 0,
-        high : 0
+        low: 0,
+        high: 0
       },
       link_isShow: false,
       isActive: true,
@@ -166,14 +166,14 @@ export default {
       let note = $('#note').val();
 
       // 判断金额
-      if( amount-0 < _this.programs.low ){
+      if (amount - 0 < _this.programs.low) {
         this.alertInfo = '金额不能小于 ' + _this.programs.low + ' EOS';
         $('#alert').modal('show');
         return false;
       }
 
-      if( amount-0 > _this.programs.high ){
-         this.alertInfo = '金额不能大于 ' + _this.programs.high + ' EOS';
+      if (amount - 0 > _this.programs.high) {
+        this.alertInfo = '金额不能大于 ' + _this.programs.high + ' EOS';
         $('#alert').modal('show');
         return false;
       }

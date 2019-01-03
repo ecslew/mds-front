@@ -69,7 +69,6 @@ export default {
     },
     deleteProject(val, title, id) {
       let that = this;
-      
       // 判断是否登录
       user.getAccount().then((res) => {
         const eos = user.getEos()

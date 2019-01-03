@@ -85,33 +85,34 @@ export default {
     transform: rotate(360deg);
   }
 }
-@media(max-width: 768px){
 
-.loading .content {
-  width: 96px;
-  height: 96px;
-  padding: 16px;
-  font-size: 14px;
-  border-radius: 8px;
-}
+@media(max-width: 768px) {
 
-.loader-circle {
-  width: 64px;
-  height: 64px;
-  line-height: 64px;
-}
+  .loading .content {
+    width: 96px;
+    height: 96px;
+    padding: 16px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
 
-.loader-line-mask {
-  width: 32px;
-  height: 64;
-  margin-left: -32px;
-  margin-top: -32px;
-  transform-origin: 32px 32px;
-}
+  .loader-circle {
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+  }
 
-.loader-line-mask .loader-line {
-  width: 64px;
-  height: 64px;
-}
+  .loader-line-mask {
+    width: 32px;
+    height: 64;
+    margin-left: -32px;
+    margin-top: -32px;
+    transform-origin: 32px 32px;
+  }
+
+  .loader-line-mask .loader-line {
+    width: 64px;
+    height: 64px;
+  }
 }
 </style>
