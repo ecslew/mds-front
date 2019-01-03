@@ -6,17 +6,23 @@
         <h4 class="title">{{$t('my_projects')}}</h4>
         <div class="subtitle">{{$t('created_projects_subtitle')}}</div>
         <div class="started">{{$t("started")}}</div>
-        <div class="list" v-for="(item,index) in programs" :key="item.id">
-          <myproject-list @deleteItem="deleteProject" :isBacked="isBacked" :index="index" :status="item.status" :id="item.id" :title="item.name" :time="item.releaseTime"></myproject-list>
-        </div>
+        <template v-if="programs.length>0">
+          <div class="list" v-for="(item,index) in programs" :key="item.id">
+            <myproject-list @deleteItem="deleteProject" :isBacked="isBacked" :index="index" :status="item.status" :id="item.id" :title="item.name" :time="item.releaseTime"></myproject-list>
+          </div>
+        </template>
+        <blank-page v-else></blank-page>
       </div>
     </div>
   </div>
   <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
+  <loading v-if="!isLoaded"></loading>
 </div>
 </template>
 
 <script>
+import loading from '@/base/loading'
+import blankPage from '@/base/blank-page'
 import alertModal from '@/base/alert'
 import myprojectList from '@/base/myproject-list'
 import user from 'static/js/user'
@@ -29,7 +35,8 @@ export default {
       alertInfo: '',
       alertTitle: '',
       isBacked: false,
-      programs: []
+      programs: [],
+      isLoaded: false
     }
   },
   mounted() {
@@ -48,6 +55,7 @@ export default {
           "json": true,
           "limit": -1
         }).then(res => {
+          this.isLoaded = true
           $.each(res.data.rows, (index, project) => {
             project.releaseTime = util.timestampToDate(project.start).slice(0, 10)
           })
@@ -61,7 +69,6 @@ export default {
     },
     deleteProject(val, title, id) {
       let that = this;
-      
       // 判断是否登录
       user.getAccount().then((res) => {
         const eos = user.getEos()
@@ -107,7 +114,9 @@ export default {
   },
   components: {
     myprojectList,
-    alertModal
+    alertModal,
+    loading,
+    blankPage
   }
 }
 </script>

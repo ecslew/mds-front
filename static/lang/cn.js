@@ -101,7 +101,7 @@ module.exports = {
   release_success_tip: "您的项目发布成功了，我们会尽快审核，请耐心等待",
   in_review: "审核中",
   Audit_failed: "未通过审核",
-  not_pass_reason: "为什么没通过？",
+  not_pass_reason: "未通过原因？",
   day: "天",
   about: "关于",
   pay_amount: "支付金额",
@@ -161,5 +161,7 @@ module.exports = {
   contact_title: "喜欢我们正在做的事情？",
   contact_info: "欢迎世界各地的互助组织、普惠金融机构和个人与我们联系！联系我们:hello@medishares.org",
   deleted_success: "删除成功",
-  confirm: "确定"
+  confirm: "确定",
+  no_project: "暂无项目",
+  to_publish_projects: "现在去发起项目"
 }

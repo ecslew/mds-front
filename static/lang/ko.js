@@ -161,5 +161,7 @@ module.exports = {
   contact_title: "Like what we are building?",
   contact_info: "Welcome mutual aid organization, inclusive finance organization and volunteer contact us! Send Email to us:hello@medishares.org",
   deleted_success: "successfully deleted",
-  confirm: "Confirm"
+  confirm: "Confirm",
+  no_project: "No project",
+  to_publish_projects: "To publish projects"
 }

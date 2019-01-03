@@ -22,10 +22,12 @@
   <roadmap></roadmap>
   <contact></contact>
   <foot></foot>
+  <loading v-if="!isLoaded"></loading>
 </div>
 </template>
 
 <script>
+import loading from '@/base/loading'
 import projectList from '@/base/project-list'
 import roadmap from '@/base/roadmap'
 import contact from '@/base/contact'
@@ -35,7 +37,8 @@ export default {
     return {
       url: '/apiCrowdfunding/homePage?page=1',
       transferUrl: '/apiEos/getCrowdfundingTransfer?account=',
-      programs: []
+      programs: [],
+      isLoaded: false
     }
   },
   mounted() {
@@ -45,6 +48,7 @@ export default {
     getPrograms() {
       this.$http.get(this.globalData.domain + this.url).then((res) => {
         if (res.data.success) {
+          this.isLoaded = true
           const pageData = res.data.data.pageData.slice(0, 3)
           $.each(pageData, (index, project) => {
             project.amount = 0
@@ -72,7 +76,8 @@ export default {
     roadmap,
     contact,
     foot,
-    projectList
+    projectList,
+    loading
   }
 }
 </script>
