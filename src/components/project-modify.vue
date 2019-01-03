@@ -274,32 +274,34 @@ export default {
               actor: that.modify.creator, // 登录当前账户
               permission: 'active'
             }],
-            data: {
-              "initiator": that.modify.creator, // 项目发起人
-              "id": that.modify.eosID,
-              "name": that.modify.title, // 项目名称
-              "item_digest": that.desHash, // 项目简介sha256 后的值 64 位
-              "receiver": that.modify.targetAccount, // 收款人
-              "min_fund": {
-                amount: parseFloat(that.modify.low).toFixed(4),
-                precision: 4,
-                symbol: that.modify.targetToken,
-                contract: that.modify.targetTokenContract // 代币合约 eos 为 eosio.token
-              },
-              "max_fund": {
-                amount: parseFloat(that.modify.high).toFixed(4),
-                precision: 4,
-                symbol: that.modify.targetToken,
-                contract: that.modify.targetTokenContract
-              },
-              "target_fund": {
-                amount: parseFloat(that.modify.amount).toFixed(4),
-                precision: 4,
-                symbol: that.modify.targetToken,
-                contract: that.modify.targetTokenContract
-              },
-              "deadline": that.endTimeStamp // 结束时间 时间戳(s)
-            }
+            data: 
+            {
+                "initiator": that.modify.creator, // 项目发起人
+                "id": that.modify.eosID,
+                "name": that.modify.title, // 项目名称
+                "item_digest": that.desHash, //that.modify.desHash, // 项目简介sha256 后的值 64 位
+                "receiver": that.modify.targetAccount, // 收款人
+                "min_fund": {
+                  amount: parseFloat(that.modify.low).toFixed(4),
+                  precision: 4,
+                  symbol: that.modify.targetToken,
+                  contract: that.modify.targetTokenContract
+                },
+                "max_fund": {
+                  amount: parseFloat(that.modify.high).toFixed(4),
+                  precision: 4,
+                  symbol: that.modify.targetToken,
+                  contract: that.modify.targetTokenContract
+                },
+                "target_fund": {
+                  amount: parseFloat(that.modify.amount).toFixed(4),
+                  precision: 4,
+                  symbol: that.modify.targetToken,
+                  contract: that.modify.targetTokenContract
+
+                },
+                "deadline": that.endTimeStamp // 结束时间 时间戳(s)
+              }
           }]
         }).then(
           result => {

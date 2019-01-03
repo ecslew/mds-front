@@ -109,7 +109,9 @@ export default {
         support: [],
         info: '',
         crowdfundingNo: '',
-        targetAccount: ''
+        targetAccount: '',
+        low : 0,
+        high : 0
       },
       link_isShow: false,
       isActive: true,
@@ -164,6 +166,17 @@ export default {
       let note = $('#note').val();
 
       // 判断金额
+      if( amount-0 < _this.programs.low ){
+        this.alertInfo = '金额不能小于 ' + _this.programs.low + ' EOS';
+        $('#alert').modal('show');
+        return false;
+      }
+
+      if( amount-0 > _this.programs.high ){
+         this.alertInfo = '金额不能大于 ' + _this.programs.high + ' EOS';
+        $('#alert').modal('show');
+        return false;
+      }
 
       // 判断登录
       user.getAccount().then((currentAccount) => {
@@ -247,6 +260,8 @@ export default {
           _this.programs.release_time = res.data.releaseTime; // 发布时间
           _this.programs.targetAccount = res.data.targetAccount; // 收款账户
           _this.programs.id = res.data.eosID; // eosID
+          _this.programs.low = res.data.low; // low
+          _this.programs.high = res.data.high; // high
 
           // transfer
           $.get(_this.globalData.domain + '/apiEos/getCrowdfundingTransfer', {
