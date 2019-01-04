@@ -30,7 +30,7 @@ import util from 'static/js/util'
 export default {
   data() {
     return {
-      url: 'https://api-kylin.eosasia.one/v1/chain/get_table_rows',
+      url: this.globalData.protocol+'://'+this.globalData.host+'/v1/chain/get_table_rows',
       deleteUrl: '/apiCrowdfunding/delete?eosID=',
       alertInfo: '',
       alertTitle: '',

@@ -50,19 +50,10 @@ export default {
         }, function (res) {
           if (res.success) {
             _this.isLoaded = true
-            $.each(res.data.transfer, function (index, event) {
-              let memo = JSON.parse(event.data.memo.replace(/###/ig, ''));
-              let eosID = memo.ID;
+            $.each(res.data, function (index, event) {
+              _this.programs.push(event);
               // 通过编号查信息
-              if (eosID) {
-                $.get(_this.globalData.domain + '/apiCrowdfunding/getInfo', {
-                  eosID: eosID
-                }, function (result) {
-                  if (result.success) {
-                    _this.programs.push(result.data);
-                  }
-                }, 'json')
-              }
+
             })
           }
         }, 'json')

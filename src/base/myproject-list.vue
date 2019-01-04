@@ -2,11 +2,11 @@
 <div class="myproject-list">
   <div class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + photos +')'}">
     <!-- 项目状态，0：审核中，1：审核未通过，2：筹款中，3：筹款结束 -->
-    <div class="status">
+    <div class="status" v-if="status==1 || status == 0">
       <!-- 审核未通过 1-->
       <div v-if="status==1">
         <p>{{$t('Audit_failed')}}</p>
-        <p class="why" data-toggle="modal" data-target="#reason">{{$t('not_pass_reason')}}</p>
+        <p class="why" data-toggle="modal" :data-target="'#reason'+index">{{$t('not_pass_reason')}}</p>
       </div>
       <!-- 审核中 -->
       <div v-if='status==0'>
@@ -51,7 +51,8 @@
         </template>
       </div>
   </div>
-  <div class="modal text-center" id="reason">
+
+  <div class="modal text-center" :id="'reason'+index">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
@@ -60,6 +61,7 @@
       </div>
     </div>
   </div>
+
 </div>
 </template>
 
@@ -70,7 +72,7 @@ export default {
     return {
       url: '/apiCrowdfunding/getInfo?eosID=',
       photos: '',
-      comment: 'reason'
+      comment: ''
     }
   },
   mounted() {
@@ -78,10 +80,12 @@ export default {
   },
   methods: {
     getPic() {
+      let _this = this;
       this.$http.get(this.globalData.domain + this.url + this.id).then((res) => {
         if (res.data.success) {
           this.photos = res.data.data.photos
-          this.comment = res.data.data.comment
+          _this.comment = res.data.data.comment
+          console.log(_this.comment)
         }
       }, (err) => {
         console.log(err);
@@ -90,6 +94,10 @@ export default {
     deleteProject() {
       this.$emit('deleteItem', this.index, this.title, this.id)
     }
+    // openModal(event){
+    //   $('#reason').modal('show')
+    //   console.log(event);
+    // }
   }
 }
 </script>
