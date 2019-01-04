@@ -44,25 +44,25 @@ export default {
   },
   methods: {
     getProject() {
+      let _this = this;
       user.getAccount().then((res) => {
         $(".login").hide()
         $(".personal").show()
         $(".currentAccount").html(res.name)
-        this.$http.post(this.url, {
-          "code": this.globalData.contract,
+
+        $.post(_this.url,JSON.stringify({
+          "code": _this.globalData.contract,
           "scope": res.name,
           "table": "item",
           "json": true,
           "limit": -1
-        }).then(res => {
-          this.isLoaded = true
-          $.each(res.data.rows, (index, project) => {
+        }),function(res){
+          _this.isLoaded = true
+          $.each(res.rows, (index, project) => {
             project.releaseTime = util.timestampToDate(project.start).slice(0, 10)
           })
-          this.programs = res.data.rows
-        }, err => {
-          console.log('error:' + err);
-        })
+          _this.programs = res.rows
+        },'json')
       }, (err) => {
         alert(err)
       })
