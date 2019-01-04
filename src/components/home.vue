@@ -4,7 +4,7 @@
     <div class="container">
       <div class="title">{{$t('title')}}</div>
       <div class="slogan">{{$t('slogan')}}</div>
-      <router-link to="/projectCreate" class="start">{{$t('start_project')}}</router-link>
+      <a href="javascript:;" class="start"  @click="createProject">{{$t('start_project')}}</a>
     </div>
   </div>
   <!-- All mutual aid programs -->
@@ -32,6 +32,7 @@ import projectList from '@/base/project-list'
 import roadmap from '@/base/roadmap'
 import contact from '@/base/contact'
 import foot from '@/base/foot'
+import user from 'static/js/user'
 export default {
   data() {
     return {
@@ -54,6 +55,13 @@ export default {
         }
       }, (err) => {
         console.log('err' + err);
+      })
+    },
+    createProject() {
+      user.getAccount().then(res => {
+        this.$router.push('/projectCreate')
+      }, err => {
+        alert(err)
       })
     }
   },

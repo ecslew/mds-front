@@ -94,10 +94,6 @@ export default {
     deleteProject() {
       this.$emit('deleteItem', this.index, this.title, this.id)
     }
-    // openModal(event){
-    //   $('#reason').modal('show')
-    //   console.log(event);
-    // }
   }
 }
 </script>
@@ -185,12 +181,10 @@ export default {
   margin-top: 40px;
   padding: 16px 60px;
 }
-
+.modal .modal-content{
+  padding: 24px;
+}
 @media (max-width: 767px) {
-  /* .list-pic {
-    height: 228px;
-  } */
-
   .info .complete {
     padding-bottom: 28px;
   }

@@ -72,16 +72,18 @@
           <div class="equal">≈${{totalEosPriceUsd}}</div>
           <label>{{$t('note')}}</label>
           <textarea class="basic-input" rows="4" v-model="note" id="note" name="note" :placeholder="$t('note_pl')"></textarea>
-          <div class="payment" @click="payFunc" >{{$t('determine')}}</div>
+          <div class="payment" @click="payFunc">{{$t('determine')}}</div>
       </div>
     </div>
   </div>
   <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
+  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
 <script>
 import alertModal from '@/base/alert'
+import mdsToast from '@/base/toast'
 import foot from '@/base/foot'
 import util from 'static/js/util'
 import user from 'static/js/user'
@@ -91,6 +93,7 @@ export default {
     return {
       alertInfo: '',
       alertTitle: '',
+      toastInfo: '',
       currentAccount: '',
       amount: '',
       note: '',
@@ -123,6 +126,9 @@ export default {
     this.getProjectInfo();
   },
   methods: {
+    infoByToast: function (val) {
+      this.toastInfo = val
+    },
     toggleDetails() {
       this.isActive = true
     },
@@ -137,17 +143,14 @@ export default {
       if (this.globalData.browsers.android) {
         _this.$refs.copy.select();
         document.execCommand("Copy");
-        _this.alertInfo = _this.$t('copy_success')
-        $('#alert').modal('show')
+        _this.toastInfo = _this.$t('copy_success')
       } else {
         let clipboard = _this.copyBtn;
         clipboard.on('success', function () {
-          _this.alertInfo = _this.$t('copy_success')
-          $('#alert').modal('show')
+          _this.toastInfo = _this.$t('copy_success')
         });
         clipboard.on('error', function () {
-          _this.alertInfo = _this.$t('copy_error')
-          $('#alert').modal('show')
+          _this.toastInfo = _this.$t('copy_error')
         });
       }
 
@@ -221,7 +224,6 @@ export default {
                 $('#alert').modal('show')
                 $('#alert').on('hidden.bs.modal', function (e) {
                   window.location.reload();
-                  // _this.$router.go(0)
                 })
               } else {
                 _this.alertInfo = res.message;
@@ -305,7 +307,8 @@ export default {
   },
   components: {
     foot,
-    alertModal
+    alertModal,
+    mdsToast
   }
 
 }
@@ -486,6 +489,10 @@ export default {
   line-height: 1.43;
   text-align: right;
   color: #607d8b;
+}
+
+#payment .modal-content {
+  padding: 24px;
 }
 
 .modal-title {

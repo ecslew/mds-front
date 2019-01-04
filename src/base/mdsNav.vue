@@ -293,6 +293,7 @@ nav .open>a {
   font-size: 16px;
   font-family: Gotham-Medium;
   color: #607d8b;
+  border-top: 1px solid #f2f5f6;
 }
 
 .no-scatter a {
@@ -329,11 +330,11 @@ nav .open>a {
   }
 
   .loginInfo {
-    padding: 24px 0;
+    padding: 24px 16px;
   }
 
   .no-scatter {
-    padding: 24px 0 0;
+    padding: 24px 16px 0;
   }
 
   .personal {

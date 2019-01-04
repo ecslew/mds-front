@@ -84,7 +84,7 @@
         <img src="static/img/icon/web_icon_success.png" width="92">
         <h4 class="modal-title">{{$t('modify_success')}}</h4>
         <p>{{$t('modify_success_tip')}}</p>
-        <router-link to="/" data-dismiss="modal">{{$t('confirm')}}</router-link>
+        <router-link to="/" data-dismiss="modal" class="modal-close">{{$t('confirm')}}</router-link>
       </div>
     </div>
   </div>
