@@ -72,7 +72,7 @@
           <div class="equal">≈${{totalEosPriceUsd}}</div>
           <label>{{$t('note')}}</label>
           <textarea class="basic-input" rows="4" v-model="note" id="note" name="note" :placeholder="$t('note_pl')"></textarea>
-          <div class="payment" @click="payFunc" data-dismiss="modal">{{$t('determine')}}</div>
+          <div class="payment" @click="payFunc" >{{$t('determine')}}</div>
       </div>
     </div>
   </div>
@@ -210,13 +210,19 @@ export default {
               hash: result.transaction_id,
               amount: amount,
               from: _this.currentAccount,
-              to: _this.programs.targetAccount
+              to: _this.programs.targetAccount,
+              comment: note
             };
 
             $.post(url, args, function (res) {
               if (res.success) {
+                $('#payment').modal('hide')
                 _this.alertInfo = _this.$t('success');
                 $('#alert').modal('show')
+                $('#alert').on('hidden.bs.modal', function (e) {
+                  window.location.reload();
+                  // _this.$router.go(0)
+                })
               } else {
                 _this.alertInfo = res.message;
                 $('#alert').modal('show')
@@ -226,7 +232,7 @@ export default {
         ).catch(
           error => {
             // 失败
-            _this.alertInfo = JSON.parse(error).error.details[0].message;
+            _this.alertInfo = error;
             $('#alert').modal('show')
           }
         )
@@ -264,21 +270,22 @@ export default {
           _this.programs.high = res.data.high; // high
 
           // transfer
-          $.get(_this.globalData.domain + '/apiEos/getCrowdfundingTransfer', {
-            'account': _this.programs.targetAccount
+          $.get(_this.globalData.domain + '/apiCrowdfunding/getTransRecord', {
+            'crowdfundingNo': _this.programs.crowdfundingNo
           }, function (res) {
 
+            _this.programs.amount = parseFloat(res.data.total).toFixed(4);
+            _this.programs.backers = res.data.count;
+
             if (res.success) {
-              $.each(res.data.transfer, function (index, event) {
+              $.each(res.data.trans, function (index, event) {
                 _this.programs.support.push({
                   id: index + 1,
-                  address: event.data.from,
-                  amount: event.data.quantity, // 1.0000 EOS
-                  comments: JSON.parse(event.data.memo.replace(/###/ig, '')).comment, // ###{}### 需要过滤
-                  time: util.timestampToDate(event.timestamp) // 时间戳
+                  address: event.from,
+                  amount: parseFloat(event.amount).toFixed(4) + ' ' + res.data.token, // 1.0000 EOS
+                  comments: event.comment, // ###{}### 需要过滤
+                  time: event.createDate // 时间戳
                 });
-                _this.programs.amount += parseFloat(event.data.quantity)
-                _this.programs.backers++;
 
               });
             }

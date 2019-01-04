@@ -34,7 +34,7 @@ module.exports = {
   slogan: "世界第一家区块链互助保险市场",
   start_project: "发起项目",
   programs_title: "全部互助计划",
-  complete: "完成",
+  complete: "目标",
   see_more: "查看更多",
   all_projects: "全部项目",
   projects_list: "项目列表",

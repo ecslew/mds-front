@@ -5,7 +5,7 @@
     <div class="subtitle text-center">{{$t('projects_list')}}</div>
     <ul class="row project-list" v-if="programs.length>0">
       <li class="col-sm-4 col-xs-12" v-for="item in programs" :key="item.id">
-        <project-list :id="item.eosID" :picture="item.img" :title="item.title" :targetAmount="item.targetAmount" :amount="item.amount" :time="item.releaseTime"></project-list>
+        <project-list :id="item.eosID" :picture="item.img" :title="item.title" :targetAmount="item.targetAmount" :amount="item.reciveAmount" :time="item.releaseTime"></project-list>
       </li>
     </ul>
     <blank-page v-else></blank-page>
@@ -40,22 +40,7 @@ export default {
         if (res.data.success) {
           this.isLoaded = true
           const pageData = res.data.data.pageData
-          $.each(pageData, (index, project) => {
-            project.amount = 0
-            this.getTranster(project)
-          })
           this.programs = pageData
-        }
-      }, (err) => {
-        console.log('err' + err);
-      })
-    },
-    getTranster(project) {
-      this.$http.get(this.globalData.domain + this.transferUrl + project.creator).then((res) => {
-        if (res.data.success) {
-          $.each(res.data.data.transfer, (index, event) => {
-            project.amount += parseFloat(event.data.quantity)
-          });
         }
       }, (err) => {
         console.log('err' + err);
