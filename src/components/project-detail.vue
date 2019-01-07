@@ -8,7 +8,7 @@
         <div class="author-info clearfix">
           <div class="copy-link">
             <img src="static/img/icon/web_icon_share.png" height="51" @click="linkShow">
-            <input type="text" id="copyContent" v-model="link"/>
+            <div ref="copyContent" id="copyContent">{{link}}</div>
             <p ref="copy" v-show="link_isShow" @click="copyLink" class="copy-btn" data-clipboard-target="#copyContent" data-clipboard-action="copy">{{$t('copy_link')}}</p>
           </div>
           <p class="avator"><img :src="'https://api.medishares.net/apiTools/getAddressHead?address=' + programs.address + '&v=1.0'" width="20"></p>
@@ -72,16 +72,18 @@
           <div class="equal">≈${{totalEosPriceUsd}}</div>
           <label>{{$t('note')}}</label>
           <textarea class="basic-input" rows="4" v-model="note" id="note" name="note" :placeholder="$t('note_pl')"></textarea>
-          <div class="payment" @click="payFunc" >{{$t('determine')}}</div>
+          <div class="payment" @click="payFunc">{{$t('determine')}}</div>
       </div>
     </div>
   </div>
   <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
+  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
 <script>
 import alertModal from '@/base/alert'
+import mdsToast from '@/base/toast'
 import foot from '@/base/foot'
 import util from 'static/js/util'
 import user from 'static/js/user'
@@ -91,6 +93,7 @@ export default {
     return {
       alertInfo: '',
       alertTitle: '',
+      toastInfo: '',
       currentAccount: '',
       amount: '',
       note: '',
@@ -123,6 +126,9 @@ export default {
     this.getProjectInfo();
   },
   methods: {
+    infoByToast: function (val) {
+      this.toastInfo = val
+    },
     toggleDetails() {
       this.isActive = true
     },
@@ -133,21 +139,23 @@ export default {
       this.link_isShow = !this.link_isShow
     },
     copyLink() {
-      let _this = this;
       if (this.globalData.browsers.android) {
-        _this.$refs.copy.select();
-        document.execCommand("Copy");
-        _this.alertInfo = _this.$t('copy_success')
-        $('#alert').modal('show')
+        let val = this.$refs.copyContent.innerText;
+        let oInput = document.createElement("input");
+        oInput.type = "text";
+        oInput.value = val;
+        document.body.appendChild(oInput);
+        oInput.select(); // 选择对象
+        document.execCommand("Copy"); // 执行浏览器复制命令
+        oInput.style.display = "none";
+        this.toastInfo = this.$t('copy_success')
       } else {
-        let clipboard = _this.copyBtn;
-        clipboard.on('success', function () {
-          _this.alertInfo = _this.$t('copy_success')
-          $('#alert').modal('show')
+        let clipboard = this.copyBtn;
+        clipboard.on('success', () => {
+          this.toastInfo = this.$t('copy_success')
         });
-        clipboard.on('error', function () {
-          _this.alertInfo = _this.$t('copy_error')
-          $('#alert').modal('show')
+        clipboard.on('error', () => {
+          this.toastInfo = this.$t('copy_error')
         });
       }
 
@@ -221,7 +229,6 @@ export default {
                 $('#alert').modal('show')
                 $('#alert').on('hidden.bs.modal', function (e) {
                   window.location.reload();
-                  // _this.$router.go(0)
                 })
               } else {
                 _this.alertInfo = res.message;
@@ -305,7 +312,8 @@ export default {
   },
   components: {
     foot,
-    alertModal
+    alertModal,
+    mdsToast
   }
 
 }
@@ -318,6 +326,9 @@ export default {
 
 #copyContent {
   position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
   opacity: 0;
 }
 
@@ -486,6 +497,10 @@ export default {
   line-height: 1.43;
   text-align: right;
   color: #607d8b;
+}
+
+#payment .modal-content {
+  padding: 24px;
 }
 
 .modal-title {

@@ -24,7 +24,9 @@ export default {
 .modal-dialog {
   width: 280px !important;
 }
-
+#alert .modal-content{
+  padding: 24px;
+}
 .alertInfo {
   padding: 24px;
   font-family: Gotham-Medium;

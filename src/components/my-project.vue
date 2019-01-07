@@ -30,7 +30,7 @@ import util from 'static/js/util'
 export default {
   data() {
     return {
-      url: this.globalData.protocol+'://'+this.globalData.host+'/v1/chain/get_table_rows',
+      url: this.globalData.protocol + '://' + this.globalData.host + '/v1/chain/get_table_rows',
       deleteUrl: '/apiCrowdfunding/delete?eosID=',
       alertInfo: '',
       alertTitle: '',
@@ -50,19 +50,19 @@ export default {
         $(".personal").show()
         $(".currentAccount").html(res.name)
 
-        $.post(_this.url,JSON.stringify({
+        $.post(_this.url, JSON.stringify({
           "code": _this.globalData.contract,
           "scope": res.name,
           "table": "item",
           "json": true,
           "limit": -1
-        }),function(res){
+        }), function (res) {
           _this.isLoaded = true
           $.each(res.rows, (index, project) => {
             project.releaseTime = util.timestampToDate(project.start).slice(0, 10)
           })
           _this.programs = res.rows
-        },'json')
+        }, 'json')
       }, (err) => {
         alert(err)
       })

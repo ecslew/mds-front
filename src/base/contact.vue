@@ -5,7 +5,7 @@
     <div class="icon">👏</div>
     <div class="contact-info">
       <h4>{{$t('contact_title')}}</h4>
-      <p>{{$t('contact_info')}}</p>
+      <p>{{$t('contact_info')}} <span>hello@medishares.org</span></p>
     </div>
   </a>
 </div>
@@ -25,53 +25,38 @@ export default {
 
 .contact a {
   color: #fff;
-  font-size: 20px;
-  line-height: 1.2;
   display: block;
   position: relative;
-  padding-left: 92px;
+  padding-left: 85px;
   max-width: 800px;
 }
 
 .contact .icon {
-  width: 68px;
-  height: 68px;
-  font-size: 36px;
-  padding: 17px 0 0 15px;
+  width: 54px;
+  height: 54px;
+  font-size: 32px;
+  padding: 10px 0 0 10px;
   border-radius: 50%;
   background: #fff;
   position: absolute;
-  left: 0;
+  left: 15px;
   top: 50%;
   transform: translateY(-50%);
 }
 
 h4 {
-  font-size: 32px;
+  font-size: 20px;
   padding-bottom: 8px;
   font-family: Gotham-Medium;
-  line-height: 1;
+}
+
+.contact span {
+  text-decoration: underline;
 }
 
 @media(max-width: 768px) {
-  .contact{
+  .contact {
     padding: 24px 0;
-  }
-  .contact a {
-    font-size: 14px;
-    padding-left: 75px;
-  }
-
-  .contact .icon {
-    left: 15px;
-    width: 42px;
-    height: 42px;
-    font-size: 20px;
-    padding: 12px 0 0 10px;
-  }
-
-  h4 {
-    font-size: 24px;
   }
 }
 </style>
