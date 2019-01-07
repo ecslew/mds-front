@@ -196,13 +196,18 @@ export default {
           $('#alert').modal('show')
           return false
         }
-        if (!this.addData.endTime) {
-          this.alertInfo = this.$t('form_match_endTime')
+        if (this.addData.amount < 0) {
+          this.alertInfo = this.$t('form_match_no_negative')
           $('#alert').modal('show')
           return false
         }
-        if (!this.checked) {
-          this.alertInfo = this.$t('agree_terms')
+        if (this.addData.low < 0) {
+          this.alertInfo = this.$t('form_match_no_negative')
+          $('#alert').modal('show')
+          return false
+        }
+        if (this.addData.high < 0) {
+          this.alertInfo = this.$t('form_match_no_negative')
           $('#alert').modal('show')
           return false
         }
@@ -219,6 +224,17 @@ export default {
         }
         if (this.addData.high - 0 > this.addData.amount - 0) {
           this.alertInfo = '最大值不能大于目标金额';
+          $('#alert').modal('show')
+          this.addData.high = this.addData.amount
+          return false
+        }
+        if (!this.addData.endTime) {
+          this.alertInfo = this.$t('form_match_endTime')
+          $('#alert').modal('show')
+          return false
+        }
+        if (!this.checked) {
+          this.alertInfo = this.$t('agree_terms')
           $('#alert').modal('show')
           return false
         }
@@ -452,6 +468,7 @@ export default {
   font-size: 16px;
   margin: 8px 0 196px;
 }
+
 @media (max-width: 768px) {
   .basic {
     padding: 24px 16px 32px;

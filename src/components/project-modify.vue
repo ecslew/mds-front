@@ -224,13 +224,18 @@ export default {
           $('#alert').modal('show')
           return false
         }
-        if (!this.modify.endTime) {
-          this.alertInfo = this.$t('form_match_endTime')
+        if (this.modify.amount < 0) {
+          this.alertInfo = this.$t('form_match_no_negative')
           $('#alert').modal('show')
           return false
         }
-        if (!this.checked) {
-          this.alertInfo = this.$t('agree_terms')
+        if (this.modify.low < 0) {
+          this.alertInfo = this.$t('form_match_no_negative')
+          $('#alert').modal('show')
+          return false
+        }
+        if (this.modify.high < 0) {
+          this.alertInfo = this.$t('form_match_no_negative')
           $('#alert').modal('show')
           return false
         }
@@ -247,6 +252,16 @@ export default {
         }
         if (this.modify.high - 0 > this.modify.amount - 0) {
           this.alertInfo = this.$t('form_match_high')
+          $('#alert').modal('show')
+          return false
+        }
+        if (!this.modify.endTime) {
+          this.alertInfo = this.$t('form_match_endTime')
+          $('#alert').modal('show')
+          return false
+        }
+        if (!this.checked) {
+          this.alertInfo = this.$t('agree_terms')
           $('#alert').modal('show')
           return false
         }

@@ -155,6 +155,7 @@ module.exports = {
   form_match_des: "请填写简介",
   form_match_photos: "请上传您的图片",
   form_match_amount: "请填写筹款目标金额",
+  form_match_no_negative: "筹款金额不能为负数",
   form_match_endTime: "请选择结束时间",
   form_match_low: "最小值不能大于最大值",
   form_match_high: "最大值不能大于目标金额",

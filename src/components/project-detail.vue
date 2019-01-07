@@ -8,7 +8,7 @@
         <div class="author-info clearfix">
           <div class="copy-link">
             <img src="static/img/icon/web_icon_share.png" height="51" @click="linkShow">
-            <input type="text" id="copyContent" v-model="link"/>
+            <div ref="copyContent" id="copyContent">{{link}}</div>
             <p ref="copy" v-show="link_isShow" @click="copyLink" class="copy-btn" data-clipboard-target="#copyContent" data-clipboard-action="copy">{{$t('copy_link')}}</p>
           </div>
           <p class="avator"><img :src="'https://api.medishares.net/apiTools/getAddressHead?address=' + programs.address + '&v=1.0'" width="20"></p>
@@ -139,18 +139,23 @@ export default {
       this.link_isShow = !this.link_isShow
     },
     copyLink() {
-      let _this = this;
       if (this.globalData.browsers.android) {
-        _this.$refs.copy.select();
-        document.execCommand("Copy");
-        _this.toastInfo = _this.$t('copy_success')
+        let val = this.$refs.copyContent.innerText;
+        let oInput = document.createElement("input");
+        oInput.type = "text";
+        oInput.value = val;
+        document.body.appendChild(oInput);
+        oInput.select(); // 选择对象
+        document.execCommand("Copy"); // 执行浏览器复制命令
+        oInput.style.display = "none";
+        this.toastInfo = this.$t('copy_success')
       } else {
-        let clipboard = _this.copyBtn;
-        clipboard.on('success', function () {
-          _this.toastInfo = _this.$t('copy_success')
+        let clipboard = this.copyBtn;
+        clipboard.on('success', () => {
+          this.toastInfo = this.$t('copy_success')
         });
-        clipboard.on('error', function () {
-          _this.toastInfo = _this.$t('copy_error')
+        clipboard.on('error', () => {
+          this.toastInfo = this.$t('copy_error')
         });
       }
 
@@ -321,6 +326,9 @@ export default {
 
 #copyContent {
   position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
   opacity: 0;
 }
 

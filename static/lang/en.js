@@ -155,6 +155,7 @@ module.exports = {
   form_match_des: "Please fill in the introduction",
   form_match_photos: "Please upload your picture",
   form_match_amount: "Please fill in the fundraising target amount",
+  form_match_no_negative: "Fundraising amount cannot be negative",
   form_match_endTime: "Please select the end time",
   form_match_low: "The minimum value cannot be greater than the maximum value",
   form_match_high: "The maximum value cannot be greater than the target amount",

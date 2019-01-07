@@ -12,18 +12,20 @@ export default {
 </script>
 
 <style>
-.blank-page{
+.blank-page {
   padding: 120px 0 60px;
   color: #607d8b;
   font-size: 16px;
   text-align: center;
 }
-.blank-page>a{
-  color: #2196f3;
+
+.blank-page>a {
+  color: #2196f3 !important;
   padding: 8px 0;
-    display: block;
+  display: block;
 }
-.blank-page span{
+
+.blank-page span {
   vertical-align: middle;
 }
 </style>
