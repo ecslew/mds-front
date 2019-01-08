@@ -161,7 +161,9 @@ export default {
           this.toastInfo = this.$t('copy_error')
         });
       }
-
+      setTimeout(() => {
+        this.link_isShow = false
+      }, 2000);
     },
     payModal() {
       if (this.programs.address == this.address) {
@@ -207,7 +209,7 @@ export default {
             data: {
               from: _this.currentAccount,
               to: _this.programs.targetAccount,
-              quantity: parseFloat(amount).toFixed( _this.programs.targetTokenDecimal ) + ' ' + _this.programs.targetToken,
+              quantity: parseFloat(amount).toFixed(_this.programs.targetTokenDecimal) + ' ' + _this.programs.targetToken,
               memo: '###{"ID":' + _this.programs.id + ',"creator":"' + _this.programs.address + '","comment":"' + note + '"}###'
             }
           }]
@@ -248,11 +250,9 @@ export default {
         )
         // end 交易
 
-      }, error => {
-        console.log(error);
+      }, () => {
         // 未安装 scatter 或 登录失败
-        this.alertInfo = '连接scatter进行交易'
-        $('#alert').modal('show')
+        this.toastInfo = this.$t('connect_scatter')
       })
 
     },
@@ -270,7 +270,7 @@ export default {
           _this.programs.info = res.data.des; // 简介
           _this.programs.crowdfundingNo = res.data.crowdfundingNo; // 订单号
           _this.programs.img = res.data.photos; // 图片
-          _this.programs.complete = parseFloat(res.data.amount).toFixed( _this.programs.targetTokenDecimal ); // 总共
+          _this.programs.complete = parseFloat(res.data.amount).toFixed(_this.programs.targetTokenDecimal); // 总共
           _this.programs.title = res.data.title; // 标题
           _this.programs.address = res.data.creator; // 发起人
           _this.programs.restDays = res.data.endDate; // 还剩几天
@@ -287,7 +287,7 @@ export default {
             'crowdfundingNo': _this.programs.crowdfundingNo
           }, function (res) {
 
-            _this.programs.amount = parseFloat(res.data.total).toFixed( _this.programs.targetTokenDecimal );
+            _this.programs.amount = parseFloat(res.data.total).toFixed(_this.programs.targetTokenDecimal);
             _this.programs.backers = res.data.count;
 
             if (res.success) {
@@ -295,7 +295,7 @@ export default {
                 _this.programs.support.push({
                   id: index + 1,
                   address: event.from,
-                  amount: parseFloat(event.amount).toFixed( _this.programs.targetTokenDecimal ) + ' ' + res.data.token, // 1.0000 EOS
+                  amount: parseFloat(event.amount).toFixed(_this.programs.targetTokenDecimal) + ' ' + res.data.token, // 1.0000 EOS
                   comments: event.comment, // ###{}### 需要过滤
                   time: event.createDate // 时间戳
                 });
@@ -467,6 +467,11 @@ export default {
   font-family: Gotham-Medium;
   color: #2c363f;
   padding-bottom: 16px;
+}
+
+.details img {
+  width: 100%;
+  margin: 10px 0;
 }
 
 .transfer-list {

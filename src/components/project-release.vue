@@ -11,7 +11,7 @@
         <input name="targetTokenContract" type="text" v-model="addData.targetTokenContract" class="hide">
         <!-- 项目名称 title-->
         <label>{{$t('project_title')}}</label>
-        <input name="title" type="text" class="basic-input" v-model="addData.title" :placeholder="$t('project_title_pl')">
+        <input name="title" type="text" class="basic-input" v-model="addData.title" :placeholder="$t('project_title_pl')" autofocus>
         <!-- 项目简介 des -->
         <label>{{$t('tell_story')}}</label>
         <div id="story">
@@ -83,6 +83,7 @@
     </div>
   </div>
   <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
+  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -93,6 +94,7 @@ import E from 'wangeditor'
 import sha from 'js-sha256'
 import user from 'static/js/user'
 import mdsNav from '@/base/mdsNav'
+import mdsToast from '@/base/toast'
 export default {
   props: ['eosID'],
   data() {
@@ -101,6 +103,7 @@ export default {
       editUrl: '/apiCrowdfunding/getInfo?eosID=',
       alertInfo: '',
       alertTitle: '',
+      toastInfo: '',
       checked: false, //是否同意规则
       isLoad: false, //是否上传封面图片
       isFocus: false, //富文本是否填写内容
@@ -127,6 +130,9 @@ export default {
     this.editorConfig()
   },
   methods: {
+    infoByToast: function (val) {
+      this.toastInfo = val
+    },
     // 引入富文本编辑器
     editorConfig() {
       const editor = new E('#story')
@@ -272,19 +278,19 @@ export default {
               "item_digest": that.addData.desHash, //that.addData.desHash, // 项目简介sha256 后的值 64 位
               "receiver": that.addData.targetAccount, // 收款人
               "min_fund": {
-                amount: parseFloat(that.addData.low).toFixed( that.addData.targetTokenDecimals ),
+                amount: parseFloat(that.addData.low).toFixed(that.addData.targetTokenDecimals),
                 precision: that.addData.targetTokenDecimals,
                 symbol: that.addData.targetToken,
                 contract: that.addData.targetTokenContract
               },
               "max_fund": {
-                amount: parseFloat(that.addData.high).toFixed( that.addData.targetTokenDecimals ),
+                amount: parseFloat(that.addData.high).toFixed(that.addData.targetTokenDecimals),
                 precision: that.addData.targetTokenDecimals,
                 symbol: that.addData.targetToken,
                 contract: that.addData.targetTokenContract
               },
               "target_fund": {
-                amount: parseFloat(that.addData.amount).toFixed( that.addData.targetTokenDecimals ),
+                amount: parseFloat(that.addData.amount).toFixed(that.addData.targetTokenDecimals),
                 precision: that.addData.targetTokenDecimals,
                 symbol: that.addData.targetToken,
                 contract: that.addData.targetTokenContract
@@ -317,8 +323,9 @@ export default {
             console.log(error)
           }
         )
-      }, (err) => {
-        alert(err)
+      }, () => {
+        // 未安装 scatter 或 登录失败
+        this.toastInfo = this.$t('connect_scatter')
       })
     },
     uploadPic(event) {
@@ -341,7 +348,8 @@ export default {
     }
   },
   components: {
-    alertModal
+    alertModal,
+    mdsToast
   }
 }
 </script>

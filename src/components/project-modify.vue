@@ -17,7 +17,7 @@
         <input name="eosID" type="text" v-model="modify.eosID" class="hide">
         <!-- 项目名称 title-->
         <label>{{$t('project_title')}}</label>
-        <input name="title" type="text" class="basic-input" v-model="modify.title" :placeholder="$t('project_title_pl')">
+        <input name="title" type="text" class="basic-input" v-model="modify.title" :placeholder="$t('project_title_pl')" autofocus>
         <!-- 项目简介 des -->
         <label>{{$t('tell_story')}}</label>
         <div id="story">
@@ -89,6 +89,7 @@
     </div>
   </div>
   <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
+  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -98,6 +99,7 @@ import 'wangeditor/release/wangEditor.css'
 import E from 'wangeditor'
 import sha from 'js-sha256'
 import user from 'static/js/user'
+import mdsToast from '@/base/toast'
 export default {
   props: ['eosID'],
   data() {
@@ -106,6 +108,7 @@ export default {
       modifyUrl: '/apiCrowdfunding/getInfo?eosID=',
       alertInfo: '',
       alertTitle: '',
+      toastInfo: '',
       checked: false, //是否同意规则
       isLoad: false, //是否上传封面图片
       isFocus: false, //富文本是否填写内容
@@ -124,7 +127,7 @@ export default {
         targetAccount: '', //【 筹款账户 】
         targetToken: 'EOS', //【 筹款Token,比如：EOS，IQ，MEV 】
         targetTokenContract: 'eosio.token', //【 筹款 Token 合约，EOS 请填写 eosio.token 】
-        targetTokenDecimal : 4,
+        targetTokenDecimal: 4,
         title: "", //【 项目名称 】
         low: 0, //【 最低筹款金额 ，非必须 】
         high: 0 //【 最高筹款金额 ，非必须 】
@@ -193,6 +196,9 @@ export default {
     })
   },
   methods: {
+    infoByToast: function (val) {
+      this.toastInfo = val
+    },
     nextStep() {
       const that = this
 
@@ -283,32 +289,32 @@ export default {
         const eos = user.getEos()
 
         console.log({
-              "initiator": that.modify.creator, // 项目发起人
-              "id": that.modify.eosID,
-              "name": that.modify.title, // 项目名称
-              "item_digest": that.desHash, //that.modify.desHash, // 项目简介sha256 后的值 64 位
-              "receiver": that.modify.targetAccount, // 收款人
-              "min_fund": {
-                amount: parseFloat(that.modify.low).toFixed( that.modify.targetTokenDecimal ),
-                precision: that.modify.targetTokenDecimal,
-                symbol: that.modify.targetToken,
-                contract: that.modify.targetTokenContract
-              },
-              "max_fund": {
-                amount: parseFloat(that.modify.high).toFixed( that.modify.targetTokenDecimal ),
-                precision: that.modify.targetTokenDecimal,
-                symbol: that.modify.targetToken,
-                contract: that.modify.targetTokenContract
-              },
-              "target_fund": {
-                amount: parseFloat(that.modify.amount).toFixed( that.modify.targetTokenDecimal ),
-                precision: that.modify.targetTokenDecimal,
-                symbol: that.modify.targetToken,
-                contract: that.modify.targetTokenContract
+          "initiator": that.modify.creator, // 项目发起人
+          "id": that.modify.eosID,
+          "name": that.modify.title, // 项目名称
+          "item_digest": that.desHash, //that.modify.desHash, // 项目简介sha256 后的值 64 位
+          "receiver": that.modify.targetAccount, // 收款人
+          "min_fund": {
+            amount: parseFloat(that.modify.low).toFixed(that.modify.targetTokenDecimal),
+            precision: that.modify.targetTokenDecimal,
+            symbol: that.modify.targetToken,
+            contract: that.modify.targetTokenContract
+          },
+          "max_fund": {
+            amount: parseFloat(that.modify.high).toFixed(that.modify.targetTokenDecimal),
+            precision: that.modify.targetTokenDecimal,
+            symbol: that.modify.targetToken,
+            contract: that.modify.targetTokenContract
+          },
+          "target_fund": {
+            amount: parseFloat(that.modify.amount).toFixed(that.modify.targetTokenDecimal),
+            precision: that.modify.targetTokenDecimal,
+            symbol: that.modify.targetToken,
+            contract: that.modify.targetTokenContract
 
-              },
-              "deadline": that.endTimeStamp // 结束时间 时间戳(s)
-            })
+          },
+          "deadline": that.endTimeStamp // 结束时间 时间戳(s)
+        })
 
         // 创建项目提交到链上
         eos.transaction({
@@ -326,19 +332,19 @@ export default {
               "item_digest": that.desHash, //that.modify.desHash, // 项目简介sha256 后的值 64 位
               "receiver": that.modify.targetAccount, // 收款人
               "min_fund": {
-                amount: parseFloat(that.modify.low).toFixed( that.modify.targetTokenDecimal ),
+                amount: parseFloat(that.modify.low).toFixed(that.modify.targetTokenDecimal),
                 precision: that.modify.targetTokenDecimal,
                 symbol: that.modify.targetToken,
                 contract: that.modify.targetTokenContract
               },
               "max_fund": {
-                amount: parseFloat(that.modify.high).toFixed( that.modify.targetTokenDecimal ),
+                amount: parseFloat(that.modify.high).toFixed(that.modify.targetTokenDecimal),
                 precision: that.modify.targetTokenDecimal,
                 symbol: that.modify.targetToken,
                 contract: that.modify.targetTokenContract
               },
               "target_fund": {
-                amount: parseFloat(that.modify.amount).toFixed( that.modify.targetTokenDecimal ),
+                amount: parseFloat(that.modify.amount).toFixed(that.modify.targetTokenDecimal),
                 precision: that.modify.targetTokenDecimal,
                 symbol: that.modify.targetToken,
                 contract: that.modify.targetTokenContract
@@ -371,8 +377,9 @@ export default {
             console.log(error)
           }
         )
-      }, (err) => {
-        alert(err)
+      }, () => {
+         // 未安装 scatter 或 登录失败
+        this.toastInfo = this.$t('connect_scatter')
       })
     },
     uploadPic(event) {
@@ -396,7 +403,8 @@ export default {
     }
   },
   components: {
-    alertModal
+    alertModal,
+    mdsToast
   }
 }
 </script>

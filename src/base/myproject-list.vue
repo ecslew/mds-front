@@ -80,12 +80,10 @@ export default {
   },
   methods: {
     getPic() {
-      let _this = this;
       this.$http.get(this.globalData.domain + this.url + this.id).then((res) => {
         if (res.data.success) {
           this.photos = res.data.data.photos
-          _this.comment = res.data.data.comment
-          console.log(_this.comment)
+          this.comment = res.data.data.comment
         }
       }, (err) => {
         console.log(err);
