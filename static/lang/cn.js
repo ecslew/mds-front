@@ -170,6 +170,8 @@ module.exports = {
   roadmap_step6_2: "抵押分红系统上线",
   roadmap_step6_3: "SimpleWallet 协议支持",
   roadmap_step7_1: "Oracle 可信数据系统上线 ",
+  low_amount: "最低额度",
+  high_amount: "最高额度",
   low_amount_pl: "请输入最低额度",
   high_amount_pl: "请输入最高额度",
   modify_success: "修改成功",

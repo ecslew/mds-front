@@ -43,30 +43,38 @@
         <label>{{$t('target_amount')}}</label>
         <div class="basic-group">
           <input name="targetAmount" class="basic-input" type="number" v-model="addData.amount" :placeholder="$t('target_amount_pl')">
+          <select name="" id="targetToken" @change="changeTargetToken">
+            <option value="EOS">EOS</option>
+            <option value="EMDS">EMDS</option>
+            <option value="EUSD">EUSD</option>
+            <option value="EETH">EETH</option>
+            <option value="EBTC">EBTC</option>
+          </select>
         </div>
-          <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
-          <div v-show="isShow">
-            <label>{{$t('transfer_limit')}}</label>
-            <div class="row">
-              <!-- 最低筹款金额 ，非必须 low  -->
-              <p class="col-sm-6 basic-group">
-                <input class="basic-input" type="number" v-model="addData.low" :placeholder="$t('low_amount_pl')">
-              </p>
-                <!-- 最高筹款金额 ，非必须 high-->
-                <p class="col-sm-6 basic-group">
-                  <input class="basic-input" type="number" v-model="addData.high" :placeholder="$t('high_amount_pl')">
-              </p>
-            </div>
-          </div>
-          <!-- 筹款结束时间 endDate-->
-          <label>{{$t('end_date')}}</label>
-          <input class="basic-input" type="date" v-model="addData.endTime" :placeholder="$t('end_date_pl')" @change="dateToStamp">
-          <input name="endDate" class="hide" type="text" v-model="addData.endTimeStamp" >
-          <div class="agree">
-            <input type="checkbox" v-model="checked">
-            <div>{{$t('fundraising_rules')}}</div>
-          </div>
-          <a class="start" @click="nextStep">{{$t('next_step')}}</a>
+        <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
+        <div v-show="isShow">
+          <!-- 最低筹款金额 ，非必须 low  -->
+          <label>{{$t('low_amount')}}</label>
+          <p class="basic-group">
+            <input class="basic-input" type="number" v-model="addData.low" :placeholder="$t('low_amount_pl')">
+            <span class="target-token">{{addData.targetToken}}</span>
+          </p>
+          <!-- 最高筹款金额 ，非必须 high-->
+          <label>{{$t('high_amount')}}</label>
+          <p class="basic-group">
+            <input class="basic-input" type="number" v-model="addData.high" :placeholder="$t('high_amount_pl')">
+            <span class="target-token">{{addData.targetToken}}</span>
+          </p>
+        </div>
+        <!-- 筹款结束时间 endDate-->
+        <label>{{$t('end_date')}}</label>
+        <input class="basic-input" type="date" v-model="addData.endTime" :placeholder="$t('end_date_pl')" @change="dateToStamp">
+        <input name="endDate" class="hide" type="text" v-model="addData.endTimeStamp" >
+        <div class="agree">
+          <input type="checkbox" v-model="checked">
+          <div>{{$t('fundraising_rules')}}</div>
+        </div>
+        <a class="start" @click="nextStep">{{$t('next_step')}}</a>
       </form>
     </div>
   </div>
@@ -117,9 +125,9 @@ export default {
         endTime: '', //【  筹款结束时间 时间 】
         photos: '', //【 封面图片url 】
         targetAccount: '', //【 筹款账户 】
-        targetToken: 'EUSD', //【 筹款Token,比如：EOS，IQ，MEV 】
-        targetTokenContract: 'bitpietokens', //【 筹款 Token 合约，EOS 请填写 eosio.token 】
-        targetTokenDecimals: 8, //【 筹款 Token 合约，EOS 请填写 eosio.token 】
+        targetToken: 'EOS', //【 筹款Token,比如：EOS，IQ，MEV 】
+        targetTokenContract: 'eosio.token', //【 筹款 Token 合约，EOS 请填写 eosio.token 】
+        targetTokenDecimals: 4, //【 筹款 Token 合约，EOS 请填写 eosio.token 】
         title: "", //【 项目名称 】
         low: 0, //【 最低筹款金额 ，非必须 】
         high: 0 //【 最高筹款金额 ，非必须 】
@@ -345,6 +353,24 @@ export default {
     },
     dateToStamp() {
       this.addData.endTimeStamp = (new Date(this.addData.endTime)).getTime() / 1000
+    },
+    changeTargetToken(event) {
+      const target = event.target.value
+      this.addData.targetToken = target
+      switch (target) {
+        case 'EOS':
+          this.addData.targetTokenDecimals = 4
+          this.addData.targetTokenContract = 'eosio.token'
+          break;
+        case 'EMDS':
+          this.addData.targetTokenDecimals = 4
+          this.addData.targetTokenContract = 'medisharesbp'
+          break;
+        default:
+          this.addData.targetTokenDecimals = 8
+          this.addData.targetTokenContract = 'bitpietokens'
+          break;
+      }
     }
   },
   components: {
@@ -494,5 +520,6 @@ export default {
   .modal-content p {
     margin-bottom: 100px;
   }
+
 }
 </style>

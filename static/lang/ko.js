@@ -170,6 +170,8 @@ module.exports = {
   roadmap_step6_2: "Launch Stake Bonus System",
   roadmap_step6_3: "Support SimpleWallet protocol",
   roadmap_step7_1: "Launch Oracle Trust Data System",
+  low_amount: "The minimum amount",
+  high_amount: "The maximum amount",
   low_amount_pl: "Enter the minimum amount",
   high_amount_pl: "Enter the maximum amount",
   modify_success: "Successfully modified",
