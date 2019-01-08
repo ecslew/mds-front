@@ -13,7 +13,7 @@
       <div class="mds-title">{{$t('programs_title')}}</div>
       <ul class="row">
         <li class="col-sm-4 col-xs-12" v-for="item in programs" :key="item.id">
-          <project-list :id="item.eosID" :picture="item.img" :title="item.title" :targetAmount="item.targetAmount" :amount="item.reciveAmount" :time="item.releaseTime"></project-list>
+          <project-list :id="item.eosID" :picture="item.img" :title="item.title" :targetAmount="item.targetAmount" :amount="item.reciveAmount" :time="item.releaseTime" :targetToken="item.targetToken"></project-list>
         </li>
       </ul>
       <router-link to="/project" class="see-more">{{$t('see_more')}}</router-link>

@@ -20,8 +20,8 @@
         <div class="progress">
           <p class="progress-bar" :style="'width:'+parseFloat(programs.amount/programs.complete*100)+'%'"></p>
         </div>
-        <h4 class="pro-value main-color">{{programs.amount}} EOS</h4>
-        <p class="pro-key">{{$t("pledged")}} {{programs.complete}} EOS</p>
+        <h4 class="pro-value main-color">{{programs.amount}} {{programs.targetToken}}</h4>
+        <p class="pro-key">{{$t("pledged")}} {{programs.complete}} {{programs.targetToken}}</p>
         <h4 class="pro-value">{{programs.backers}}</h4>
         <p class="pro-key">{{$t("backers")}}</p>
         <h4 class="pro-value">{{programs.restDays}} {{$t("day")}} </h4>
@@ -113,6 +113,9 @@ export default {
         info: '',
         crowdfundingNo: '',
         targetAccount: '',
+        targetToken: '',
+        targetTokenDecimal: '',
+        targetTokenContract: '',
         low: 0,
         high: 0
       },
@@ -175,13 +178,13 @@ export default {
 
       // 判断金额
       if (amount - 0 < _this.programs.low) {
-        this.alertInfo = '金额不能小于 ' + _this.programs.low + ' EOS';
+        this.alertInfo = '金额不能小于 ' + _this.programs.low + ' ' + _this.programs.targetToken;
         $('#alert').modal('show');
         return false;
       }
 
       if (amount - 0 > _this.programs.high) {
-        this.alertInfo = '金额不能大于 ' + _this.programs.high + ' EOS';
+        this.alertInfo = '金额不能大于 ' + _this.programs.high + ' ' + _this.programs.targetToken;
         $('#alert').modal('show');
         return false;
       }
@@ -195,7 +198,7 @@ export default {
         // 交易
         user.getEos().transaction({
           actions: [{
-            account: 'eosio.token',
+            account: _this.programs.targetTokenContract,
             name: 'transfer',
             authorization: [{
               actor: _this.currentAccount,
@@ -204,7 +207,7 @@ export default {
             data: {
               from: _this.currentAccount,
               to: _this.programs.targetAccount,
-              quantity: parseFloat(amount).toFixed(4) + ' EOS',
+              quantity: parseFloat(amount).toFixed( _this.programs.targetTokenDecimal ) + ' ' + _this.programs.targetToken,
               memo: '###{"ID":' + _this.programs.id + ',"creator":"' + _this.programs.address + '","comment":"' + note + '"}###'
             }
           }]
@@ -263,15 +266,18 @@ export default {
 
       $.get(url, {}, function (res) {
         if (res.success) {
+          _this.programs.targetTokenDecimal = res.data.targetTokenDecimal; // targetTokenDecimal
           _this.programs.info = res.data.des; // 简介
           _this.programs.crowdfundingNo = res.data.crowdfundingNo; // 订单号
           _this.programs.img = res.data.photos; // 图片
-          _this.programs.complete = parseFloat(res.data.amount).toFixed(4); // 总共
+          _this.programs.complete = parseFloat(res.data.amount).toFixed( _this.programs.targetTokenDecimal ); // 总共
           _this.programs.title = res.data.title; // 标题
           _this.programs.address = res.data.creator; // 发起人
           _this.programs.restDays = res.data.endDate; // 还剩几天
           _this.programs.release_time = res.data.releaseTime; // 发布时间
           _this.programs.targetAccount = res.data.targetAccount; // 收款账户
+          _this.programs.targetToken = res.data.targetToken; // token
+          _this.programs.targetTokenContract = res.data.targetTokenContract; // contract
           _this.programs.id = res.data.eosID; // eosID
           _this.programs.low = res.data.low; // low
           _this.programs.high = res.data.high; // high
@@ -281,7 +287,7 @@ export default {
             'crowdfundingNo': _this.programs.crowdfundingNo
           }, function (res) {
 
-            _this.programs.amount = parseFloat(res.data.total).toFixed(4);
+            _this.programs.amount = parseFloat(res.data.total).toFixed( _this.programs.targetTokenDecimal );
             _this.programs.backers = res.data.count;
 
             if (res.success) {
@@ -289,7 +295,7 @@ export default {
                 _this.programs.support.push({
                   id: index + 1,
                   address: event.from,
-                  amount: parseFloat(event.amount).toFixed(4) + ' ' + res.data.token, // 1.0000 EOS
+                  amount: parseFloat(event.amount).toFixed( _this.programs.targetTokenDecimal ) + ' ' + res.data.token, // 1.0000 EOS
                   comments: event.comment, // ###{}### 需要过滤
                   time: event.createDate // 时间戳
                 });

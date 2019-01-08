@@ -161,7 +161,7 @@ ul {
 }
 
 .basic-group:after {
-  content: 'EOS';
+  content: 'EUSD';
   position: absolute;
   top: 14px;
   right: 24px;

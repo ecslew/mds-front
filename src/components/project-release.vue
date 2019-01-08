@@ -114,8 +114,9 @@ export default {
         endTime: '', //【  筹款结束时间 时间 】
         photos: '', //【 封面图片url 】
         targetAccount: '', //【 筹款账户 】
-        targetToken: 'EOS', //【 筹款Token,比如：EOS，IQ，MEV 】
-        targetTokenContract: 'eosio.token', //【 筹款 Token 合约，EOS 请填写 eosio.token 】
+        targetToken: 'EUSD', //【 筹款Token,比如：EOS，IQ，MEV 】
+        targetTokenContract: 'bitpietokens', //【 筹款 Token 合约，EOS 请填写 eosio.token 】
+        targetTokenDecimals: 8, //【 筹款 Token 合约，EOS 请填写 eosio.token 】
         title: "", //【 项目名称 】
         low: 0, //【 最低筹款金额 ，非必须 】
         high: 0 //【 最高筹款金额 ，非必须 】
@@ -271,20 +272,20 @@ export default {
               "item_digest": that.addData.desHash, //that.addData.desHash, // 项目简介sha256 后的值 64 位
               "receiver": that.addData.targetAccount, // 收款人
               "min_fund": {
-                amount: parseFloat(that.addData.low).toFixed(4),
-                precision: 4,
+                amount: parseFloat(that.addData.low).toFixed( that.addData.targetTokenDecimals ),
+                precision: that.addData.targetTokenDecimals,
                 symbol: that.addData.targetToken,
                 contract: that.addData.targetTokenContract
               },
               "max_fund": {
-                amount: parseFloat(that.addData.high).toFixed(4),
-                precision: 4,
+                amount: parseFloat(that.addData.high).toFixed( that.addData.targetTokenDecimals ),
+                precision: that.addData.targetTokenDecimals,
                 symbol: that.addData.targetToken,
                 contract: that.addData.targetTokenContract
               },
               "target_fund": {
-                amount: parseFloat(that.addData.amount).toFixed(4),
-                precision: 4,
+                amount: parseFloat(that.addData.amount).toFixed( that.addData.targetTokenDecimals ),
+                precision: that.addData.targetTokenDecimals,
                 symbol: that.addData.targetToken,
                 contract: that.addData.targetTokenContract
 

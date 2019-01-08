@@ -124,6 +124,7 @@ export default {
         targetAccount: '', //【 筹款账户 】
         targetToken: 'EOS', //【 筹款Token,比如：EOS，IQ，MEV 】
         targetTokenContract: 'eosio.token', //【 筹款 Token 合约，EOS 请填写 eosio.token 】
+        targetTokenDecimal : 4,
         title: "", //【 项目名称 】
         low: 0, //【 最低筹款金额 ，非必须 】
         high: 0 //【 最高筹款金额 ，非必须 】
@@ -280,6 +281,35 @@ export default {
         } catch (e) {}
 
         const eos = user.getEos()
+
+        console.log({
+              "initiator": that.modify.creator, // 项目发起人
+              "id": that.modify.eosID,
+              "name": that.modify.title, // 项目名称
+              "item_digest": that.desHash, //that.modify.desHash, // 项目简介sha256 后的值 64 位
+              "receiver": that.modify.targetAccount, // 收款人
+              "min_fund": {
+                amount: parseFloat(that.modify.low).toFixed( that.modify.targetTokenDecimal ),
+                precision: that.modify.targetTokenDecimal,
+                symbol: that.modify.targetToken,
+                contract: that.modify.targetTokenContract
+              },
+              "max_fund": {
+                amount: parseFloat(that.modify.high).toFixed( that.modify.targetTokenDecimal ),
+                precision: that.modify.targetTokenDecimal,
+                symbol: that.modify.targetToken,
+                contract: that.modify.targetTokenContract
+              },
+              "target_fund": {
+                amount: parseFloat(that.modify.amount).toFixed( that.modify.targetTokenDecimal ),
+                precision: that.modify.targetTokenDecimal,
+                symbol: that.modify.targetToken,
+                contract: that.modify.targetTokenContract
+
+              },
+              "deadline": that.endTimeStamp // 结束时间 时间戳(s)
+            })
+
         // 创建项目提交到链上
         eos.transaction({
           actions: [{
@@ -296,20 +326,20 @@ export default {
               "item_digest": that.desHash, //that.modify.desHash, // 项目简介sha256 后的值 64 位
               "receiver": that.modify.targetAccount, // 收款人
               "min_fund": {
-                amount: parseFloat(that.modify.low).toFixed(4),
-                precision: 4,
+                amount: parseFloat(that.modify.low).toFixed( that.modify.targetTokenDecimal ),
+                precision: that.modify.targetTokenDecimal,
                 symbol: that.modify.targetToken,
                 contract: that.modify.targetTokenContract
               },
               "max_fund": {
-                amount: parseFloat(that.modify.high).toFixed(4),
-                precision: 4,
+                amount: parseFloat(that.modify.high).toFixed( that.modify.targetTokenDecimal ),
+                precision: that.modify.targetTokenDecimal,
                 symbol: that.modify.targetToken,
                 contract: that.modify.targetTokenContract
               },
               "target_fund": {
-                amount: parseFloat(that.modify.amount).toFixed(4),
-                precision: 4,
+                amount: parseFloat(that.modify.amount).toFixed( that.modify.targetTokenDecimal ),
+                precision: that.modify.targetTokenDecimal,
                 symbol: that.modify.targetToken,
                 contract: that.modify.targetTokenContract
 
