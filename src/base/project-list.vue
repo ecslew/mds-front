@@ -11,7 +11,7 @@
     <div class="progress">
       <p class="progress-bar" :style="'width:'+parseFloat(amount/targetAmount*100)+'%'"></p>
     </div>
-    <div class="complete">{{$t('complete')}}: {{targetAmount}} EOS</div>
+    <div class="complete">{{$t('complete')}}: {{targetAmount}} {{targetToken}}</div>
     <div class="time">{{$t('release_time')}}: {{time.slice(0,10)}}</div>
   </div>
 </router-link>
@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  props: ['picture', 'title', 'targetAmount', 'amount', 'time', 'id']
+  props: ['picture', 'title', 'targetAmount', 'amount', 'time', 'id','targetToken']
 }
 </script>
 
