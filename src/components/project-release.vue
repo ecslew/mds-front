@@ -224,7 +224,7 @@ export default {
           return false
         }
         if (this.addData.high - 0 > this.addData.amount - 0) {
-          this.alertInfo = '最大值不能大于目标金额';
+          this.alertInfo = this.$t('form_match_high')
           $('#alert').modal('show')
           this.addData.high = this.addData.amount
           return false
