@@ -94,6 +94,7 @@ import mdsToast from '@/base/toast'
 import foot from '@/base/foot'
 import util from 'static/js/util'
 import user from 'static/js/user'
+import sha from 'js-sha256'
 export default {
   props: ['id'],
   data() {
@@ -207,6 +208,10 @@ export default {
         $(".login").hide()
         $(".personal").show()
         $(".currentAccount").html(currentAccount.name)
+
+        // 附加信息
+        var additional = JSON.stringify( {"name":_this.consignee_name,"address":_this.address,"telephone":_this.telephone} );
+
         // 交易
         user.getEos().transaction({
           actions: [{
@@ -220,21 +225,21 @@ export default {
               from: _this.currentAccount,
               to: _this.programs.targetAccount,
               quantity: parseFloat(amount).toFixed(_this.programs.targetTokenDecimal) + ' ' + _this.programs.targetToken,
-              memo: '###{"ID":' + _this.programs.id + ',"creator":"' + _this.programs.address + '","comment":"' + note + '"}###'
+              memo: '###{"ID":' + _this.programs.id + ',"creator":"' + _this.programs.address + '","comment":"' + note + '","additional":"' + sha.sha256(additional) + '"}###'
             }
           }]
         }).then(
           result => {
             // 成功之后调用我们的log
             var url = _this.globalData.domain + '/apiCrowdfunding/trans';
-
             var args = {
               crowdfundingNo: _this.programs.crowdfundingNo,
               hash: result.transaction_id,
               amount: amount,
               from: _this.currentAccount,
               to: _this.programs.targetAccount,
-              comment: note
+              comment: note,
+              additional: additional
             };
 
             $.post(url, args, function (res) {
@@ -310,8 +315,8 @@ export default {
                   id: index + 1,
                   address: event.from,
                   amount: parseFloat(event.amount).toFixed(_this.programs.targetTokenDecimal) + ' ' + res.data.token, // 1.0000 EOS
-                  comments: event.comment, // ###{}### 需要过滤
-                  time: event.createDate // 时间戳
+                  comments: event.comment,
+                  time: event.createDate
                 });
 
               });
