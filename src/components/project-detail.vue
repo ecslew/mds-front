@@ -291,6 +291,10 @@ export default {
             _this.programs.backers = res.data.count;
 
             if (res.success) {
+              $('.details img').css({
+                'width': "100%",
+                "margin": "10px 0"
+              })
               $.each(res.data.trans, function (index, event) {
                 _this.programs.support.push({
                   id: index + 1,
@@ -467,11 +471,6 @@ export default {
   font-family: Gotham-Medium;
   color: #2c363f;
   padding-bottom: 16px;
-}
-
-.details img {
-  width: 100%;
-  margin: 10px 0;
 }
 
 .transfer-list {

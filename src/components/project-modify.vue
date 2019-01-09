@@ -56,6 +56,7 @@
             <option value="EETH">EETH</option>
             <option value="EBTC">EBTC</option>
           </select>
+          <span class="caret"></span>
         </div>
           <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
           <div v-show="isShow">

@@ -156,15 +156,25 @@ ul {
   position: relative;
 }
 
+.basic-group .caret {
+  position: absolute;
+  right: 8px;
+  top: 21px;
+  z-index: 10;
+  margin: 0;
+}
+
 #targetToken {
   position: absolute;
   top: 0;
-  right: 8px;
+  right: 16px;
   height: 100%;
   border: none;
   background: #e1e6e9;
   z-index: 10;
   outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
 }
 
 .target-token {
@@ -388,9 +398,6 @@ ul {
   .mds-title {
     font-size: 24px;
     margin-bottom: 32px;
-  }
-  #targetToken {
-    right: 0;
   }
 }
 

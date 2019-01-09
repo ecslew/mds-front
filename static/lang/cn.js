@@ -56,7 +56,7 @@ module.exports = {
   title: "发起您的第一个区块链普惠项目",
   slogan: "全球首家相互保障+普惠金融+稳定币电商平台",
   start_project: "发起项目",
-  programs_title: "全部项目",
+  programs_title: "精选项目",
   complete: "目标",
   see_more: "查看更多",
   all_projects: "全部项目",

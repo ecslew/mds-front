@@ -56,7 +56,7 @@ module.exports = {
   title: "첫 번째 블록체인 상호 보장 프로그램 시작합니다",
   slogan: "세계 최초의 블록체인 상호 보장 계약 시장",
   start_project: "프로젝트 시작",
-  programs_title: "전체 상호 보장 프로그램",
+  programs_title: "Featured project",
   complete: "완성",
   see_more: "더 보기",
   all_projects: "전체 프로그램",

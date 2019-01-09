@@ -11,8 +11,8 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <div class="login mobile-login hidden-sm hidden-md hidden-lg" @click="login" v-show="!isAbout">{{$t("login")}}</div>
-        <div class="dropdown personal hidden-sm hidden-md hidden-lg" v-show="!isAbout">
+        <div class="login mobile-login hidden-sm hidden-md hidden-lg" @click="login">{{$t("login")}}</div>
+        <div class="dropdown personal hidden-sm hidden-md hidden-lg">
           <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li>
@@ -47,8 +47,8 @@
               <li><a href="javascript:;" name="ko" @click="changeLang">한국어</a></li>
             </ul>
           </div>
-          <div class="login pc-login pull-left hidden-xs" @click="login" v-show="!isAbout">{{$t("login")}}</div>
-          <div class="dropdown personal hidden-xs" v-show="!isAbout">
+          <div class="login pc-login pull-left hidden-xs" @click="login">{{$t("login")}}</div>
+          <div class="dropdown personal hidden-xs">
             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li @click="removeWh100">
@@ -78,8 +78,7 @@ export default {
   name: 'mdsNav',
   data() {
     return {
-      isHome: false,
-      isAbout: false
+      isHome: false
     }
   },
   mounted() {
@@ -139,9 +138,14 @@ export default {
         this.isHome = false
       }
       if (to.path == '/about') {
-        this.isAbout = true
+        $(".login").hide()
+        $(".personal").hide()
+      } else if ($(".currentAccount").html()) {
+        $(".login").hide()
+        $(".personal").show()
       } else {
-        this.isAbout = false
+        $(".login").show()
+        $(".personal").hide()
       }
     }
   },
