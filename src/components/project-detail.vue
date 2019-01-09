@@ -210,7 +210,11 @@ export default {
         $(".currentAccount").html(currentAccount.name)
 
         // 附加信息
-        var additional = JSON.stringify( {"name":_this.consignee_name,"address":_this.address,"telephone":_this.telephone} );
+        var additional = JSON.stringify({
+          "name": _this.consignee_name,
+          "address": _this.address,
+          "telephone": _this.telephone
+        });
 
         // 交易
         user.getEos().transaction({
