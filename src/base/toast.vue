@@ -7,11 +7,9 @@ export default {
   props: ['toastInfo'],
   watch: {
     toastInfo(to, from) {
-      if (to != from) {
-        setTimeout(() => {
-          this.$emit('toast', '')
-        }, 3000);
-      }
+      setTimeout(() => {
+        this.$emit('toast', '')
+      }, 3000);
     }
   }
 }
@@ -31,7 +29,8 @@ export default {
   transform: translateX(-50%);
   bottom: -68px;
   animation: toast 0.5s forwards;
-  z-index: 100;
+  z-index: 2000;
+  min-width: 200px;
 }
 
 @keyframes toast {

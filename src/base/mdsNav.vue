@@ -34,7 +34,9 @@
           <li @click="removeWh100">
             <router-link to="/" class="ico-book hidden-sm hidden-md hidden-lg">{{$t("home")}}</router-link>
           </li>
-          <li @click="removeWh100"><a :href="$t('medishares_link')" target="_blank">{{$t("about")}}</a></li>
+          <li @click="removeWh100">
+            <router-link to="/about">{{$t("about")}}</router-link>
+          </li>
           <li @click="removeWh100"><a :href="$t('news_link')" target="_blank">{{$t("news")}}</a></li>
           <li @click="removeWh100"><a :href="$t('mathwallet_link')" target="_blank">{{$t("MathWallet")}}</a></li>
           <div class="dropdown">
@@ -65,22 +67,13 @@
       </div>
     </div>
   </nav>
-  <div class="modal text-center" id="login">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">{{$t("log_mds")}}</h4>
-        <div class="start" @click="loginByScatter">{{$t("log_scatter")}}</div>
-        <div class="loginInfo">{{$t("log_scatter_tip")}}</div>
-        <p class="no-scatter">{{$t("log_no_scatter")}} <a href="https://get-scatter.com/">{{$t("download_here")}}</a></p>
-      </div>
-    </div>
-  </div>
+  <login-modal></login-modal>
 </div>
 </template>
 
 <script>
 import user from 'static/js/user'
+import loginModal from '@/base/login-modal'
 export default {
   name: 'mdsNav',
   data() {
@@ -98,7 +91,7 @@ export default {
   },
   methods: {
     isHomePage() {
-      if (this.$route.path == '/') {
+      if (this.$route.path == '/' || this.$route.path == '/about') {
         this.isHome = true
       } else {
         this.isHome = false
@@ -110,19 +103,6 @@ export default {
     },
     login() {
       $("#login").modal('show');
-    },
-    loginByScatter() {
-      user.getAccount().then((res) => {
-        if (this.$route.path == '/myProject' || this.$route.path == '/projectBacked') {
-          this.$router.go(0)
-        }
-        $(".currentAccount").html(res.name)
-        $('#login').modal('hide')
-        $(".login").hide()
-        $(".personal").show()
-      }, (err) => {
-        alert(err);
-      });
     },
     logout() {
       user.logout().then((res) => {
@@ -152,15 +132,25 @@ export default {
   },
   watch: {
     $route(to, from) {
-      if (this.$route.path == '/') {
+      if (to.path == '/' || to.path == '/about') {
         this.isHome = true
       } else {
         this.isHome = false
       }
-      if (this.$route.path != '/myProject' && this.$route.path != '/projectBacked') {
-        this.loginByScatter()
+      if (to.path == '/about') {
+        $(".login").hide()
+        $(".personal").hide()
+      } else if ($(".currentAccount").html()) {
+        $(".login").hide()
+        $(".personal").show()
+      } else {
+        $(".login").show()
+        $(".personal").hide()
       }
     }
+  },
+  components: {
+    loginModal
   }
 }
 </script>
@@ -276,30 +266,6 @@ nav .open>a {
   color: #fff;
 }
 
-.modal-title {
-  margin-top: 24px;
-}
-
-.loginInfo {
-  padding: 96px 24px 32px;
-  font-family: Gotham-Medium;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #607d8b;
-}
-
-.no-scatter {
-  padding: 32px 0 8px;
-  font-size: 16px;
-  font-family: Gotham-Medium;
-  color: #607d8b;
-  border-top: 1px solid #f2f5f6;
-}
-
-.no-scatter a {
-  color: #2196f3 !important;
-}
-
 @media (max-width: 767px) {
   #mds-nav {
     background: #fff;
@@ -323,18 +289,6 @@ nav .open>a {
     padding: 14px 20px;
     color: #607d8b;
     text-align: right;
-  }
-
-  .modal-title {
-    margin: 0;
-  }
-
-  .loginInfo {
-    padding: 24px 16px;
-  }
-
-  .no-scatter {
-    padding: 24px 16px 0;
   }
 
   .personal {

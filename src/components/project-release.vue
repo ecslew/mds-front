@@ -11,7 +11,7 @@
         <input name="targetTokenContract" type="text" v-model="addData.targetTokenContract" class="hide">
         <!-- 项目名称 title-->
         <label>{{$t('project_title')}}</label>
-        <input name="title" type="text" class="basic-input" v-model="addData.title" :placeholder="$t('project_title_pl')">
+        <input name="title" type="text" class="basic-input" v-model="addData.title" :placeholder="$t('project_title_pl')" autofocus>
         <!-- 项目简介 des -->
         <label>{{$t('tell_story')}}</label>
         <div id="story">
@@ -43,30 +43,39 @@
         <label>{{$t('target_amount')}}</label>
         <div class="basic-group">
           <input name="targetAmount" class="basic-input" type="number" v-model="addData.amount" :placeholder="$t('target_amount_pl')">
+          <select name="" id="targetToken" @change="changeTargetToken">
+            <option value="EOS">EOS</option>
+            <option value="EMDS">EMDS</option>
+            <option value="EUSD">EUSD</option>
+            <option value="EETH">EETH</option>
+            <option value="EBTC">EBTC</option>
+          </select>
+          <span class="caret"></span>
         </div>
-          <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
-          <div v-show="isShow">
-            <label>{{$t('transfer_limit')}}</label>
-            <div class="row">
-              <!-- 最低筹款金额 ，非必须 low  -->
-              <p class="col-sm-6 basic-group">
-                <input class="basic-input" type="number" v-model="addData.low" :placeholder="$t('low_amount_pl')">
-              </p>
-                <!-- 最高筹款金额 ，非必须 high-->
-                <p class="col-sm-6 basic-group">
-                  <input class="basic-input" type="number" v-model="addData.high" :placeholder="$t('high_amount_pl')">
-              </p>
-            </div>
-          </div>
-          <!-- 筹款结束时间 endDate-->
-          <label>{{$t('end_date')}}</label>
-          <input class="basic-input" type="date" v-model="addData.endTime" :placeholder="$t('end_date_pl')" @change="dateToStamp">
-          <input name="endDate" class="hide" type="text" v-model="addData.endTimeStamp" >
-          <div class="agree">
-            <input type="checkbox" v-model="checked">
-            <div>{{$t('fundraising_rules')}}</div>
-          </div>
-          <a class="start" @click="nextStep">{{$t('next_step')}}</a>
+        <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
+        <div v-show="isShow">
+          <!-- 最低筹款金额 ，非必须 low  -->
+          <label>{{$t('low_amount')}}</label>
+          <p class="basic-group">
+            <input class="basic-input" type="number" v-model="addData.low" :placeholder="$t('low_amount_pl')">
+            <span class="target-token">{{addData.targetToken}}</span>
+          </p>
+          <!-- 最高筹款金额 ，非必须 high-->
+          <label>{{$t('high_amount')}}</label>
+          <p class="basic-group">
+            <input class="basic-input" type="number" v-model="addData.high" :placeholder="$t('high_amount_pl')">
+            <span class="target-token">{{addData.targetToken}}</span>
+          </p>
+        </div>
+        <!-- 筹款结束时间 endDate-->
+        <label>{{$t('end_date')}}</label>
+        <input class="basic-input" type="date" v-model="addData.endTime" :placeholder="$t('end_date_pl')" @change="dateToStamp">
+        <input name="endDate" class="hide" type="text" v-model="addData.endTimeStamp" >
+        <div class="agree">
+          <input type="checkbox" v-model="checked">
+          <div>{{$t('fundraising_rules')}}</div>
+        </div>
+        <a class="start" @click="nextStep">{{$t('next_step')}}</a>
       </form>
     </div>
   </div>
@@ -83,6 +92,7 @@
     </div>
   </div>
   <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
+  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -93,6 +103,7 @@ import E from 'wangeditor'
 import sha from 'js-sha256'
 import user from 'static/js/user'
 import mdsNav from '@/base/mdsNav'
+import mdsToast from '@/base/toast'
 export default {
   props: ['eosID'],
   data() {
@@ -101,6 +112,7 @@ export default {
       editUrl: '/apiCrowdfunding/getInfo?eosID=',
       alertInfo: '',
       alertTitle: '',
+      toastInfo: '',
       checked: false, //是否同意规则
       isLoad: false, //是否上传封面图片
       isFocus: false, //富文本是否填写内容
@@ -114,9 +126,9 @@ export default {
         endTime: '', //【  筹款结束时间 时间 】
         photos: '', //【 封面图片url 】
         targetAccount: '', //【 筹款账户 】
-        targetToken: 'EUSD', //【 筹款Token,比如：EOS，IQ，MEV 】
-        targetTokenContract: 'bitpietokens', //【 筹款 Token 合约，EOS 请填写 eosio.token 】
-        targetTokenDecimals: 8, //【 筹款 Token 合约，EOS 请填写 eosio.token 】
+        targetToken: 'EOS', //【 筹款Token,比如：EOS，IQ，MEV 】
+        targetTokenContract: 'eosio.token', //【 筹款 Token 合约，EOS 请填写 eosio.token 】
+        targetTokenDecimals: 4, //【 筹款 Token 合约，EOS 请填写 eosio.token 】
         title: "", //【 项目名称 】
         low: 0, //【 最低筹款金额 ，非必须 】
         high: 0 //【 最高筹款金额 ，非必须 】
@@ -127,6 +139,9 @@ export default {
     this.editorConfig()
   },
   methods: {
+    infoByToast: function (val) {
+      this.toastInfo = val
+    },
     // 引入富文本编辑器
     editorConfig() {
       const editor = new E('#story')
@@ -272,19 +287,19 @@ export default {
               "item_digest": that.addData.desHash, //that.addData.desHash, // 项目简介sha256 后的值 64 位
               "receiver": that.addData.targetAccount, // 收款人
               "min_fund": {
-                amount: parseFloat(that.addData.low).toFixed( that.addData.targetTokenDecimals ),
+                amount: parseFloat(that.addData.low).toFixed(that.addData.targetTokenDecimals),
                 precision: that.addData.targetTokenDecimals,
                 symbol: that.addData.targetToken,
                 contract: that.addData.targetTokenContract
               },
               "max_fund": {
-                amount: parseFloat(that.addData.high).toFixed( that.addData.targetTokenDecimals ),
+                amount: parseFloat(that.addData.high).toFixed(that.addData.targetTokenDecimals),
                 precision: that.addData.targetTokenDecimals,
                 symbol: that.addData.targetToken,
                 contract: that.addData.targetTokenContract
               },
               "target_fund": {
-                amount: parseFloat(that.addData.amount).toFixed( that.addData.targetTokenDecimals ),
+                amount: parseFloat(that.addData.amount).toFixed(that.addData.targetTokenDecimals),
                 precision: that.addData.targetTokenDecimals,
                 symbol: that.addData.targetToken,
                 contract: that.addData.targetTokenContract
@@ -317,8 +332,9 @@ export default {
             console.log(error)
           }
         )
-      }, (err) => {
-        alert(err)
+      }, () => {
+        // 未安装 scatter 或 登录失败
+        this.toastInfo = this.$t('connect_scatter')
       })
     },
     uploadPic(event) {
@@ -338,10 +354,29 @@ export default {
     },
     dateToStamp() {
       this.addData.endTimeStamp = (new Date(this.addData.endTime)).getTime() / 1000
+    },
+    changeTargetToken(event) {
+      const target = event.target.value
+      this.addData.targetToken = target
+      switch (target) {
+        case 'EOS':
+          this.addData.targetTokenDecimals = 4
+          this.addData.targetTokenContract = 'eosio.token'
+          break;
+        case 'EMDS':
+          this.addData.targetTokenDecimals = 4
+          this.addData.targetTokenContract = 'medisharesbp'
+          break;
+        default:
+          this.addData.targetTokenDecimals = 8
+          this.addData.targetTokenContract = 'bitpietokens'
+          break;
+      }
     }
   },
   components: {
-    alertModal
+    alertModal,
+    mdsToast
   }
 }
 </script>
@@ -356,12 +391,6 @@ export default {
 
 .basic-form {
   padding: 32px 0;
-}
-
-.basic-form label {
-  font-family: Gotham-Medium;
-  margin: 32px 0 16px;
-  line-height: 1.43;
 }
 
 .photo-container {
@@ -459,10 +488,6 @@ export default {
   background: url('../../static/img/icon/web_icon_agreement_yes.png')no-repeat left center/18px;
 }
 
-.start {
-  margin: 0;
-}
-
 .modal-content p {
   font-family: Gotham-Medium;
   color: #607d8b;
@@ -486,5 +511,6 @@ export default {
   .modal-content p {
     margin-bottom: 100px;
   }
+
 }
 </style>

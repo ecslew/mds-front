@@ -19,7 +19,7 @@ export default {
 
 <style scoped>
 .contact {
-  background: #00d102;
+  background: var(--primaryColor);
   padding: 32px 0;
 }
 

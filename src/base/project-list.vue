@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  props: ['picture', 'title', 'targetAmount', 'amount', 'time', 'id','targetToken']
+  props: ['picture', 'title', 'targetAmount', 'amount', 'time', 'id', 'targetToken']
 }
 </script>
 

@@ -10,19 +10,19 @@
           <ul class="contact-list">
             <li class="col-xs-6 col-sm-12">
               <a :href="$t('telegram_link')" target="_blank">
-              <span class="contact-icon"><img src="static/img/icon/sns_icon_telegram@2x.png"></span>
+              <span class="contact-icon"><img src="static/img/foot/sns_icon_telegram@2x.png"></span>
               <span>Telegram</span>
             </a>
             </li>
             <li class="col-xs-6 col-sm-12">
               <a href="https://github.com/MediShares" target="_blank">
-              <span class="contact-icon"><img src="static/img/icon/sns_icon_github@2x.png"></span>
+              <span class="contact-icon"><img src="static/img/foot/sns_icon_github@2x.png"></span>
               <span>GitHub</span>
             </a>
             </li>
             <li class="col-xs-6 col-sm-12">
               <a :href="$t('twitter_link')" target="_blank">
-              <span class="contact-icon"><img src="static/img/icon/sns_icon_twitter@2x.png"></span>
+              <span class="contact-icon"><img src="static/img/foot/sns_icon_twitter@2x.png"></span>
               <span>Twitter</span>
             </a>
             </li>
@@ -34,13 +34,13 @@
             </li>
             <li class="col-xs-6 col-sm-12">
               <a href="mailto:hello@medishares.org">
-              <span class="contact-icon"><img src="static/img/icon/sns_icon_email@2x.png"></span>
+              <span class="contact-icon"><img src="static/img/foot/sns_icon_email@2x.png"></span>
               <span>{{$t('email')}}</span>
             </a>
             </li>
             <li class="col-xs-6 col-sm-12">
               <a :href="$t('blog_link')" target="_blank">
-              <span class="contact-icon"><img src="static/img/icon/sns_icon_blog@2x.png"></span>
+              <span class="contact-icon"><img src="static/img/foot/sns_icon_blog@2x.png"></span>
               <span>{{$t('blog')}}</span>
               </a>
             </li>

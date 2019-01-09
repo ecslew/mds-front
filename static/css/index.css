@@ -16,6 +16,10 @@
   src: url("../fonts/Gotham-Medium.otf");
 }
 
+:root {
+  --primaryColor: #4CD964;
+}
+
 html,
 body {
   overflow-x: hidden;
@@ -80,7 +84,7 @@ ul {
 }
 
 .main-color {
-  color: #00d102!important;
+  color: var(--primaryColor)!important;
 }
 
 .project-container {
@@ -112,7 +116,7 @@ ul {
   padding: 16px 32px;
   line-height: 1.43;
   border-radius: 2px;
-  background: #00d102;
+  background: var(--primaryColor);
   margin-top: 64px;
   font-family: Gotham-Medium;
   text-transform: uppercase;
@@ -136,12 +140,18 @@ ul {
 }
 
 .progress-bar {
-  background: #00d102;
+  background: var(--primaryColor);
   box-shadow: none;
 }
 
 
 /* 输入框 */
+
+label {
+  font-family: Gotham-Medium;
+  margin: 32px 0 16px;
+  line-height: 1.43;
+}
 
 .basic-input {
   display: block;
@@ -157,15 +167,43 @@ ul {
 }
 
 .basic-group .basic-input {
-  padding-right: 60px;
+  padding-right: 40px;
 }
 
-.basic-group:after {
-  content: 'EUSD';
+.basic-group .caret {
   position: absolute;
-  top: 14px;
-  right: 24px;
-  color: #000;
+  right: 8px;
+  top: 21px;
+  z-index: 10;
+  margin: 0;
+}
+
+#targetToken {
+  position: absolute;
+  top: 0;
+  right: 16px;
+  height: 100%;
+  border: none;
+  background: #e1e6e9;
+  z-index: 10;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+}
+
+.target-token {
+  position: absolute;
+  right: 0;
+  top: 0;
+  line-height: 48px;
+  background: #e1e6e9;
+  padding: 0 16px;
+}
+
+.basic-form .start {
+  margin: 0;
+  width: 100%;
+  text-align: center;
 }
 
 

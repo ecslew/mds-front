@@ -23,6 +23,7 @@
   <contact></contact>
   <foot></foot>
   <loading v-if="!isLoaded"></loading>
+  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -33,19 +34,24 @@ import roadmap from '@/base/roadmap'
 import contact from '@/base/contact'
 import foot from '@/base/foot'
 import user from 'static/js/user'
+import mdsToast from '@/base/toast'
 export default {
   data() {
     return {
       url: '/apiCrowdfunding/homePage?page=1',
       transferUrl: '/apiEos/getCrowdfundingTransfer?account=',
       programs: [],
-      isLoaded: false
+      isLoaded: false,
+      toastInfo: ''
     }
   },
   mounted() {
     this.getPrograms()
   },
   methods: {
+    infoByToast: function (val) {
+      this.toastInfo = val
+    },
     getPrograms() {
       this.$http.get(this.globalData.domain + this.url).then((res) => {
         if (res.data.success) {
@@ -59,9 +65,14 @@ export default {
     },
     createProject() {
       user.getAccount().then(res => {
+        $(".currentAccount").html(res.name)
+        $('#login').modal('hide')
+        $(".login").hide()
+        $(".personal").show()
         this.$router.push('/projectCreate')
-      }, err => {
-        alert(err)
+      }, () => {
+        // 未安装 scatter 或 登录失败
+        this.toastInfo = this.$t('connect_scatter')
       })
     }
   },
@@ -70,7 +81,8 @@ export default {
     contact,
     foot,
     projectList,
-    loading
+    loading,
+    mdsToast
   }
 }
 </script>

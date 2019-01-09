@@ -17,6 +17,7 @@
   </div>
   <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
   <loading v-if="!isLoaded"></loading>
+  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -27,6 +28,7 @@ import alertModal from '@/base/alert'
 import myprojectList from '@/base/myproject-list'
 import user from 'static/js/user'
 import util from 'static/js/util'
+import mdsToast from '@/base/toast'
 export default {
   data() {
     return {
@@ -36,13 +38,17 @@ export default {
       alertTitle: '',
       isBacked: false,
       programs: [],
-      isLoaded: false
+      isLoaded: false,
+      toastInfo: ''
     }
   },
   mounted() {
     this.getProject()
   },
   methods: {
+    infoByToast: function (val) {
+      this.toastInfo = val
+    },
     getProject() {
       let _this = this;
       user.getAccount().then((res) => {
@@ -63,8 +69,9 @@ export default {
           })
           _this.programs = res.rows
         }, 'json')
-      }, (err) => {
-        alert(err)
+      }, () => {
+        // 未安装 scatter 或 登录失败
+        this.toastInfo = this.$t('connect_scatter')
       })
     },
     deleteProject(val, title, id) {
@@ -107,8 +114,9 @@ export default {
             console.log(error)
           }
         )
-      }, (err) => {
-        alert(err)
+      }, () => {
+        // 未安装 scatter 或 登录失败
+        this.toastInfo = this.$t('connect_scatter')
       })
     }
   },
@@ -116,7 +124,8 @@ export default {
     myprojectList,
     alertModal,
     loading,
-    blankPage
+    blankPage,
+    mdsToast
   }
 }
 </script>

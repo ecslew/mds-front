@@ -1,4 +1,4 @@
-import globalData from 'static/js/config-pro.js'
+import globalData from 'static/js/config.js'
 import Eos from 'eosjs'
 
 class User {
@@ -34,7 +34,7 @@ class User {
           });
 
         } else {
-          reject('connect fail');
+          reject('connectFail');
         }
       });
     });
@@ -52,11 +52,11 @@ class User {
               return resolve(this.currentAccount)
             }
           } else {
-            reject('connect fail')
+            reject('connectFail')
           }
         });
       } else {
-        reject('connect fail');
+        reject('connectFail');
       }
     })
 

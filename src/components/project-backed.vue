@@ -16,6 +16,7 @@
     </div>
   </div>
   <loading v-if="!isLoaded"></loading>
+  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -24,19 +25,24 @@ import loading from '@/base/loading'
 import blankPage from '@/base/blank-page'
 import myprojectList from '@/base/myproject-list'
 import user from 'static/js/user'
+import mdsToast from '@/base/toast'
 export default {
   data() {
     return {
       isBacked: true,
       currentAccount: '',
       programs: [],
-      isLoaded: false
+      isLoaded: false,
+      toastInfo: ''
     }
   },
   mounted() {
     this.getSupported();
   },
   methods: {
+    infoByToast: function (val) {
+      this.toastInfo = val
+    },
     getSupported() {
       let _this = this;
       user.getAccount().then((currentAccount) => {
@@ -57,13 +63,17 @@ export default {
             })
           }
         }, 'json')
+      }, () => {
+        // 未安装 scatter 或 登录失败
+        this.toastInfo = this.$t('connect_scatter')
       })
     }
   },
   components: {
     myprojectList,
     loading,
-    blankPage
+    blankPage,
+    mdsToast
   }
 }
 </script>
