@@ -58,30 +58,30 @@
           </select>
           <span class="caret"></span>
         </div>
-          <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
-          <div v-show="isShow">
-            <!-- 最低筹款金额 ，非必须 low  -->
-            <label>{{$t('low_amount')}}</label>
-            <p class="basic-group">
-              <input class="basic-input" type="number" v-model="modify.low" :placeholder="$t('low_amount_pl')">
-              <span class="target-token">{{addData.targetToken}}</span>
-            </p>
-            <!-- 最高筹款金额 ，非必须 high-->
-            <label>{{$t('high_amount')}}</label>
-            <p class="basic-group">
-              <input class="basic-input" type="number" v-model="modify.high" :placeholder="$t('high_amount_pl')">
-              <span class="target-token">{{addData.targetToken}}</span>
-            </p>
-          </div>
-          <!-- 筹款结束时间 endDate-->
-          <label>{{$t('end_date')}}</label>
-          <input class="basic-input" type="date" v-model="modify.endTime" :placeholder="$t('end_date_pl')" @change="timeToStamp">
-          <input name="endDate" class="hide" type="text" v-model="endTimeStamp" >
-          <div class="agree">
-            <input type="checkbox" v-model="checked">
-            <div>{{$t('fundraising_rules')}}</div>
-          </div>
-          <a class="start" @click="nextStep">{{$t('next_step')}}</a>
+        <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
+        <div v-show="isShow">
+          <!-- 最低筹款金额 ，非必须 low  -->
+          <label>{{$t('low_amount')}}</label>
+          <p class="basic-group">
+            <input class="basic-input" type="number" v-model="modify.low" :placeholder="$t('low_amount_pl')">
+            <span class="target-token">{{modify.targetToken}}</span>
+          </p>
+          <!-- 最高筹款金额 ，非必须 high-->
+          <label>{{$t('high_amount')}}</label>
+          <p class="basic-group">
+            <input class="basic-input" type="number" v-model="modify.high" :placeholder="$t('high_amount_pl')">
+            <span class="target-token">{{modify.targetToken}}</span>
+          </p>
+        </div>
+        <!-- 筹款结束时间 endDate-->
+        <label>{{$t('end_date')}}</label>
+        <input class="basic-input" type="date" v-model="modify.endTime" :placeholder="$t('end_date_pl')" @change="timeToStamp">
+        <input name="endDate" class="hide" type="text" v-model="endTimeStamp" >
+        <div class="agree">
+          <input type="checkbox" v-model="checked">
+          <div>{{$t('fundraising_rules')}}</div>
+        </div>
+        <a class="start" @click="nextStep">{{$t('next_step')}}</a>
       </form>
     </div>
   </div>
@@ -387,7 +387,7 @@ export default {
           }
         )
       }, () => {
-         // 未安装 scatter 或 登录失败
+        // 未安装 scatter 或 登录失败
         this.toastInfo = this.$t('connect_scatter')
       })
     },
@@ -412,19 +412,19 @@ export default {
     },
     changeTargetToken(event) {
       const target = event.target.value
-      this.addData.targetToken = target
+      this.modify.targetToken = target
       switch (target) {
         case 'EOS':
-          this.addData.targetTokenDecimals = 4
-          this.addData.targetTokenContract = 'eosio.token'
+          this.modify.targetTokenDecimals = 4
+          this.modify.targetTokenContract = 'eosio.token'
           break;
         case 'EMDS':
-          this.addData.targetTokenDecimals = 4
-          this.addData.targetTokenContract = 'medisharesbp'
+          this.modify.targetTokenDecimals = 4
+          this.modify.targetTokenContract = 'medisharesbp'
           break;
         default:
-          this.addData.targetTokenDecimals = 8
-          this.addData.targetTokenContract = 'bitpietokens'
+          this.modify.targetTokenDecimals = 8
+          this.modify.targetTokenContract = 'bitpietokens'
           break;
       }
     }
@@ -446,12 +446,6 @@ export default {
 
 .basic-form {
   padding: 32px 0;
-}
-
-.basic-form label {
-  font-family: Gotham-Medium;
-  margin: 32px 0 16px;
-  line-height: 1.43;
 }
 
 .photo-container {
@@ -547,10 +541,6 @@ export default {
 
 .agree input:checked+div {
   background: url('../../static/img/icon/web_icon_agreement_yes.png')no-repeat left center/18px;
-}
-
-.start {
-  margin: 0;
 }
 
 .modal-content p {

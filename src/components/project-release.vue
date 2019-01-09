@@ -393,12 +393,6 @@ export default {
   padding: 32px 0;
 }
 
-.basic-form label {
-  font-family: Gotham-Medium;
-  margin: 32px 0 16px;
-  line-height: 1.43;
-}
-
 .photo-container {
   border: 1px solid #e7ecf0;
   border-radius: 4px;
@@ -492,10 +486,6 @@ export default {
 
 .agree input:checked+div {
   background: url('../../static/img/icon/web_icon_agreement_yes.png')no-repeat left center/18px;
-}
-
-.start {
-  margin: 0;
 }
 
 .modal-content p {

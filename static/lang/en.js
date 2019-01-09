@@ -190,5 +190,11 @@ module.exports = {
   confirm: "Confirm",
   no_project: "No project",
   to_publish_projects: "To publish projects",
-  connect_scatter: "Please connect scatter first"
+  connect_scatter: "Please connect scatter first",
+  name_of_consignee: "Name of consignee",
+  name_of_consignee_pl: "Enter the name of the consignee",
+  shipping_address: "Shipping address",
+  shipping_address_pl: "Enter your shipping address",
+  contact: "contact",
+  contact_pl: "Fill in the contact information"
 }

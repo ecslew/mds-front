@@ -190,5 +190,11 @@ module.exports = {
   confirm: "确定",
   no_project: "暂无项目",
   to_publish_projects: "现在去发起项目",
-  connect_scatter: "请先连接scatter插件"
+  connect_scatter: "请先连接scatter插件",
+  name_of_consignee: "收件人姓名",
+  name_of_consignee_pl: "请输入收件人姓名",
+  shipping_address: "收件人地址",
+  shipping_address_pl: "请输入收件人地址",
+  contact: "联系电话",
+  contact_pl: "请输入联系电话"
 }

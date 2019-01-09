@@ -67,12 +67,19 @@
         <h4 class="modal-title">{{$t('payment')}}</h4>
         <label>{{$t('pay_amount')}}</label>
         <p class="basic-group">
-          <input class="basic-input" id="amount" type="number" v-model="amount" name="amount" :placeholder="$t('pay_amount_pl')" @blur="getEosPrice">
+          <input class="basic-input" type="number" v-model="amount" :placeholder="$t('pay_amount_pl')" @blur="getEosPrice">
+          <span class="target-token">{{programs.targetToken}}</span>
+          <span class="equal">≈${{totalEosPriceUsd}}</span>
         </p>
-          <div class="equal">≈${{totalEosPriceUsd}}</div>
-          <label>{{$t('note')}}</label>
-          <textarea class="basic-input" rows="4" v-model="note" id="note" name="note" :placeholder="$t('note_pl')"></textarea>
-          <div class="payment" @click="payFunc">{{$t('determine')}}</div>
+        <label>{{$t('note')}}</label>
+        <textarea class="basic-input" rows="4" v-model="note" :placeholder="$t('note_pl')"></textarea>
+        <label>{{$t('name_of_consignee')}}</label>
+        <input type="text" class="basic-input" v-model="consignee_name" :placeholder="$t('name_of_consignee_pl')">
+        <label>{{$t('shipping_address')}}</label>
+        <input type="text" class="basic-input" v-model="address" :placeholder="$t('shipping_address_pl')">
+        <label>{{$t('contact')}}</label>
+        <input type="tel" class="basic-input" v-model="telephone" :placeholder="$t('contact_pl')">
+        <div class="payment" @click="payFunc">{{$t('determine')}}</div>
       </div>
     </div>
   </div>
@@ -95,8 +102,8 @@ export default {
       alertTitle: '',
       toastInfo: '',
       currentAccount: '',
-      amount: '',
-      note: '',
+      amount: '', //支付金额
+      note: '', //支付备注
       link: window.location.href,
       copyBtn: null, //存储初始化复制按钮事件
       programs: {
@@ -121,7 +128,10 @@ export default {
       },
       link_isShow: false,
       isActive: true,
-      totalEosPriceUsd: 0
+      totalEosPriceUsd: 0,
+      consignee_name: '', //收货人姓名
+      address: '', //收货人地址
+      telephone: '' //收货人联系电话
     }
   },
   mounted() {
@@ -175,8 +185,8 @@ export default {
     },
     payFunc() {
       let _this = this;
-      let amount = $('#amount').val();
-      let note = $('#note').val();
+      let amount = this.amount
+      let note = this.note
 
       // 判断金额
       if (amount - 0 < _this.programs.low) {
@@ -316,7 +326,7 @@ export default {
     getEosPrice() {
       let _this = this;
       $.get('https://api.coinmarketcap.com/v1/ticker/eos/?convert=USD', {}, function (res) {
-        _this.totalEosPriceUsd = parseFloat(res[0]['price_usd'] * $('#amount').val()).toFixed(2);
+        _this.totalEosPriceUsd = parseFloat(res[0]['price_usd'] * _this.amount).toFixed(2);
       }, 'json')
     }
   },
@@ -419,7 +429,7 @@ export default {
 }
 
 .payment {
-  background: #00d102;
+  background: var(--primaryColor);
   color: #fff;
   height: 52px;
   line-height: 52px;
@@ -457,7 +467,7 @@ export default {
   left: 0;
   width: 18px;
   height: 4px;
-  background: #00d102;
+  background: var(--primaryColor);
   border-radius: 4px;
 }
 
@@ -517,19 +527,15 @@ export default {
   margin: 8px 0 32px;
 }
 
-.modal label {
-  font-family: Gotham-Medium;
-  margin: 8px 0 16px;
-}
-
 .modal .payment {
   margin-top: 64px;
 }
 
 .equal {
-  text-align: right;
+  position: absolute;
+  right: 0;
+  top: 52px;
   color: #a9b9c1;
-  margin-top: 4px;
 }
 
 @media(max-width: 768px) {
