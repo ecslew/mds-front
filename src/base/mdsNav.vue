@@ -40,7 +40,7 @@
           <li @click="removeWh100"><a :href="$t('news_link')" target="_blank">{{$t("news")}}</a></li>
           <li @click="removeWh100"><a :href="$t('mathwallet_link')" target="_blank">{{$t("MathWallet")}}</a></li>
           <div class="dropdown">
-            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button">{{$t("lang")}}<span class="caret"></span></a>
+            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button">{{$t("lang")}}<span class="tri"></span></a>
             <ul class="dropdown-menu">
               <li><a href="javascript:;" name="cn" @click="changeLang">中文</a></li>
               <li><a href="javascript:;" name="en" @click="changeLang">English</a></li>
@@ -49,7 +49,7 @@
           </div>
           <div class="login pc-login pull-left hidden-xs" @click="login">{{$t("login")}}</div>
           <div class="dropdown personal hidden-xs">
-            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="caret"></span></a>
+            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="tri"></span></a>
             <ul class="dropdown-menu">
               <li @click="removeWh100">
                 <router-link to="/projectRelease">{{$t("create_a_project")}}</router-link>
@@ -235,12 +235,39 @@ nav .open>a {
   text-align: center;
   border: none;
   padding: 10px 16px;
-  right: auto;
+  margin-top: 15px;
+}
+
+.dropdown-menu:after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-bottom-color: #fff;
+  right: 12px;
 }
 
 .header-nav .dropdown-menu>li>a {
   padding: 4px 0;
   color: #2c363f !important;
+
+}
+
+.personal .dropdown-menu {
+  width: 344px;
+  padding: 0;
+}
+
+.personal .dropdown-menu>li>a {
+  padding: 24px 0;
+  border-bottom: 1px solid #f2f5f6;
+  font-family: Gotham-Medium;
+}
+
+.personal .dropdown-menu>li:last-of-type>a {
+  border: none;
 }
 
 .pc-login {
@@ -293,6 +320,12 @@ nav .open>a {
 
   .personal {
     float: right;
+  }
+
+  .personal .dropdown-menu {
+    width: calc(100vw - 30px);
+    left: auto;
+    right: -45px;
   }
 
   .personal a {

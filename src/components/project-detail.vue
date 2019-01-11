@@ -26,15 +26,22 @@
         <p class="pro-key">{{$t("backers")}}</p>
         <h4 class="pro-value">{{programs.restDays}} {{$t("day")}} </h4>
         <p class="pro-key">{{$t("for_the_rest")}}</p>
-        <div class="payment" @click="payModal">{{$t('payment')}}</div>
+        <div class="payment supportBtn" @click="payModal">{{$t('payment')}}</div>
       </div>
     </div>
   </div>
   <section class="detail-info">
     <div class="tab">
       <div class="container">
-        <a :class="{'active':isActive}" @click='toggleDetails'>{{$t('details')}}</a>
-        <a :class="{'active':!isActive}" @click='toggleTransfer'>{{$t('transfer')}}</a>
+        <div class="row">
+          <div class="col-sm-8">
+            <a :class="{'active':isActive}" @click='toggleDetails'>{{$t('details')}}</a>
+            <a :class="{'active':!isActive}" @click='toggleTransfer'>{{$t('transfer')}}</a>
+          </div>
+          <div class="col-sm-4 hidden-xs">
+            <div class="payment" @click="payModal">{{$t('payment')}}</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="container detail-info-container">
@@ -138,10 +145,42 @@ export default {
   mounted() {
     this.copyBtn = new this.clipboard(this.$refs.copy);
     this.getProjectInfo();
+    // 支付按钮悬浮
+    this.togglePayment();
+    this.tabFix();
+    $(window).scroll(() => {
+      this.togglePayment();
+      this.tabFix();
+    })
   },
   methods: {
-    infoByToast: function (val) {
+    infoByToast(val) {
       this.toastInfo = val
+    },
+    togglePayment() {
+      if ($('.supportBtn')[0]) {
+        if ($(window).scrollTop() > ($('.supportBtn').offset().top - $('.mds-nav').outerHeight())) {
+          $('.tab').addClass('scroll')
+        } else {
+          $('.tab').removeClass('scroll')
+        }
+      }
+    },
+    tabFix() {
+      if ($('.tab')[0]) {
+        let disY = $(window).scrollTop() - ($('.detail-info').offset().top - $('.mds-nav').outerHeight())
+        if (disY > 0) {
+          $('.header-nav').css('top', -disY + 'px')
+          if (disY >= 50) {
+            $('.detail-info').addClass('fixed')
+          } else {
+            $('.detail-info').removeClass('fixed')
+          }
+        } else {
+          $('.header-nav').css('top', '0px')
+          $('.detail-info').removeClass('fixed')
+        }
+      }
     },
     toggleDetails() {
       this.isActive = true
@@ -456,13 +495,27 @@ export default {
 
 .tab {
   border: 1px solid #e7ecf0;
+  overflow: hidden;
+}
+
+.detail-info.fixed {
+  padding-top: 80px;
+}
+
+.detail-info.fixed .tab {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1030;
+  background: #fff;
 }
 
 .tab a {
   color: #2c363f;
   font-size: 20px;
   font-family: Gotham-Medium;
-  line-height: 96px;
+  line-height: 78px;
   display: inline-block;
   width: 178px;
   position: relative;
@@ -478,6 +531,15 @@ export default {
   height: 4px;
   background: var(--primaryColor);
   border-radius: 4px;
+}
+
+.tab .payment {
+  transform: translateY(78px);
+  transition: transform 1s;
+}
+
+.tab.scroll .payment {
+  transform: translateY(13px);
 }
 
 .detail-info-container {

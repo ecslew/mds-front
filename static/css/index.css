@@ -83,6 +83,19 @@ ul {
   color: #fff;
 }
 
+.tri {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 2px;
+  vertical-align: middle;
+  background: url(../img/icon/tri.png)no-repeat center/contain;
+}
+
+.ishome .tri {
+  background: url(../img/icon/tri_white.png)no-repeat center/contain;
+}
+
 .main-color {
   color: var(--primaryColor)!important;
 }
@@ -170,10 +183,10 @@ label {
   padding-right: 40px;
 }
 
-.basic-group .caret {
+.basic-group .tri {
   position: absolute;
-  right: 8px;
-  top: 21px;
+  right: 10px;
+  top: 16px;
   z-index: 10;
   margin: 0;
 }
@@ -380,6 +393,9 @@ label {
 /*小于768px屏幕 手机 xs*/
 
 @media (max-width: 767px) {
+  .ishome .tri {
+    background: url(../img/icon/tri.png)no-repeat center/contain;
+  }
   .project-container {
     padding: 16px;
   }

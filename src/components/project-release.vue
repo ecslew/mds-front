@@ -50,7 +50,7 @@
             <option value="EETH">EETH</option>
             <option value="EBTC">EBTC</option>
           </select>
-          <span class="caret"></span>
+          <span class="tri"></span>
         </div>
         <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
         <div v-show="isShow">
@@ -73,7 +73,7 @@
         <input name="endDate" class="hide" type="text" v-model="addData.endTimeStamp" >
         <div class="agree">
           <input type="checkbox" v-model="checked">
-          <div>{{$t('fundraising_rules')}}</div>
+          <div data-toggle="modal" data-target="#rule">{{$t('fundraising_rules')}}</div>
         </div>
         <a class="start" @click="nextStep">{{$t('next_step')}}</a>
       </form>
@@ -88,6 +88,14 @@
         <h4 class="modal-title">{{$t('release_success')}}</h4>
         <p>{{$t('release_success_tip')}}</p>
         <router-link to="/" data-dismiss="modal" class="modal-close">{{$t('confirm')}}</router-link>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="rule">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <div class="platform_rules" v-html="$t('platform_rules')"></div>
       </div>
     </div>
   </div>
@@ -473,13 +481,15 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 30px;
   height: 100%;
   opacity: 0;
   z-index: 10;
 }
 
 .agree div {
+  cursor: pointer;
+  text-decoration: underline;
   padding-left: 30px;
   background: url('../../static/img/icon/web_icon_agreement_no.png')no-repeat left center/18px;
 }
@@ -493,6 +503,10 @@ export default {
   color: #607d8b;
   font-size: 16px;
   margin: 8px 0 196px;
+}
+
+#rule .modal-content {
+  padding: 24px;
 }
 
 @media (max-width: 768px) {
