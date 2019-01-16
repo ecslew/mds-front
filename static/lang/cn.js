@@ -54,7 +54,7 @@ module.exports = {
   join_group: "加入 MediShares 官方微信群",
   group_icon: "http://medishares.oss-cn-hongkong.aliyuncs.com/logo/qr_code.png",
   title: "发起您的第一个区块链普惠项目",
-  slogan: "全球首家相互保障+普惠金融+稳定币电商平台",
+  slogan: "相互保障+普惠金融+稳定币电商平台",
   start_project: "发起项目",
   programs_title: "精选项目",
   complete: "目标",
