@@ -159,7 +159,7 @@ export default {
     },
     togglePayment() {
       if ($('.supportBtn')[0]) {
-        if ($(window).scrollTop() > ($('.supportBtn').offset().top - $('.mds-nav').outerHeight())) {
+        if ($(window).scrollTop() > ($('.supportBtn').offset().top)) {
           $('.tab').addClass('scroll')
         } else {
           $('.tab').removeClass('scroll')

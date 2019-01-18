@@ -13,6 +13,10 @@
           <li><a target="_blank" href="https://www.cex.com/market/mds_usdt"><img src="static/img/exchange/cex.com@2x.png"></a></li>
           <li><a target="_blank" href="https://otcbtc.com/sell_offers?utf8=%E2%9C%93&currency=mds&fiat_currency=cny"><img src="static/img/exchange/OTCBTC@2x.png"></a></li>
         </ul>
+        <ul>
+          <li><a target="_blank" href="https://www.fcoin.com/"><img style="height:80px" src="static/img/exchange/fcoin.jpg"></a></li>
+          <li><a target="_blank" href="https://www.fubt.top/"><img style="height:70px" src="static/img/exchange/fubt.jpg"></a></li>
+        </ul>
       </div>
     </div>
   </div>

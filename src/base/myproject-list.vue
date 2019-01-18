@@ -1,57 +1,63 @@
 <template>
 <div class="myproject-list">
-  <div class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + photos +')'}">
-    <!-- 项目状态，0：审核中，1：审核未通过，2：筹款中，3：筹款结束 -->
-    <div class="status" v-if="status==1 || status == 0">
-      <!-- 审核未通过 1-->
-      <div v-if="status==1">
-        <p>{{$t('Audit_failed')}}</p>
-        <p class="why" data-toggle="modal" :data-target="'#reason'+index">{{$t('not_pass_reason')}}</p>
-      </div>
-      <!-- 审核中 -->
-      <div v-if='status==0'>
-        <p>{{$t('in_review')}}</p>
-      </div>
+  <!-- 我支持的项目 -->
+  <router-link :to="{path: '/projectDetail',query: {id: id}}" v-if="isBacked">
+    <div class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + photos +')'}"></div>
+    <div class="info col-sm-9">
+      <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
+      <p class="time">{{$t('release_time')}}: {{time}}</p>
+      <p class="btn-box"><span>{{$t('view_project')}}</span></p>
     </div>
-  </div>
-  <div class="info col-sm-9">
-    <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
-    <p class="time">{{$t('release_time')}}: {{time}}</p>
-      <div class="btn-box">
-        <!-- 我支持的项目 -->
-        <template v-if="isBacked">
-          <router-link :to="{
-            path: '/projectDetail',
-            query: {
-              id: id
-            }
-          }">{{$t('view_project')}}</router-link>
-        </template>
-        <!-- 我的项目 -->
-        <template v-else>
-          <!-- 审核通过 -->
-          <template v-if="status==2||status==3">
-            <router-link :to="{
-              path: '/projectDetail',
-              query: {
-                id: id
-              }
-            }" class="main-color">{{$t('approved')}}</router-link>
-          </template>
-          <!-- 待审核 -->
-          <template v-else>
-            <router-link class="editor" :to="{
-              path: '/projectModify',
-              query: {
-                eosID: id
-              }
-            }">{{$t('editor')}}</router-link>
-            <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
-          </template>
-        </template>
+  </router-link>
+  <!-- 我的项目 -->
+  <template v-else>
+    <!-- 项目状态，0：审核中，1：审核未通过，2：筹款中，3：筹款结束 -->
+    <!-- 审核中 -->
+    <template v-if="status == 0">
+      <router-link :to="{path: '/projectDetail',query: {id: id}}" class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + photos +')'}">
+        <div class="status">
+          <div>
+            <p>{{$t('in_review')}}</p>
+          </div>
+        </div>
+      </router-link>
+      <div class="info col-sm-9">
+        <h4 style="-webkit-box-orient: vertical;"><router-link :to="{path: '/projectDetail',query: {id: id}}">{{title}}</router-link></h4>
+        <router-link :to="{path: '/projectDetail',query: {id: id}}" class="time">{{$t('release_time')}}: {{time}}</router-link>
+        <p class="btn-box">
+          <router-link class="editor" :to="{path: '/projectModify',query: {eosID: id}}">{{$t('editor')}}</router-link>
+          <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
+        </p>
       </div>
-  </div>
-
+    </template>
+    <!-- 审核未通过 -->
+    <template v-if="status==1">
+      <div class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + photos +')'}">
+        <div class="status">
+          <div>
+            <p>{{$t('Audit_failed')}}</p>
+            <p class="why" data-toggle="modal" :data-target="'#reason'+index">{{$t('not_pass_reason')}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="info col-sm-9">
+        <h4 style="-webkit-box-orient: vertical;"><router-link :to="{path: '/projectDetail',query: {id: id}}">{{title}}</router-link></h4>
+        <router-link :to="{path: '/projectDetail',query: {id: id}}" class="time">{{$t('release_time')}}: {{time}}</router-link>
+        <p class="btn-box">
+          <router-link class="editor" :to="{path: '/projectModify',query: {eosID: id}}">{{$t('editor')}}</router-link>
+          <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
+        </p>
+      </div>
+    </template>
+    <router-link :to="{path: '/projectDetail',query: {id: id}}" v-if="status==2||status==3">
+      <div class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + photos +')'}"></div>
+      <div class="info col-sm-9">
+        <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
+        <p class="time">{{$t('release_time')}}: {{time}}</p>
+        <p class="btn-box"><span class="main-color">{{$t('approved')}}</span></p>
+      </div>
+    </router-link>
+  </template>
   <div class="modal text-center" :id="'reason'+index">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -61,7 +67,6 @@
       </div>
     </div>
   </div>
-
 </div>
 </template>
 
@@ -130,7 +135,9 @@ export default {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
-
+.info h4 a{
+  color: #2c363f;
+}
 .info .time {
   color: #607d8b;
 }
@@ -142,7 +149,7 @@ export default {
   line-height: 1.5;
 }
 
-.btn-box a {
+.btn-box a,.btn-box span {
   display: inline-block;
   padding-right: 32px;
   color: #2196f3;
@@ -173,15 +180,18 @@ export default {
 .why {
   text-decoration: underline;
   font-family: Gotham-Book;
+  cursor: pointer;
 }
 
 #reason .start {
   margin-top: 40px;
   padding: 16px 60px;
 }
-.modal .modal-content{
+
+.modal .modal-content {
   padding: 24px;
 }
+
 @media (max-width: 767px) {
   .info .complete {
     padding-bottom: 28px;
