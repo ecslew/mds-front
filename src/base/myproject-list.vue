@@ -6,7 +6,7 @@
     <div class="info col-sm-9">
       <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
       <p class="time">{{$t('release_time')}}: {{time}}</p>
-        <p class="btn-box"><span>{{$t('view_project')}}</span></p>
+      <p class="btn-box"><span>{{$t('view_project')}}</span></p>
     </div>
   </router-link>
   <!-- 我的项目 -->
@@ -22,14 +22,12 @@
         </div>
       </router-link>
       <div class="info col-sm-9">
-        <h4 style="-webkit-box-orient: vertical;">
-          <router-link :to="{path: '/projectDetail',query: {id: id}}">{{title}}</router-link>
-        </h4>
+        <h4 style="-webkit-box-orient: vertical;"><router-link :to="{path: '/projectDetail',query: {id: id}}">{{title}}</router-link></h4>
         <router-link :to="{path: '/projectDetail',query: {id: id}}" class="time">{{$t('release_time')}}: {{time}}</router-link>
-          <p class="btn-box">
-            <router-link class="editor" :to="{path: '/projectModify',query: {eosID: id}}">{{$t('editor')}}</router-link>
-            <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
-          </p>
+        <p class="btn-box">
+          <router-link class="editor" :to="{path: '/projectModify',query: {eosID: id}}">{{$t('editor')}}</router-link>
+          <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
+        </p>
       </div>
     </template>
     <!-- 审核未通过 -->
@@ -43,14 +41,12 @@
         </div>
       </div>
       <div class="info col-sm-9">
-        <h4 style="-webkit-box-orient: vertical;">
-          <router-link :to="{path: '/projectDetail',query: {id: id}}">{{title}}</router-link>
-        </h4>
+        <h4 style="-webkit-box-orient: vertical;"><router-link :to="{path: '/projectDetail',query: {id: id}}">{{title}}</router-link></h4>
         <router-link :to="{path: '/projectDetail',query: {id: id}}" class="time">{{$t('release_time')}}: {{time}}</router-link>
-          <p class="btn-box">
-            <router-link class="editor" :to="{path: '/projectModify',query: {eosID: id}}">{{$t('editor')}}</router-link>
-            <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
-          </p>
+        <p class="btn-box">
+          <router-link class="editor" :to="{path: '/projectModify',query: {eosID: id}}">{{$t('editor')}}</router-link>
+          <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
+        </p>
       </div>
     </template>
     <router-link :to="{path: '/projectDetail',query: {id: id}}" v-if="status==2||status==3">
@@ -58,7 +54,7 @@
       <div class="info col-sm-9">
         <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
         <p class="time">{{$t('release_time')}}: {{time}}</p>
-          <p class="btn-box"><span class="main-color">{{$t('approved')}}</span></p>
+        <p class="btn-box"><span class="main-color">{{$t('approved')}}</span></p>
       </div>
     </router-link>
   </template>
