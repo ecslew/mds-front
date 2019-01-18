@@ -57,20 +57,22 @@ export default {
 .loginInfo {
   padding: 96px 24px 32px;
   font-family: Gotham-Medium;
+  font-weight: 500;
   font-size: 16px;
   line-height: 1.5;
-  color: #607d8b;
+  color: var(--blueGrey);
 }
 
 .no-scatter {
   padding: 32px 0 8px;
   font-size: 16px;
   font-family: Gotham-Medium;
-  color: #607d8b;
+  font-weight: 500;
+  color: var(--blueGrey);
 }
 
 .no-scatter a {
-  color: #2196f3 !important;
+  color: var(--blueColor) !important;
 }
 
 @media(max-width: 768px) {

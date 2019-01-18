@@ -69,7 +69,7 @@ export default {
         $('#login').modal('hide')
         $(".login").hide()
         $(".personal").show()
-        this.$router.push('/projectCreate')
+        this.$router.push('/projectStep')
       }, () => {
         // 未安装 scatter 或 登录失败
         this.toastInfo = this.$t('connect_scatter')

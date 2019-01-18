@@ -18,28 +18,40 @@ export default new Router({
       path: '/projectCreate',
       component: resolve => require(['@/components/project-create'], resolve)
     },
-    // 提交步骤
+    // 创建项目步骤
     {
-      path: '/projectSteps',
-      component: resolve => require(['@/components/project-steps'], resolve)
+      path: '/projectStep',
+      component: resolve => require(['@/components/project-step'], resolve)
     },
-    // 提交项目表单
+    // 发布项目
     {
       path: '/projectRelease',
-      component: resolve => require(['@/components/project-release'], resolve)
+      component: resolve => require(['@/components/project-release'], resolve),
+      props: (route) => ({
+        type: route.query.type
+      })
     },
     // 编辑项目
     {
       path: '/projectModify',
       component: resolve => require(['@/components/project-modify'], resolve),
       props: (route) => ({
-        eosID: route.query.eosID
+        eosID: route.query.eosID,
+        type: route.query.type
       })
     },
     // 项目详情
     {
       path: '/projectDetail',
       component: resolve => require(['@/components/project-detail'], resolve),
+      props: (route) => ({
+        id: route.query.id
+      })
+    },
+    // 购买产品
+    {
+      path: '/projectPurchase',
+      component: resolve => require(['@/components/project-purchase'], resolve),
       props: (route) => ({
         id: route.query.id
       })
@@ -58,6 +70,11 @@ export default new Router({
     {
       path: '/about',
       component: resolve => require(['@/components/about'], resolve)
+    },
+    // 地址管理
+    {
+      path: '/address',
+      component: resolve => require(['@/components/address'], resolve)
     }
   ]
 })

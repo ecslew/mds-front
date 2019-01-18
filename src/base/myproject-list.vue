@@ -114,12 +114,13 @@ export default {
 
 .info {
   padding: 16px;
-  color: #2c363f;
+  color: var(--darkColor);
   overflow: hidden;
 }
 
 .info h4 {
   font-family: Gotham-Medium;
+  font-weight: 500;
   font-size: 20px;
   height: 48px;
   margin-bottom: 8px;
@@ -132,32 +133,17 @@ export default {
 }
 
 .info .time {
-  color: #607d8b;
+  color: var(--blueGrey);
 }
 
-.btn-box {
-  margin-top: 24px;
-  font-size: 16px;
-  font-family: Gotham-Medium;
-  line-height: 1.5;
-}
 
-.btn-box a {
-  display: inline-block;
-  padding-right: 32px;
-  color: #2196f3;
-  cursor: pointer;
-}
-
-.btn-box .delete {
-  color: #f44336 !important;
-}
 
 .status {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   text-align: center;
   font-family: Gotham-Medium;
+  font-weight: 500;
   line-height: 1.7;
   height: 100%;
   position: relative;

@@ -1,5 +1,5 @@
 <template>
-<div class='my-project'>
+<div class='my-project project-container'>
   <div class="container">
     <div class="row">
       <div class="col-sm-10 col-sm-offset-1">
@@ -131,41 +131,4 @@ export default {
 </script>
 
 <style scoped>
-.my-project {
-  padding: 32px 0;
-}
-
-.my-project .container {
-  background: #fff;
-  padding: 40px 15px 80px;
-  border-radius: 4px;
-}
-
-.started {
-  font-size: 16px;
-  font-family: Gotham-Medium;
-  padding: 64px 0 8px;
-  border-bottom: 1px solid #e7ecf0;
-  margin-bottom: 36px;
-}
-
-.list {
-  padding: 12px 0;
-}
-
-@media (max-width: 767px) {
-  .my-project {
-    padding: 16px;
-  }
-
-  .started {
-    padding-top: 32px;
-    margin: 8px;
-  }
-
-  .list {
-    padding: 8px 0;
-  }
-
-}
 </style>

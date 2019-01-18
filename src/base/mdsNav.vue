@@ -16,13 +16,16 @@
           <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li>
-              <router-link to="/projectRelease">{{$t("create_a_project")}}</router-link>
+              <router-link to="/projectStep">{{$t("create_a_project")}}</router-link>
             </li>
             <li>
               <router-link to="/myProject">{{$t("my_projects")}}</router-link>
             </li>
             <li>
               <router-link to="/projectBacked">{{$t("backed_projects")}}</router-link>
+            </li>
+            <li>
+              <router-link to="/address">{{$t("address_manage")}}</router-link>
             </li>
             <li><a href="javascript:;" @click="logout">{{$t("logout")}}</a></li>
           </ul>
@@ -52,13 +55,16 @@
             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="tri"></span></a>
             <ul class="dropdown-menu">
               <li @click="removeWh100">
-                <router-link to="/projectRelease">{{$t("create_a_project")}}</router-link>
+                <router-link to="/projectStep">{{$t("create_a_project")}}</router-link>
               </li>
               <li @click="removeWh100">
                 <router-link to="/myProject">{{$t("my_projects")}}</router-link>
               </li>
               <li @click="removeWh100">
                 <router-link to="/projectBacked">{{$t("backed_projects")}}</router-link>
+              </li>
+              <li @click="removeWh100">
+                <router-link to="/address">{{$t("address_manage")}}</router-link>
               </li>
               <li @click="removeWh100"><a href="javascript:;" @click="logout">{{$t("logout")}}</a></li>
             </ul>
@@ -155,7 +161,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .mds-nav {
   height: 50px;
 }
@@ -187,8 +193,11 @@ export default {
 }
 
 .header-nav a {
-  color: #2c363f;
+  color: var(--darkColor);
   text-transform: capitalize;
+}
+
+.dropdown>a {
   display: inline-block;
 }
 
@@ -201,7 +210,7 @@ export default {
 }
 
 .navbar-toggle .icon-bar {
-  background: #2c363f;
+  background: var(--darkColor);
 }
 
 .ishome a {
@@ -251,7 +260,7 @@ nav .open>a {
 
 .header-nav .dropdown-menu>li>a {
   padding: 4px 0;
-  color: #2c363f !important;
+  color: var(--darkColor) !important;
 
 }
 
@@ -262,8 +271,9 @@ nav .open>a {
 
 .personal .dropdown-menu>li>a {
   padding: 24px 0;
-  border-bottom: 1px solid #f2f5f6;
+  border-bottom: 1px solid var(--bgColor);
   font-family: Gotham-Medium;
+  font-weight: 500;
 }
 
 .personal .dropdown-menu>li:last-of-type>a {
@@ -272,7 +282,7 @@ nav .open>a {
 
 .pc-login {
   padding: 6px 10px;
-  border: 1px solid #2c363f;
+  border: 1px solidvar(--darkColor);
   border-radius: 4px;
   margin: 8px 10px;
   text-transform: capitalize;
@@ -304,7 +314,7 @@ nav .open>a {
   }
 
   #mds-nav a {
-    color: #2c363f !important;
+    color: var(--darkColor) !important;
     padding: 0;
     height: 60px;
     line-height: 60px;
@@ -314,7 +324,7 @@ nav .open>a {
   .collapse-close {
     font-size: 28px;
     padding: 14px 20px;
-    color: #607d8b;
+    color: var(--blueGrey);
     text-align: right;
   }
 

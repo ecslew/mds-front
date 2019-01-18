@@ -56,7 +56,7 @@
               <div class="trans-info">
                 <p class="trans-amount">{{trans.amount}}</p>
                 <p class="address">{{trans.address}}</p>
-                <p class="trans-comments">{{trans.comments}}</p>
+                <p class="trans-comments" v-if="trans.comments">{{trans.comments}}</p>
                 <p class="trans-time">{{trans.time}}</p>
               </div>
             </div>
@@ -159,7 +159,7 @@ export default {
     },
     togglePayment() {
       if ($('.supportBtn')[0]) {
-        if ($(window).scrollTop() > ($('.supportBtn').offset().top - $('.mds-nav').outerHeight())) {
+        if ($(window).scrollTop() > ($('.supportBtn').offset().top)) {
           $('.tab').addClass('scroll')
         } else {
           $('.tab').removeClass('scroll')
@@ -413,6 +413,7 @@ export default {
 
 .pro-value {
   font-family: Gotham-Medium;
+  font-weight: 500;
   font-size: 32px;
   line-height: 1;
   margin: 16px 0 8px;
@@ -447,6 +448,7 @@ export default {
 
 .address {
   font-family: Gotham-Medium;
+  font-weight: 500;
   font-size: 20px;
   line-height: 1.6;
   margin-bottom: 4px;
@@ -461,6 +463,7 @@ export default {
   top: 64px;
   right: 0;
   font-family: Gotham-Medium;
+  font-weight: 500;
   min-width: 208px;
   z-index: 10;
 }
@@ -484,6 +487,7 @@ export default {
   text-align: center;
   font-size: 16px;
   font-family: Gotham-Medium;
+  font-weight: 500;
   border-radius: 4px;
   cursor: pointer;
 }
@@ -512,9 +516,10 @@ export default {
 }
 
 .tab a {
-  color: #2c363f;
+  color: var(--darkColor);
   font-size: 20px;
   font-family: Gotham-Medium;
+  font-weight: 500;
   line-height: 78px;
   display: inline-block;
   width: 178px;
@@ -550,7 +555,8 @@ export default {
   font-size: 20px;
   line-height: 1.6;
   font-family: Gotham-Medium;
-  color: #2c363f;
+  font-weight: 500;
+  color: var(--darkColor);
   padding-bottom: 16px;
 }
 
@@ -576,7 +582,7 @@ export default {
 }
 
 .trans-comments {
-  background: #f2f5f6;
+  background: var(--bgColor);
   border-radius: 4px;
   margin: 24px 0 16px;
   padding: 16px;
@@ -587,7 +593,7 @@ export default {
 .trans-time {
   line-height: 1.43;
   text-align: right;
-  color: #607d8b;
+  color: var(--blueGrey);
 }
 
 #payment .modal-content {

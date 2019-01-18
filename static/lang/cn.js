@@ -214,6 +214,9 @@ module.exports = {
   address_pl: "选择地址",
   address_detail: "详细地址",
   address_detail_pl: "详细地址（如街道、小区、乡镇、村）",
+  contact_error: "手机号格式不对",
+  address_error: "请选择地址",
+  address_detail_error: "请填写详细地址",
   save: "保存",
   save_use: "保存并使用",
   project_name: "项目名称",
@@ -243,7 +246,7 @@ module.exports = {
   example_title: "入口即化，富平农家有机柿饼",
   agree: "同意",
   mds_city_rule: "MDS CITY 平台规则",
-  mds_notice1: "MDS CITY 不是网上商店。",
-  mds_notice2: "它是实现创意的平台。MDS CITY 不承担项目保证和创作者的能力评估。从创建项目实现到奖励运输，所有责任都在创造者自己。",
+  mds_notice1: "MDS CITY仅提供基础的技术支持.",
+  mds_notice2: "平台本身不会参与任何在平台上架的项目，且不会对项目进行任何形式的背书。",
   platform_rules: "<h4 style='text-align:center;font-family: Gotham-Medium;margin:10px 0'>MDS CITY 平台规则</h4><h5 style='font-family: Gotham-Medium;margin:10px 0'>标题：</h5><p>标题当中是否有错别字、不完整、多字、不通顺等内容，会让你退回进行修改，符合基本的语言的规范，标题中不能带有三俗等不合规内容。（例如：赌博、韭菜、博彩等敏感词汇）</p><h5 style='font-family: Gotham-Medium;margin:10px 0'>项目简介：</h5><p>正文的格式，文章的排版清晰度、图文的合理搭配、无标点、文章的重复度、正文内容的缺失，项目内容是否为平台已有项目内容、正文内容的字数统计（这些都是低质内容的判断依据）不能冒用平台，或者他人的名义。</p><p>内容中不能带有链接元素或其他涉嫌广告推广、宣传等属性的内容。</p><h5 style='font-family: Gotham-Medium;margin:10px 0'>图片：</h5><p>请尽量上传符合您项目描述内容的图片。禁止上传三俗等不合规图片。</p><h5 style='font-family: Gotham-Medium;margin:10px 0'>推荐机制：</h5><p>是否存在相同相似内容，高度相似的不允推荐；平台欢迎优质的项目加入，并会给出相应的优先推荐展示激励。</p><h5 style='font-family: Gotham-Medium;margin:10px 0'>优先推荐的项目分类：</h5><p>区块链电商、普惠公益、相互保障</p><h5 style='font-family: Gotham-Medium;margin:10px 0'>声明：</h5><p>MDS CITY仅提供基础的技术支持。平台本身不会参与任何在平台上架的项目，且不会对项目进行任何形式的背书。</p>"
 }

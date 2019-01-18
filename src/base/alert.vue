@@ -30,6 +30,7 @@ export default {
 .alertInfo {
   padding: 24px;
   font-family: Gotham-Medium;
+  font-weight: 500;
   font-size: 16px;
 }
 

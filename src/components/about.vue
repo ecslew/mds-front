@@ -248,7 +248,7 @@ export default {
 /*什么是 MediShares*/
 .mds-des {
   padding: 120px 0 160px;
-  color: #2c363f;
+  color: var(--darkColor);
   line-height: 1.5;
 }
 
@@ -267,7 +267,7 @@ export default {
 .mds-superiority li {
   padding: 100px 50px 0;
 
-  color: #2c363f;
+  color: var(--darkColor);
 }
 
 .mds-sup-icon {
@@ -275,7 +275,7 @@ export default {
   width: 32px;
   height: 32px;
   margin-right: 15px;
-  background-color: #2c363f;
+  background-color: var(--darkColor);
   -moz-border-radius: 50%;
   border-radius: 50%;
   overflow: hidden;
@@ -291,7 +291,7 @@ export default {
 
 /*应用场景*/
 .mds-application {
-  background-color: #607d8b;
+  background-color: var(--blueGrey);
 }
 
 .mds-application .mds-title {
@@ -340,7 +340,7 @@ export default {
   font-size: 16px;
   font-weight: 500;
   line-height: 1.5;
-  color: #2c363f;
+  color: var(--darkColor);
   font-family: Gotham-Medium;
 }
 
@@ -348,7 +348,7 @@ export default {
   margin-top: 9px;
   font-size: 12px;
   line-height: 1.5;
-  color: #607d8b;
+  color: var(--blueGrey);
   position: relative;
   z-index: 1;
 }
@@ -366,7 +366,7 @@ export default {
   font-size: 160px;
   font-weight: 300;
   line-height: 1.0;
-  color: #f2f5f6;
+  color: var(--bgColor);
   z-index: 0;
 }
 
@@ -386,7 +386,7 @@ export default {
   font-size: 14px;
   font-weight: 500;
   line-height: 1.43;
-  color: #2c363f;
+  color: var(--darkColor);
   font-family: Gotham-Medium;
   position: relative;
   z-index: 1;

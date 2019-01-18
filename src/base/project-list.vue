@@ -40,7 +40,7 @@ export default {
 
 .info {
   padding: 24px 16px;
-  color: #2c363f;
+  color: var(--darkColor);
 }
 
 .info h4 {
@@ -59,12 +59,13 @@ export default {
 .info .complete {
   font-weight: 600;
   font-family: Gotham-Medium;
+  font-weight: 500;
   font-size: 16px;
   padding: 8px 0 48px;
 }
 
 .info .time {
-  color: #607d8b;
+  color: var(--blueGrey);
 }
 
 @media (max-width: 767px) {

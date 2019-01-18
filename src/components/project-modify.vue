@@ -1,88 +1,125 @@
 <template>
-<div class='project-modify'>
+<div class='project-modify project-sm-container'>
   <div class="container">
-    <div class="col-md-8 col-md-offset-2 basic">
-      <div class="title">{{$t('basic_project_information')}}</div>
-      <div class="subtitle">{{$t('submit_information')}}</div>
-      <form class="basic-form" accept-charset="utf-8" ref="form" enctype="multipart/form-data">
-        <!-- 项目发起者 creator -->
-        <input name="creator" type="text" v-model="modify.creator" class="hide">
-        <!-- 筹款账户 targetAccount-->
-        <input name="targetAccount" type="text" v-model="modify.targetAccount" class="hide">
-        <!-- 筹款Token,比如：EOS，IQ，MEV. targetToken -->
-        <input name="targetToken" type="text" v-model="modify.targetToken" class="hide">
-        <!-- 筹款 Token 合约，EOS 请填写 eosio.token   targetTokenContract-->
-        <input name="targetTokenContract" type="text" v-model="modify.targetTokenContract" class="hide">
-        <!-- eosID -->
-        <input name="eosID" type="text" v-model="modify.eosID" class="hide">
-        <!-- 项目名称 title-->
-        <label>{{$t('project_title')}}</label>
-        <input name="title" type="text" class="basic-input" v-model="modify.title" :placeholder="$t('project_title_pl')" autofocus>
-        <!-- 项目简介 des -->
-        <label>{{$t('tell_story')}}</label>
-        <div id="story">
-          <div v-if="!isFocus" class="story_pl">{{$t('tell_story_pl')}}</div>
-        </div>
-        <textarea name="des" class="hide" v-model="modify.des"></textarea>
-        <!-- 简介做 sha256 后的值 desHash -->
-        <input name="desHash" type="text" class="hide" v-model="desHash">
-        <!-- 封面图片，注意name为数组，以后可能要传多张 photos[]-->
-        <label>{{$t('position_photo')}}</label>
-        <div class="photo-container">
-          <div class='photo' :style="{background: modify.photos?'url(' + modify.photos +')no-repeat center/cover':'#e1e6e9'}">
-            <input name="photos[]" type="file" @change="uploadPic">
-            <template v-if='!isLoad'>
-              <img src="static/img/icon/web_icon_pic.png" width="72">
-              <h5>{{$t('position_photo_pl')}}</h5>
-              <p>{{$t('position_photo_tip')}}</p>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="title">{{$t('basic_project_information')}}</div>
+        <div class="subtitle">{{$t('submit_information')}}</div>
+        <form class="basic-form" accept-charset="utf-8" ref="form" enctype="multipart/form-data">
+          <!-- 项目发起者 creator -->
+          <input name="creator" type="text" v-model="modify.creator" class="hide">
+          <!-- 筹款账户 targetAccount-->
+          <input name="targetAccount" type="text" v-model="modify.targetAccount" class="hide">
+          <!-- 筹款Token,比如：EOS，IQ，MEV. targetToken -->
+          <input name="targetToken" type="text" v-model="modify.targetToken" class="hide">
+          <!-- 筹款 Token 合约，EOS 请填写 eosio.token   targetTokenContract-->
+          <input name="targetTokenContract" type="text" v-model="modify.targetTokenContract" class="hide">
+          <!-- eosID -->
+          <input name="eosID" type="text" v-model="modify.eosID" class="hide">
+          <!-- 项目名称 title-->
+          <label>{{$t('project_title')}}</label>
+          <input name="title" type="text" class="basic-input" v-model="modify.title" :placeholder="$t('project_title_pl')" autofocus>
+          <!-- 项目简介 des -->
+          <label>{{$t('tell_story')}}</label>
+          <div id="story">
+            <div v-if="!isFocus" class="story_pl">{{$t('tell_story_pl')}}</div>
+          </div>
+          <textarea name="des" class="hide" v-model="modify.des"></textarea>
+          <!-- 简介做 sha256 后的值 desHash -->
+          <input name="desHash" type="text" class="hide" v-model="desHash">
+          <!-- 封面图片，注意name为数组，以后可能要传多张 photos[]-->
+          <label>{{$t('position_photo')}}</label>
+          <div class="photo-container">
+            <div class='photo' :style="{background: modify.photos?'url(' + modify.photos +')no-repeat center/cover':'var(--paleBlue)'}">
+              <input name="photos[]" type="file" @change="uploadPic">
+              <template v-if='!isLoad'>
+                <img src="static/img/icon/web_icon_pic.png" width="72">
+                <h5>{{$t('position_photo_pl')}}</h5>
+                <p>{{$t('position_photo_tip')}}</p>
+              </template>
+            </div>
+            <div class="photo-ext" v-if='isLoad'>
+              <div class="pull-right">
+                <span class="delete" @click="deletePic">{{$t('delete')}}</span>
+                <span class="again">{{$t('upload_again')}}</span>
+              </div>
+              <div class="blank"></div>
+            </div>
+          </div>
+          <!-- 添加产品档位 只有电商产品存在 type==1 -->
+          <div class="gear" v-if="type==1">
+            <span class="what-gear" data-toggle="modal" data-target="#gear_des">{{$t('what_is_gear')}}</span>
+            <label>{{$t('add_gear')}}</label>
+            <ul class="gear-list">
+              <li v-for="(item, index) in gear" :key="index">
+                <span class="delete-gear" @click="deleteGear(index)">{{$t('delete')}}</span>
+                <h3>{{$t('gear'+(index+1))}}</h3>
+                <div class="gear-amount">{{$t('amount')}}</div>
+                <div class="row">
+                  <div class="col-sm-6 basic-group">
+                    <input class="basic-input" type="number" v-model="item.sum" :placeholder="$t('total_price')">
+                    <span class="target-token">EUSD</span>
+                  </div>
+                  <div class="col-sm-6 basic-group">
+                    <input name="targetAmount" class="basic-input" type="number" v-model="item.unit" :placeholder="$t('unit')">
+                    <select id="unit" @change="changeUnit">
+                      <option value="1">{{$t('unit_jin')}}</option>
+                      <option value="2">{{$t('unit_kg')}}</option>
+                      <option value="3">{{$t('unit_piece')}}</option>
+                    </select>
+                    <span class="tri"></span>
+                  </div>
+                </div>
+                <input name="unit" type="text" v-model="unit" class="hide">
+              </li>
+              <li class="continue-add" @click="addGear">{{$t("continue_add")}}</li>
+            </ul>
+          </div>
+          <!-- 筹款金额 targetAmount-->
+          <label>{{$t('target_amount')}}</label>
+          <div class="basic-group">
+            <input name="targetAmount" class="basic-input" type="number" v-model="modify.amount" :placeholder="$t('target_amount_pl')">
+            <span class="target-token" v-if="type==1">{{modify.targetToken}}</span>
+            <template v-else>
+              <select id="targetToken" @change="changeTargetToken">
+                <option value="EOS">EOS</option>
+                <option value="EMDS">EMDS</option>
+                <option value="EUSD">EUSD</option>
+                <option value="EETH">EETH</option>
+                <option value="EBTC">EBTC</option>
+              </select>
+              <span class="tri"></span>
             </template>
           </div>
-          <div class="photo-ext" v-if='isLoad'>
-            <div class="pull-right">
-              <span class="delete" @click="deletePic">{{$t('delete')}}</span>
-              <span class="again">{{$t('upload_again')}}</span>
+          <!-- 电商产品不展示最低和最高额度 -->
+          <template v-if="type!=1">
+            <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
+            <div v-show="isShow">
+              <!-- 最低筹款金额 ，非必须 low  -->
+              <label>{{$t('low_amount')}}</label>
+              <p class="basic-group">
+                <input class="basic-input" type="number" v-model="modify.low" :placeholder="$t('low_amount_pl')">
+                <span class="target-token">{{modify.targetToken}}</span>
+              </p>
+              <!-- 最高筹款金额 ，非必须 high-->
+              <label>{{$t('high_amount')}}</label>
+              <p class="basic-group">
+                <input class="basic-input" type="number" v-model="modify.high" :placeholder="$t('high_amount_pl')">
+                <span class="target-token">{{modify.targetToken}}</span>
+              </p>
             </div>
-            <div class="blank"></div>
+          </template>
+          <!-- 筹款结束时间 endDate-->
+          <label>{{$t('end_date')}}</label>
+          <input class="basic-input" type="date" v-model="modify.endTime" :placeholder="$t('end_date_pl')" @change="timeToStamp">
+          <input name="endDate" class="hide" type="text" v-model="endTimeStamp" >
+          <div class="agree">
+            <input type="checkbox" v-model="checked">
+            <div>{{$t('agree')}}<a href="#rule" data-toggle="modal">《{{$t('mds_city_rule')}}》</a></div>
           </div>
-        </div>
-        <!-- 筹款金额 targetAmount-->
-        <label>{{$t('target_amount')}}</label>
-        <div class="basic-group">
-          <input name="targetAmount" class="basic-input" type="number" v-model="modify.amount" :placeholder="$t('target_amount_pl')">
-          <select name="" id="targetToken" @change="changeTargetToken">
-            <option value="EOS">EOS</option>
-            <option value="EMDS">EMDS</option>
-            <option value="EUSD">EUSD</option>
-            <option value="EETH">EETH</option>
-            <option value="EBTC">EBTC</option>
-          </select>
-          <span class="caret"></span>
-        </div>
-        <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
-        <div v-show="isShow">
-          <!-- 最低筹款金额 ，非必须 low  -->
-          <label>{{$t('low_amount')}}</label>
-          <p class="basic-group">
-            <input class="basic-input" type="number" v-model="modify.low" :placeholder="$t('low_amount_pl')">
-            <span class="target-token">{{modify.targetToken}}</span>
-          </p>
-          <!-- 最高筹款金额 ，非必须 high-->
-          <label>{{$t('high_amount')}}</label>
-          <p class="basic-group">
-            <input class="basic-input" type="number" v-model="modify.high" :placeholder="$t('high_amount_pl')">
-            <span class="target-token">{{modify.targetToken}}</span>
-          </p>
-        </div>
-        <!-- 筹款结束时间 endDate-->
-        <label>{{$t('end_date')}}</label>
-        <input class="basic-input" type="date" v-model="modify.endTime" :placeholder="$t('end_date_pl')" @change="timeToStamp">
-        <input name="endDate" class="hide" type="text" v-model="endTimeStamp" >
-        <div class="agree">
-          <input type="checkbox" v-model="checked">
-          <div>{{$t('fundraising_rules')}}</div>
-        </div>
-        <a class="start" @click="nextStep">{{$t('next_step')}}</a>
-      </form>
+          <a class="start" @click="nextStep">{{$t('next_step')}}</a>
+        </form>
+      </div>
     </div>
   </div>
   <!-- Modal -->
@@ -92,8 +129,49 @@
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
         <img src="static/img/icon/web_icon_success.png" width="92">
         <h4 class="modal-title">{{$t('modify_success')}}</h4>
-        <p>{{$t('modify_success_tip')}}</p>
+        <p class="info">{{$t('modify_success_tip')}}</p>
         <router-link to="/" data-dismiss="modal" class="modal-close">{{$t('confirm')}}</router-link>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="rule">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <div class="platform_rules" v-html="$t('platform_rules')"></div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="gear_des">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{{$t('what_is_gear')}}</h4>
+        <p>{{$t('gear_des')}}</p>
+        <p class="example">{{$t('example')}}:</p>
+        <ul class="example-list">
+          <li>
+            <img src="static/img/icon/example.png" width="64">
+            <div class="exam-info">
+              <h5>1 EOS/ 1 kg</h5>
+              <p>{{$t('example_title')}}</p>
+            </div>
+          </li>
+          <li>
+            <img src="static/img/icon/example.png" width="64">
+            <div class="exam-info">
+              <h5>2 EOS/ 2.5 kg</h5>
+              <p>{{$t('example_title')}}</p>
+            </div>
+          </li>
+          <li>
+            <img src="static/img/icon/example.png" width="64">
+            <div class="exam-info">
+              <h5>3 EOS/ 4 kg</h5>
+              <p>{{$t('example_title')}}</p>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -110,7 +188,7 @@ import sha from 'js-sha256'
 import user from 'static/js/user'
 import mdsToast from '@/base/toast'
 export default {
-  props: ['eosID'],
+  props: ['eosID', 'type'],
   data() {
     return {
       url: '/apiCrowdfunding/modify',
@@ -140,7 +218,12 @@ export default {
         title: "", //【 项目名称 】
         low: 0, //【 最低筹款金额 ，非必须 】
         high: 0 //【 最高筹款金额 ，非必须 】
-      }
+      },
+      unit: '',
+      gear: [{
+        sum: '',
+        unit: ''
+      }] //档位
     }
   },
   mounted() {
@@ -427,6 +510,36 @@ export default {
           this.modify.targetTokenContract = 'bitpietokens'
           break;
       }
+    },
+    changeUnit(event) {
+      const target = event.target.value
+      switch (target) {
+        case '1':
+          this.unit = this.$t('unit_jin')
+          break;
+        case '2':
+          this.unit = this.$t('unit_kg')
+          break;
+        default:
+          this.unit = this.$t('unit_piece')
+          break;
+      }
+      console.log(this.unit);
+
+    },
+    addGear() {
+      if (this.gear.length < 3) {
+        this.gear.push({
+          sum: '',
+          unit: ''
+        })
+      } else {
+        this.toastInfo = this.$t('continue_add_toast')
+        return false
+      }
+    },
+    deleteGear(index) {
+      this.gear.splice(index, 1)
     }
   },
   components: {
@@ -437,134 +550,5 @@ export default {
 </script>
 
 <style scoped>
-.basic {
-  margin-top: 32px;
-  margin-bottom: 34px;
-  background: #fff;
-  padding: 32px;
-}
-
-.basic-form {
-  padding: 32px 0;
-}
-
-.photo-container {
-  border: 1px solid #e7ecf0;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-}
-
-.basic-form .photo {
-  text-align: center;
-  padding: 48px 16px;
-  color: #2c363f;
-  height: 240px;
-}
-
-.photo input {
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-}
-
-.photo h5 {
-  font-family: Gotham-Medium;
-  font-size: 14px;
-  line-height: 1.43;
-  margin: 16px 0 8px;
-}
-
-.photo-ext {
-  border-top: 1px solid #e7ecf0;
-}
-
-.photo-ext .blank {
-  overflow: hidden;
-  position: relative;
-  z-index: 100;
-  height: 52px;
-}
-
-.photo-ext .delete {
-  color: #f44336;
-  display: inline-block;
-  cursor: pointer;
-  position: relative;
-  z-index: 100;
-  padding: 16px;
-}
-
-.photo-ext .again {
-  color: #2196f3;
-  display: inline-block;
-  cursor: pointer;
-  padding: 16px;
-}
-
-.amount-set {
-  display: block;
-  text-align: right;
-  color: #2196f3 !important;
-  margin-top: 8px;
-}
-
-.sel {
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.agree {
-  padding: 32px 0 66px;
-  position: relative;
-}
-
-.agree input[type='checkbox'] {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  z-index: 10;
-}
-
-.agree div {
-  padding-left: 30px;
-  background: url('../../static/img/icon/web_icon_agreement_no.png')no-repeat left center/18px;
-}
-
-.agree input:checked+div {
-  background: url('../../static/img/icon/web_icon_agreement_yes.png')no-repeat left center/18px;
-}
-
-.modal-content p {
-  font-family: Gotham-Medium;
-  color: #607d8b;
-  font-size: 16px;
-  margin: 8px 0 196px;
-}
-
-@media (max-width: 768px) {
-  .basic {
-    padding: 24px 16px 32px;
-  }
-
-  .basic-form {
-    padding: 0;
-  }
-
-  .basic-group:last-of-type .basic-input {
-    margin-top: 16px;
-  }
-
-  .modal-content p {
-    margin-bottom: 100px;
-  }
-}
+@import '../../static/css/basicForm.css'
 </style>

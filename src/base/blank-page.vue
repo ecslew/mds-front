@@ -13,14 +13,14 @@ export default {
 
 <style>
 .blank-page {
-  padding: 120px 0 60px;
-  color: #607d8b;
+  padding: 120px 0;
+  color: var(--blueGrey);
   font-size: 16px;
   text-align: center;
 }
 
 .blank-page>a {
-  color: #2196f3 !important;
+  color: var(--blueColor) !important;
   padding: 8px 0;
   display: block;
 }

@@ -144,7 +144,7 @@ export default {
     margin-top: 170px!important;
 }
 .roadmap {
-  background-color: #e1e6e9;
+  background-color: var(--paleBlue);
   overflow: hidden;
   position: relative;
   height: 900px;
@@ -163,7 +163,7 @@ export default {
 
   font-size: 14px;
   line-height: 1.43;
-  color: #607d8b;
+  color: var(--blueGrey);
   margin-top: 8px;
 }
 
@@ -280,7 +280,7 @@ export default {
     -moz-box-sizing: content-box;
     box-sizing: content-box;
     background-color: #c8d2d7;
-    border: 8px solid #f2f5f6;
+    border: 8px solid var(--bgColor);
     -webkit-box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
     -moz-box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
@@ -333,7 +333,7 @@ export default {
     -moz-border-radius: 50%;
     border-radius: 50%;
     background-color: #c8d2d7;
-    border: 8px solid #f2f5f6;
+    border: 8px solid var(--bgColor);
     -webkit-box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
     -moz-box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
