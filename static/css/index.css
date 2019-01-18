@@ -344,7 +344,8 @@ label {
   line-height: 1.5;
 }
 
-.btn-box a {
+.btn-box a,
+.btn-box span {
   display: inline-block;
   padding-right: 32px;
   color: var(--blueColor);
