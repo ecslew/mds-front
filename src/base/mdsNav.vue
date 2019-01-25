@@ -13,7 +13,7 @@
         </button>
         <div class="login mobile-login hidden-sm hidden-md hidden-lg" @click="login">{{$t("login")}}</div>
         <div class="dropdown personal hidden-sm hidden-md hidden-lg">
-          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="caret"></span></a>
+          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="tri"></span></a>
           <ul class="dropdown-menu">
             <li>
               <router-link to="/projectStep">{{$t("create_a_project")}}</router-link>
@@ -291,6 +291,7 @@ nav .open>a {
 .ishome .pc-login {
   border: 1px solid #fff;
   color: #fff;
+  cursor: pointer;
 }
 
 .mobile-login {

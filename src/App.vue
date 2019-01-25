@@ -2,7 +2,7 @@
 <div id="app">
   <mds-nav></mds-nav>
   <router-view />
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <mds-toast :toastInfo='toastInfo' :isWarn='isWarn' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -14,7 +14,8 @@ export default {
   name: 'App',
   data() {
     return {
-      toastInfo: ''
+      toastInfo: '',
+      isWarn: true
     }
   },
   mounted() {

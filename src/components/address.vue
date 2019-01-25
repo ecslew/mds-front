@@ -7,8 +7,13 @@
         <div class="subtitle">{{$t('address_manage_subtitle')}}</div>
         <div class="started">{{$t("address_list")}}</div>
         <ul class="list">
-          <li v-for="(item,index) in addressList" :key="item.id">
-            <address-list @deleteItem="deleteAddress" :index="index" :id="item.id" :name="item.name" :telephone="item.telephone" :address="item.address" :address_detail="item.address_detail"></address-list>
+          <li v-for="(item,index) in addressList" :key="item.addressNo">
+            <h4>{{item.name}} {{item.mobile}}</h4>
+            <p>{{item.area}}, {{item.address}} ;</p>
+            <div class="btn-box">
+              <a href="#editAddress" class="editor" data-toggle="modal" @click="editModal(item,index)">{{$t('editor')}}</a>
+              <a href="#deleteAddress" class="delete" data-toggle="modal" @click="deleteModal(index, item.addressNo)">{{$t('delete')}}</a>
+            </div>
           </li>
           <li class="add-address" data-toggle="modal" data-target="#addAddress">+ {{$t("add_address")}}</li>
         </ul>
@@ -17,53 +22,117 @@
   </div>
   <!-- 新增地址弹窗 -->
   <add-address :addressList="addressList" @defaultAddress="getDefaultAddress"></add-address>
+  <!-- 编辑地址 -->
+  <edit-address :addressList="addressList" :edit="edit" @defaultAddress="getDefaultAddress"></edit-address>
+  <!-- 删除地址 -->
+  <delete-address :id="deleteItem.id" :index="deleteItem.index" @deleteAddress="deleteAddress"></delete-address>
   <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
 <script>
 import mdsToast from '@/base/toast'
-import addressList from '@/base/address-list'
-import addAddress from '@/base/add-address'
+import addAddress from '@/base/address-add'
+import editAddress from '@/base/address-edit'
+import deleteAddress from '@/base/address-delete'
+import user from 'static/js/user'
 export default {
   data() {
     return {
+      getListUrl: '​/apiAddress/getList',
+      deleteUrl: '​/apiAddress/delete',
       toastInfo: '',
+      isWarn: false,
       defaultAddress: {},
-      addressList: [{
-        id: 1,
-        name: 'Evan Lu',
-        telephone: '18701936666',
-        address: '上海市，浦东新区',
-        address_detail: '高行镇高博璐 211 弄 西林雅苑 1 号楼 1808 室'
-      }, {
-        id: 2,
-        name: 'ty',
-        telephone: '18701936666',
-        address: '上海市，虹口区',
-        address_detail: '杨树浦路128号，5号楼中科招商8楼众托帮'
-      }]
+      addressList: [],
+      edit: {
+        addressNo: '', // 地址编号
+        name: '', // 姓名
+        area: '', // 地区
+        address: '', // 详细地址
+        mobile: '' // 手机号
+      },
+      deleteItem: {
+        id: '',
+        index: ''
+      }
     }
   },
   mounted() {
-
+    this.getList()
   },
   methods: {
     infoByToast(val) {
       this.toastInfo = val
     },
+    getList() {
+      user.getAccount().then((currentAccount) => {
+        $(".login").hide()
+        $(".personal").show()
+        $(".currentAccount").html(currentAccount.name)
+        this.$http.post(this.globalData.domain + this.getListUrl, {
+          account: currentAccount.name
+        }, {
+          "emulateJSON": true
+        }).then((res) => {
+          if (res.data.success) {
+            this.addressList = res.data.data.pageData
+          } else {
+            this.toastInfo = res.data.message
+          }
+        }, (err) => {
+          console.log(err)
+        })
+      }, () => {
+        // 未安装 scatter 或 登录失败
+        this.isWarn = true
+        this.toastInfo = this.$t('connect_scatter')
+      })
+    },
     getDefaultAddress(obj) {
       this.defaultAddress = JSON.parse(JSON.stringify(obj))
     },
+    // 编辑地址弹窗显示
+    editModal(item, index) {
+      // this.edit = JSON.parse(JSON.stringify(item))
+      this.edit = item
+      this.edit.index = index
+    },
+    deleteModal(index, id) {
+      this.deleteItem.index = index
+      this.deleteItem.id = id
+    },
     deleteAddress(index, id) {
-      this.addressList.splice(index, 1)
-      this.toastInfo = this.$t('deleted_success')
+      user.getAccount().then((currentAccount) => {
+        this.$http.post(this.globalData.domain + this.deleteUrl, {
+          account: currentAccount.name,
+          addressNo: id
+        }, {
+          "emulateJSON": true
+        }).then((res) => {
+          if (res.data.success) {
+            this.addressList.splice(index, 1)
+            this.isWarn = false
+            this.toastInfo = this.$t('deleted_success')
+          } else {
+            this.isWarn = true
+            this.toastInfo = res.data.message
+          }
+        }, (err) => {
+          console.log(err)
+        })
+      }, () => {
+        // 未安装 scatter 或 登录失败
+        this.isWarn = true
+        this.toastInfo = this.$t('connect_scatter')
+      })
     }
   },
   components: {
     mdsToast,
-    addressList,
-    addAddress
+    addAddress,
+    editAddress,
+    deleteAddress
   }
 }
 </script>
@@ -86,13 +155,16 @@ export default {
   cursor: pointer;
 }
 
-.modal .modal-content {
-  padding: 24px;
+.list h4 {
+  font-size: 20px;
+  font-family: Gotham-Medium;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 16px;
 }
 
-.start {
-  display: block;
-  text-align: center;
+.modal .modal-content {
+  padding: 24px;
 }
 
 /* .gender {
@@ -129,6 +201,11 @@ export default {
     margin-bottom: 12px;
     padding: 12px;
     font-size: 14px;
+  }
+
+  .list h4 {
+    font-size: 16px;
+    margin-bottom: 12px;
   }
 
   .list .add-address {

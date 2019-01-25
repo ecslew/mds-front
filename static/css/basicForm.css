@@ -75,7 +75,7 @@
 }
 
 .agree {
-  padding: 32px 0 66px;
+  padding: 32px 0 0;
   position: relative;
 }
 
@@ -103,20 +103,25 @@
   background: url('../../static/img/icon/web_icon_agreement_yes.png')no-repeat left center/18px;
 }
 
+#rule .modal-content,
+#gear_des .modal-content {
+  padding: 24px;
+}
+
+.modal .modal-title {
+  margin: 8px 0 24px;
+}
+
 .modal-content .info {
   font-family: Gotham-Medium;
   font-weight: 500;
   color: var(--blueGrey);
   font-size: 16px;
-  margin: 8px 0;
+  padding: 8px 16px;
 }
 
-.modal-content a {
+.modal-content .modal-close {
   margin-top: 196px;
-}
-
-#rule .modal-content {
-  padding: 24px;
 }
 
 
@@ -169,14 +174,6 @@
   cursor: pointer;
 }
 
-.modal .modal-content {
-  padding: 24px;
-}
-
-.modal .modal-title {
-  margin: 8px 0 24px;
-}
-
 .modal p {
   line-height: 2;
 }
@@ -215,6 +212,10 @@
   margin-bottom: 4px;
 }
 
+#successModal .modal-content {
+  padding: 24px 0;
+}
+
 @media (max-width: 768px) {
   .basic-form {
     padding: 0;
@@ -222,7 +223,7 @@
   .basic-group:last-of-type .basic-input {
     margin-top: 16px;
   }
-  .modal-content p {
-    margin-bottom: 100px;
+  .modal-content .modal-close {
+    margin-top: 96px;
   }
 }

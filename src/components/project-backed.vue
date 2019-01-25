@@ -16,7 +16,7 @@
     </div>
   </div>
   <loading v-if="!isLoaded"></loading>
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <mds-toast :toastInfo='toastInfo' :isWarn='isWarn' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -33,7 +33,8 @@ export default {
       currentAccount: '',
       programs: [],
       isLoaded: false,
-      toastInfo: ''
+      toastInfo: '',
+      isWarn: false
     }
   },
   mounted() {
@@ -65,6 +66,7 @@ export default {
         }, 'json')
       }, () => {
         // 未安装 scatter 或 登录失败
+        this.isWarn = true
         this.toastInfo = this.$t('connect_scatter')
       })
     }

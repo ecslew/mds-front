@@ -20,6 +20,8 @@
   --darkColor: #2c363f;
   --bgColor: #f2f5f6;
   --blueGrey: #607d8b;
+  --very-light-blue: #e7ecf0;
+  --light-grey-blue: #a9b9c1;
 }
 
 html,
@@ -126,11 +128,12 @@ ul {
   text-align: center;
 }
 
-.start {
+.start,
+.confirm {
   display: inline-block;
   padding: 16px 32px;
   line-height: 1.43;
-  border-radius: 2px;
+  border-radius: 4px;
   background: var(--primaryColor);
   margin-top: 64px;
   font-family: Gotham-Medium;
@@ -140,8 +143,15 @@ ul {
   cursor: pointer;
 }
 
+.confirm {
+  display: block;
+  text-align: center;
+}
+
 .start:focus,
-.start:hover {
+.start:hover,
+.confirm:focus,
+.confirm:hover {
   color: #fff;
 }
 
@@ -261,12 +271,6 @@ label {
   padding: 0 16px;
 }
 
-.basic-form .start {
-  margin: 0;
-  width: 100%;
-  text-align: center;
-}
-
 
 /* 弹窗 */
 
@@ -291,6 +295,13 @@ label {
   overflow: auto;
 }
 
+.modal .back {
+  position: fixed;
+  left: 24px;
+  top: 24px;
+  margin: 0;
+}
+
 .modal-close {
   display: block;
   border-top: 1px solid #f3f5f7;
@@ -306,6 +317,7 @@ label {
   color: var(--blueGrey);
   filter: alpha(opacity=100);
   opacity: 1;
+  z-index: 10000;
 }
 
 .close:focus,
@@ -331,6 +343,36 @@ label {
 
 .modal-content a {
   color: var(--blueColor);
+}
+
+.confirm-modal .modal-dialog {
+  max-width: 360px;
+}
+
+.confirm-modal .modal-content {
+  padding: 24px 0 0;
+  text-align: center;
+}
+
+.confirm-modal .modal-info {
+  padding: 24px 24px 32px;
+}
+
+.confirm-modal .btn-contain {
+  border-top: 1px solid var(--bgColor);
+}
+
+.confirm-modal .btn-contain span {
+  float: left;
+  width: 50%;
+  padding: 18px;
+  color: var(--blueColor);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.confirm-modal .btn-contain span:first-child {
+  border-right: 1px solid var(--bgColor);
 }
 
 
@@ -466,6 +508,36 @@ label {
 /*小于768px屏幕 手机 xs*/
 
 @media (max-width: 767px) {
+  .modal {
+    padding: 0!important;
+  }
+  .modal-dialog {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: translateY(100%)!important;
+    position: absolute;
+    transition: transform 0.3s;
+  }
+  .modal-content {
+    max-height: 100vh;
+    overflow: scroll;
+    border-radius: 4px 4px 0 0;
+  }
+  .modal.in .modal-dialog {
+    transform: translateY(0)!important;
+  }
+  .confirm-modal.in .modal-dialog {
+    top: 50%;
+    left: 16px;
+    right: 16px;
+    bottom: auto;
+    transform: translateY(-50%)!important;
+  }
+  .confirm-modal .modal-content {
+    border-radius: 4px;
+  }
   .ishome .tri {
     background: url(../img/icon/tri.png)no-repeat center/contain;
   }
@@ -481,6 +553,9 @@ label {
   }
   .start {
     margin-top: 50px;
+  }
+  .confirm {
+    margin-top: 32px;
   }
   .title {
     font-size: 26px;

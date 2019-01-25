@@ -51,10 +51,17 @@ export default new Router({
     // 购买产品
     {
       path: '/projectPurchase',
+      name: 'projectPurchase',
       component: resolve => require(['@/components/project-purchase'], resolve),
       props: (route) => ({
         id: route.query.id
       })
+    },
+    // 订单详情
+    {
+      path: '/orderDetail',
+      name: 'orderDetail',
+      component: resolve => require(['@/components/order-detail'], resolve)
     },
     // 我的项目
     {
@@ -75,6 +82,14 @@ export default new Router({
     {
       path: '/address',
       component: resolve => require(['@/components/address'], resolve)
+    },
+    // 支持列表
+    {
+      path: '/supportList',
+      component: resolve => require(['@/components/support-list'], resolve),
+      props: (route) => ({
+        id: route.query.id
+      })
     }
   ]
 })

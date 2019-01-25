@@ -51,7 +51,7 @@
             <span class="what-gear" data-toggle="modal" data-target="#gear_des">{{$t('what_is_gear')}}</span>
             <label>{{$t('add_gear')}}</label>
             <ul class="gear-list">
-              <li v-for="(item, index) in gear" :key="index">
+              <li v-for="(item, index) in gearList" :key="index">
                 <span class="delete-gear" @click="deleteGear(index)">{{$t('delete')}}</span>
                 <h3>{{$t('gear'+(index+1))}}</h3>
                 <div class="gear-amount">{{$t('amount')}}</div>
@@ -117,13 +117,13 @@
             <input type="checkbox" v-model="checked">
             <div>{{$t('agree')}}<a href="#rule" data-toggle="modal">《{{$t('mds_city_rule')}}》</a></div>
           </div>
-          <a class="start" @click="nextStep">{{$t('next_step')}}</a>
+          <a class="confirm" @click="nextStep">{{$t('next_step')}}</a>
         </form>
       </div>
     </div>
   </div>
   <!-- Modal -->
-  <div class="modal" id="myModal">
+  <div class="modal" id="successModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content text-center">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
@@ -175,8 +175,8 @@
       </div>
     </div>
   </div>
-  <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <alert-modal :info='alertInfo'></alert-modal>
+  <mds-toast :toastInfo='toastInfo' :isWarn="isWarn" @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -194,8 +194,8 @@ export default {
       url: '/apiCrowdfunding/modify',
       modifyUrl: '/apiCrowdfunding/getInfo?eosID=',
       alertInfo: '',
-      alertTitle: '',
       toastInfo: '',
+      isWarn: false,
       checked: false, //是否同意规则
       isLoad: false, //是否上传封面图片
       isFocus: false, //富文本是否填写内容
@@ -220,7 +220,7 @@ export default {
         high: 0 //【 最高筹款金额 ，非必须 】
       },
       unit: '',
-      gear: [{
+      gearList: [{
         sum: '',
         unit: ''
       }] //档位
@@ -293,7 +293,7 @@ export default {
     },
     nextStep() {
       const that = this
-
+      this.isWarn = true
       // 判断是否登录
       user.getAccount().then((res) => {
         this.modify.creator = res.name
@@ -304,38 +304,31 @@ export default {
 
         // 表单匹配
         if (!this.modify.title) {
-          this.alertInfo = this.$t('form_match_title')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_title')
           return false
         }
         if (!this.modify.des) {
-          this.alertInfo = this.$t('form_match_des')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_des')
           return false
         }
         if (!this.modify.photos) {
-          this.alertInfo = this.$t('form_match_photos')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_photos')
           return false
         }
         if (this.modify.amount == 0) {
-          this.alertInfo = this.$t('form_match_amount')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_amount')
           return false
         }
         if (this.modify.amount < 0) {
-          this.alertInfo = this.$t('form_match_no_negative')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_no_negative')
           return false
         }
         if (this.modify.low < 0) {
-          this.alertInfo = this.$t('form_match_no_negative')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_no_negative')
           return false
         }
         if (this.modify.high < 0) {
-          this.alertInfo = this.$t('form_match_no_negative')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_no_negative')
           return false
         }
         if (this.modify.low == 0) {
@@ -345,23 +338,19 @@ export default {
           this.modify.high = this.modify.amount;
         }
         if (this.modify.low - 0 > this.modify.high - 0) {
-          this.alertInfo = this.$t('form_match_low')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_low')
           return false
         }
         if (this.modify.high - 0 > this.modify.amount - 0) {
-          this.alertInfo = this.$t('form_match_high')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_high')
           return false
         }
         if (!this.modify.endTime) {
-          this.alertInfo = this.$t('form_match_endTime')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_endTime')
           return false
         }
         if (!this.checked) {
-          this.alertInfo = this.$t('agree_terms')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('agree_terms')
           return false
         }
         // 生成表单数据
@@ -379,34 +368,6 @@ export default {
         } catch (e) {}
 
         const eos = user.getEos()
-
-        console.log({
-          "initiator": that.modify.creator, // 项目发起人
-          "id": that.modify.eosID,
-          "name": that.modify.title, // 项目名称
-          "item_digest": that.desHash, //that.modify.desHash, // 项目简介sha256 后的值 64 位
-          "receiver": that.modify.targetAccount, // 收款人
-          "min_fund": {
-            amount: parseFloat(that.modify.low).toFixed(that.modify.targetTokenDecimal),
-            precision: that.modify.targetTokenDecimal,
-            symbol: that.modify.targetToken,
-            contract: that.modify.targetTokenContract
-          },
-          "max_fund": {
-            amount: parseFloat(that.modify.high).toFixed(that.modify.targetTokenDecimal),
-            precision: that.modify.targetTokenDecimal,
-            symbol: that.modify.targetToken,
-            contract: that.modify.targetTokenContract
-          },
-          "target_fund": {
-            amount: parseFloat(that.modify.amount).toFixed(that.modify.targetTokenDecimal),
-            precision: that.modify.targetTokenDecimal,
-            symbol: that.modify.targetToken,
-            contract: that.modify.targetTokenContract
-
-          },
-          "deadline": that.endTimeStamp // 结束时间 时间戳(s)
-        })
 
         // 创建项目提交到链上
         eos.transaction({
@@ -454,7 +415,7 @@ export default {
               contentType: false
             }).then(res => {
               if (res.data.success) {
-                $('#myModal').modal('show')
+                $('#successModal').modal('show')
               } else {
                 that.alertInfo = res.data.message
                 $('#alert').modal('show')
@@ -528,18 +489,19 @@ export default {
 
     },
     addGear() {
-      if (this.gear.length < 3) {
-        this.gear.push({
+      if (this.gearList.length < 3) {
+        this.gearList.push({
           sum: '',
           unit: ''
         })
       } else {
+        this.isWarn = true
         this.toastInfo = this.$t('continue_add_toast')
         return false
       }
     },
     deleteGear(index) {
-      this.gear.splice(index, 1)
+      this.gearList.splice(index, 1)
     }
   },
   components: {

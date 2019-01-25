@@ -7,11 +7,11 @@
         <h4 class="modal-title">{{$t("log_mds")}}</h4>
         <div class="start" @click="loginByScatter">{{$t("log_scatter")}}</div>
         <div class="loginInfo">{{$t("log_scatter_tip")}}</div>
-        <p class="no-scatter">{{$t("log_no_scatter")}} <a href="https://get-scatter.com/">{{$t("download_here")}}</a></p>
+        <p class="no-scatter">{{$t("log_no_scatter")}} <a href="https://get-scatter.com/" target="_blank">{{$t("download_here")}}</a></p>
       </div>
     </div>
   </div>
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <mds-toast :toastInfo='toastInfo' :isWarn='isWarn' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -21,7 +21,8 @@ import user from 'static/js/user'
 export default {
   data() {
     return {
-      toastInfo: ''
+      toastInfo: '',
+      isWarn: true
     }
   },
   methods: {
@@ -69,6 +70,7 @@ export default {
   font-family: Gotham-Medium;
   font-weight: 500;
   color: var(--blueGrey);
+  border-top: 1px solid var(--bgColor);
 }
 
 .no-scatter a {
@@ -81,7 +83,7 @@ export default {
   }
 
   .loginInfo {
-    padding: 24px 0;
+    padding: 24px 16px;
   }
 
   .no-scatter {

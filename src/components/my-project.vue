@@ -15,9 +15,9 @@
       </div>
     </div>
   </div>
-  <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
+  <alert-modal :info='alertInfo'></alert-modal>
   <loading v-if="!isLoaded"></loading>
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <mds-toast :toastInfo='toastInfo' :isWarn='isWarn' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -35,11 +35,11 @@ export default {
       url: this.globalData.protocol + '://' + this.globalData.host + '/v1/chain/get_table_rows',
       deleteUrl: '/apiCrowdfunding/delete?eosID=',
       alertInfo: '',
-      alertTitle: '',
       isBacked: false,
       programs: [],
       isLoaded: false,
-      toastInfo: ''
+      toastInfo: '',
+      isWarn: false
     }
   },
   mounted() {
@@ -71,6 +71,7 @@ export default {
         }, 'json')
       }, () => {
         // 未安装 scatter 或 登录失败
+        this.isWarn = true
         this.toastInfo = this.$t('connect_scatter')
       })
     },
@@ -116,6 +117,7 @@ export default {
         )
       }, () => {
         // 未安装 scatter 或 登录失败
+        this.isWarn = true
         this.toastInfo = this.$t('connect_scatter')
       })
     }

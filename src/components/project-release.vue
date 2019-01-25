@@ -45,7 +45,7 @@
             <span class="what-gear" data-toggle="modal" data-target="#gear_des">{{$t('what_is_gear')}}</span>
             <label>{{$t('add_gear')}}</label>
             <ul class="gear-list">
-              <li v-for="(item, index) in gear" :key="index">
+              <li v-for="(item, index) in gearList" :key="index">
                 <span class="delete-gear" @click="deleteGear(index)">{{$t('delete')}}</span>
                 <h3>{{$t('gear'+(index+1))}}</h3>
                 <div class="gear-amount">{{$t('amount')}}</div>
@@ -111,13 +111,13 @@
             <input type="checkbox" v-model="checked">
             <div>{{$t('agree')}}<a href="#rule" data-toggle="modal">《{{$t('mds_city_rule')}}》</a></div>
           </div>
-          <a class="start" @click="nextStep">{{$t('next_step')}}</a>
+          <a class="confirm" @click="nextStep">{{$t('next_step')}}</a>
         </form>
       </div>
     </div>
   </div>
   <!-- Modal -->
-  <div class="modal" id="myModal">
+  <div class="modal" id="successModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content text-center">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
@@ -170,8 +170,8 @@
     </div>
   </div>
   <div class="page">{{$t('step1_total2')}}</div>
-  <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <alert-modal :info='alertInfo'></alert-modal>
+  <mds-toast :toastInfo='toastInfo' :isWarn="isWarn" @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -189,8 +189,8 @@ export default {
     return {
       url: '/apiCrowdfunding/saveInfo',
       alertInfo: '',
-      alertTitle: '',
       toastInfo: '',
+      isWarn: false,
       checked: false, //是否同意规则
       isLoad: false, //是否上传封面图片
       isFocus: false, //富文本是否填写内容
@@ -212,7 +212,7 @@ export default {
         high: 0 //【 最高筹款金额 ，非必须 】
       },
       unit: '',
-      gear: [{
+      gearList: [{
         sum: '',
         unit: ''
       }] //档位
@@ -271,6 +271,7 @@ export default {
     // 提交表单
     nextStep() {
       const that = this
+      this.isWarn = true
       // 判断是否登录
       user.getAccount().then((res) => {
         this.addData.creator = res.name
@@ -278,41 +279,33 @@ export default {
         $(".login").hide()
         $(".personal").show()
         $(".currentAccount").html(res.name)
-
         // 表单匹配
         if (!this.addData.title) {
-          this.alertInfo = this.$t('form_match_title')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_title')
           return false
         }
         if (!this.addData.des) {
-          this.alertInfo = this.$t('form_match_des')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_des')
           return false
         }
         if (!this.addData.photos) {
-          this.alertInfo = this.$t('form_match_photos')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_photos')
           return false
         }
         if (this.addData.amount == 0) {
-          this.alertInfo = this.$t('form_match_amount')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_amount')
           return false
         }
         if (this.addData.amount < 0) {
-          this.alertInfo = this.$t('form_match_no_negative')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_no_negative')
           return false
         }
         if (this.addData.low < 0) {
-          this.alertInfo = this.$t('form_match_no_negative')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_no_negative')
           return false
         }
         if (this.addData.high < 0) {
-          this.alertInfo = this.$t('form_match_no_negative')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_no_negative')
           return false
         }
         if (this.addData.low == 0) {
@@ -322,24 +315,20 @@ export default {
           this.addData.high = this.addData.amount;
         }
         if (this.addData.low - 0 > this.addData.high - 0) {
-          this.alertInfo = this.$t('form_match_low')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_low')
           return false
         }
         if (this.addData.high - 0 > this.addData.amount - 0) {
-          this.alertInfo = this.$t('form_match_high')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_high')
           this.addData.high = this.addData.amount
           return false
         }
         if (!this.addData.endTime) {
-          this.alertInfo = this.$t('form_match_endTime')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_endTime')
           return false
         }
         if (!this.checked) {
-          this.alertInfo = this.$t('agree_terms')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('agree_terms')
           return false
         }
 
@@ -405,7 +394,7 @@ export default {
               contentType: false
             }).then(res => {
               if (res.data.success) {
-                $('#myModal').modal('show')
+                $('#successModal').modal('show')
               } else {
                 that.alertInfo = res.data.message
                 $('#alert').modal('show')
@@ -476,18 +465,19 @@ export default {
       }
     },
     addGear() {
-      if (this.gear.length < 3) {
-        this.gear.push({
+      if (this.gearList.length < 3) {
+        this.gearList.push({
           sum: '',
           unit: ''
         })
       } else {
+        this.isWarn = true
         this.toastInfo = this.$t('continue_add_toast')
         return false
       }
     },
     deleteGear(index) {
-      this.gear.splice(index, 1)
+      this.gearList.splice(index, 1)
     }
   },
   watch: {

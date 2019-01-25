@@ -23,7 +23,7 @@
   <contact></contact>
   <foot></foot>
   <loading v-if="!isLoaded"></loading>
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <mds-toast :toastInfo='toastInfo' :isWarn='isWarn' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -42,7 +42,8 @@ export default {
       transferUrl: '/apiEos/getCrowdfundingTransfer?account=',
       programs: [],
       isLoaded: false,
-      toastInfo: ''
+      toastInfo: '',
+      isWarn: true
     }
   },
   mounted() {

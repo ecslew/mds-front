@@ -4,29 +4,29 @@
     <div class="title">{{programs.title}}</div>
     <div class="row">
       <div class="col-sm-8">
-        <p class="pic" :style="{background: 'url(' + programs.img +')no-repeat center/cover'}"></p>
+        <p class="pic" :style="{background: 'rgba(0,0,0,0.05) url(' + programs.photos +')no-repeat center/cover'}"></p>
         <div class="author-info clearfix">
           <div class="copy-link">
             <img src="static/img/icon/web_icon_share.png" height="51" @click="linkShow">
             <div ref="copyContent" id="copyContent">{{link}}</div>
             <p ref="copy" v-show="link_isShow" @click="copyLink" class="copy-btn" data-clipboard-target="#copyContent" data-clipboard-action="copy">{{$t('copy_link')}}</p>
           </div>
-          <p class="avator"><img :src="'https://api.medishares.net/apiTools/getAddressHead?address=' + programs.address + '&v=1.0'" width="20"></p>
-            <p class="address">{{programs.address}}</p>
-            <p>{{$t('release_time')}}: {{programs.release_time.replace(/\//g,'-')}}</p>
+          <p class="avator"><img :src="'https://api.medishares.net/apiTools/getAddressHead?address=' + programs.creator + '&v=1.0'" width="20"></p>
+            <p class="address">{{programs.creator}}</p>
+            <p>{{$t('release_time')}}: {{programs.releaseTime.replace(/\//g,'-')}}</p>
         </div>
       </div>
       <div class="col-sm-4">
         <div class="progress">
-          <p class="progress-bar" :style="'width:'+parseFloat(programs.amount/programs.complete*100)+'%'"></p>
+          <p class="progress-bar" :style="'width:'+parseFloat(programs.supportTotal/programs.amount*100)+'%'"></p>
         </div>
-        <h4 class="pro-value main-color">{{programs.amount}} {{programs.targetToken}}</h4>
-        <p class="pro-key">{{$t("pledged")}} {{programs.complete}} {{programs.targetToken}}</p>
+        <h4 class="pro-value main-color">{{programs.supportTotal}} {{programs.targetToken}}</h4>
+        <p class="pro-key">{{$t("pledged")}} {{programs.amount}} {{programs.targetToken}}</p>
         <h4 class="pro-value">{{programs.backers}}</h4>
         <p class="pro-key">{{$t("backers")}}</p>
-        <h4 class="pro-value">{{programs.restDays}} {{$t("day")}} </h4>
+        <h4 class="pro-value">{{programs.endDate>0?programs.endDate:0}} {{$t("day")}} </h4>
         <p class="pro-key">{{$t("for_the_rest")}}</p>
-        <div class="payment supportBtn" @click="payModal">{{$t('payment')}}</div>
+        <div class="confirm supportBtn" @click="payModal">{{$t('payment')}}</div>
       </div>
     </div>
   </div>
@@ -39,7 +39,7 @@
             <a :class="{'active':!isActive}" @click='toggleTransfer'>{{$t('transfer')}}</a>
           </div>
           <div class="col-sm-4 hidden-xs">
-            <div class="payment" @click="payModal">{{$t('payment')}}</div>
+            <div class="confirm" @click="payModal">{{$t('payment')}}</div>
           </div>
         </div>
       </div>
@@ -47,11 +47,11 @@
     <div class="container detail-info-container">
       <div class="row">
         <div class="col-sm-8">
-          <div class="details" v-show="isActive" v-html="programs.info">
+          <div class="details" v-show="isActive" v-html="programs.des">
           </div>
           <div class="transfer" v-show="!isActive">
-            <div class="info-title">{{programs.support.length}} {{$t('support')}}</div>
-            <div class="transfer-list" v-for="trans in programs.support" :key="trans.id">
+            <div class="info-title">{{support.length}} {{$t('support')}}</div>
+            <div class="transfer-list" v-for="trans in support" :key="trans.id">
               <img src="static/img/icon/web_icon_ID.png" width="48" class="trans-avator">
               <div class="trans-info">
                 <p class="trans-amount">{{trans.amount}}</p>
@@ -80,18 +80,18 @@
         </p>
         <label>{{$t('note')}}</label>
         <textarea class="basic-input" rows="4" v-model="note" :placeholder="$t('note_pl')"></textarea>
-        <label>{{$t('name_of_consignee')}}</label>
+        <!-- <label>{{$t('name_of_consignee')}}</label>
         <input type="text" class="basic-input" v-model="consignee_name" :placeholder="$t('name_of_consignee_pl')">
         <label>{{$t('shipping_address')}}</label>
         <input type="text" class="basic-input" v-model="address" :placeholder="$t('shipping_address_pl')">
         <label>{{$t('contact')}}</label>
-        <input type="tel" class="basic-input" v-model="telephone" :placeholder="$t('contact_pl')">
-        <div class="payment" @click="payFunc">{{$t('determine')}}</div>
+        <input type="tel" class="basic-input" v-model="telephone" :placeholder="$t('contact_pl')"> -->
+        <div class="confirm" @click="payFunc">{{$t('determine')}}</div>
       </div>
     </div>
   </div>
-  <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <alert-modal :info='alertInfo'></alert-modal>
+  <mds-toast :toastInfo='toastInfo' :isWarn='isWarn' :isFail='isFail' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -99,47 +99,48 @@
 import alertModal from '@/base/alert'
 import mdsToast from '@/base/toast'
 import foot from '@/base/foot'
-import util from 'static/js/util'
 import user from 'static/js/user'
 import sha from 'js-sha256'
 export default {
   props: ['id'],
   data() {
     return {
+      type: 1,
       alertInfo: '',
-      alertTitle: '',
       toastInfo: '',
+      isWarn: false,
+      isFail: false,
       currentAccount: '',
-      amount: '', //支付金额
-      note: '', //支付备注
       link: window.location.href,
       copyBtn: null, //存储初始化复制按钮事件
       programs: {
-        id: 0,
-        address: 'loading...',
-        img: 'http://www.mathwallet.org/images/mathlabs/mathlabs_webpager.jpg',
-        title: 'I need your help to expand the reproduction of secret chili sauce',
-        complete: 0,
-        amount: 0,
-        backers: 0,
-        release_time: 'loading...',
-        restDays: 0,
-        support: [],
-        info: '',
-        crowdfundingNo: '',
-        targetAccount: '',
-        targetToken: '',
-        targetTokenDecimal: '',
-        targetTokenContract: '',
-        low: 0,
-        high: 0
+        eosID: "",
+        amount: 0, // 目标金额
+        supportTotal: "loading...", //支持金额
+        backers: "loading...", //支持人数
+        title: "loading...", // 标题
+        photos: "", // 图片
+        releaseTime: "loading...", // 发布时间
+        endDate: "loading...", // 还剩几天
+        endTime: "",
+        des: "loading...", // 简介
+        creator: "loading...", // 发起人
+        targetAccount: "", // 收款账户
+        targetToken: "",
+        targetTokenContract: "",
+        targetTokenDecimal: "",
+        high: 0,
+        low: 0
       },
+      support: [],
       link_isShow: false,
       isActive: true,
       totalEosPriceUsd: 0,
-      consignee_name: '', //收货人姓名
-      address: '', //收货人地址
-      telephone: '' //收货人联系电话
+      amount: '', //支付金额
+      note: '' //支付备注
+      // consignee_name: '', //收货人姓名
+      // address: '', //收货人地址
+      // telephone: '' //收货人联系电话
     }
   },
   mounted() {
@@ -192,6 +193,7 @@ export default {
       this.link_isShow = !this.link_isShow
     },
     copyLink() {
+      this.isWarn = false
       if (this.globalData.browsers.android) {
         let val = this.$refs.copyContent.innerText;
         let oInput = document.createElement("input");
@@ -201,13 +203,16 @@ export default {
         oInput.select(); // 选择对象
         document.execCommand("Copy"); // 执行浏览器复制命令
         oInput.style.display = "none";
+        this.isFail = false
         this.toastInfo = this.$t('copy_success')
       } else {
         let clipboard = this.copyBtn;
         clipboard.on('success', () => {
+          this.isFail = false
           this.toastInfo = this.$t('copy_success')
         });
         clipboard.on('error', () => {
+          this.isFail = true
           this.toastInfo = this.$t('copy_error')
         });
       }
@@ -216,12 +221,31 @@ export default {
       }, 2000);
     },
     payModal() {
-      if (this.programs.address == this.address) {
-        this.alertInfo = this.$t('copy_success')
-        $('#alert').modal('show')
-      } else {
-        $('#payment').modal('show')
-      }
+      user.getAccount().then((currentAccount) => {
+        this.currentAccount = currentAccount.name;
+        if (this.programs.creator == this.currentAccount) {
+          this.isWarn = true
+          this.isFail = false
+          this.toastInfo = this.$t('not_support')
+        } else if (this.type == 1) {
+          this.$router.push({
+            name: 'projectPurchase',
+            query: {
+              id: this.id
+            },
+            params: {
+              'programs': this.programs
+            }
+          })
+        } else {
+          $('#payment').modal('show')
+        }
+      }, () => {
+        // 未安装 scatter 或 登录失败
+        this.isWarn = true
+        this.isFail = false
+        this.toastInfo = this.$t('connect_scatter')
+      })
     },
     payFunc() {
       let _this = this;
@@ -249,11 +273,11 @@ export default {
         $(".currentAccount").html(currentAccount.name)
 
         // 附加信息
-        var additional = JSON.stringify({
-          "name": _this.consignee_name,
-          "address": _this.address,
-          "telephone": _this.telephone
-        });
+        // var additional = JSON.stringify({
+        //   "name": _this.consignee_name,
+        //   "address": _this.address,
+        //   "telephone": _this.telephone
+        // });
 
         // 交易
         user.getEos().transaction({
@@ -268,7 +292,8 @@ export default {
               from: _this.currentAccount,
               to: _this.programs.targetAccount,
               quantity: parseFloat(amount).toFixed(_this.programs.targetTokenDecimal) + ' ' + _this.programs.targetToken,
-              memo: '###{"ID":' + _this.programs.id + ',"creator":"' + _this.programs.address + '","comment":"' + note + '","additional":"' + sha.sha256(additional) + '"}###'
+              // memo: '###{"ID":' + _this.programs.eosID + ',"creator":"' + _this.programs.creator + '","comment":"' + note + '","additional":"' + sha.sha256(additional) + '"}###'
+              memo: '###{"ID":' + _this.programs.eosID + ',"creator":"' + _this.programs.creator + '","comment":"' + note + '"}###'
             }
           }]
         }).then(
@@ -281,8 +306,8 @@ export default {
               amount: amount,
               from: _this.currentAccount,
               to: _this.programs.targetAccount,
-              comment: note,
-              additional: additional
+              comment: note
+              // additional: additional
             };
 
             $.post(url, args, function (res) {
@@ -310,42 +335,31 @@ export default {
 
       }, () => {
         // 未安装 scatter 或 登录失败
+        this.isWarn = true
+        this.isFail = false
         this.toastInfo = this.$t('connect_scatter')
       })
 
     },
     getProjectInfo() {
 
-      let _GET = util.getParams();
-      let eosID = _GET.id;
+      let eosID = this.id;
       let _this = this;
 
       var url = _this.globalData.domain + '/apiCrowdfunding/getInfo?eosID=' + eosID;
 
       $.get(url, {}, function (res) {
         if (res.success) {
-          _this.programs.targetTokenDecimal = res.data.targetTokenDecimal; // targetTokenDecimal
-          _this.programs.info = res.data.des; // 简介
-          _this.programs.crowdfundingNo = res.data.crowdfundingNo; // 订单号
-          _this.programs.img = res.data.photos; // 图片
-          _this.programs.complete = parseFloat(res.data.amount).toFixed(_this.programs.targetTokenDecimal); // 总共
-          _this.programs.title = res.data.title; // 标题
-          _this.programs.address = res.data.creator; // 发起人
-          _this.programs.restDays = res.data.endDate; // 还剩几天
-          _this.programs.release_time = res.data.releaseTime; // 发布时间
-          _this.programs.targetAccount = res.data.targetAccount; // 收款账户
-          _this.programs.targetToken = res.data.targetToken; // token
-          _this.programs.targetTokenContract = res.data.targetTokenContract; // contract
-          _this.programs.id = res.data.eosID; // eosID
-          _this.programs.low = res.data.low; // low
-          _this.programs.high = res.data.high; // high
+          // 项目信息
+          _this.programs = res.data
+          _this.programs.amount = parseFloat(res.data.amount).toFixed(_this.programs.targetTokenDecimal); // 目标金额
 
           // transfer
           $.get(_this.globalData.domain + '/apiCrowdfunding/getTransRecord', {
             'crowdfundingNo': _this.programs.crowdfundingNo
           }, function (res) {
-
-            _this.programs.amount = parseFloat(res.data.total).toFixed(_this.programs.targetTokenDecimal);
+            // 支持金额和支持人数
+            _this.programs.supportTotal = parseFloat(res.data.total).toFixed(_this.programs.targetTokenDecimal);
             _this.programs.backers = res.data.count;
 
             if (res.success) {
@@ -354,7 +368,7 @@ export default {
                 "margin": "10px 0"
               })
               $.each(res.data.trans, function (index, event) {
-                _this.programs.support.push({
+                _this.support.push({
                   id: index + 1,
                   address: event.from,
                   amount: parseFloat(event.amount).toFixed(_this.programs.targetTokenDecimal) + ' ' + res.data.token, // 1.0000 EOS
@@ -479,19 +493,6 @@ export default {
   border-bottom-color: #fff;
 }
 
-.payment {
-  background: var(--primaryColor);
-  color: #fff;
-  height: 52px;
-  line-height: 52px;
-  text-align: center;
-  font-size: 16px;
-  font-family: Gotham-Medium;
-  font-weight: 500;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
 .detail-info {
   background: #fff;
   margin-top: 100px;
@@ -538,12 +539,13 @@ export default {
   border-radius: 4px;
 }
 
-.tab .payment {
+.tab .confirm {
+  margin: 0;
   transform: translateY(78px);
-  transition: transform 1s;
+  transition: transform 0.5s;
 }
 
-.tab.scroll .payment {
+.tab.scroll .confirm {
   transform: translateY(13px);
 }
 
@@ -602,10 +604,6 @@ export default {
 
 .modal-title {
   margin: 8px 0 32px;
-}
-
-.modal .payment {
-  margin-top: 64px;
 }
 
 .equal {
