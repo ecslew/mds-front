@@ -18,7 +18,7 @@ export default {
     }
   },
   mounted() {
-    if (window.location.hash != '#/about') {
+    if (window.location.hash != '#/about' && window.location.hash != '#/myProject' && window.location.hash != '#/projectBacked') {
       this.loginByScatter()
     }
   },
@@ -28,9 +28,6 @@ export default {
     },
     loginByScatter() {
       user.getAccount().then((res) => {
-        if (this.$route.path == '/myProject' || this.$route.path == '/projectBacked') {
-          this.$router.go(0)
-        }
         $(".currentAccount").html(res.name)
         $('#login').modal('hide')
         $(".login").hide()
