@@ -233,12 +233,20 @@ label {
   min-height: 48px;
 }
 
+.basic-input::placeholder {
+  color: var(--light-grey-blue);
+}
+
 .basic-group {
   position: relative;
 }
 
 .basic-group .basic-input {
   padding-right: 40px;
+}
+
+span.basic-input {
+  color: var(--light-grey-blue);
 }
 
 .basic-group .tri {
@@ -269,6 +277,10 @@ label {
   line-height: 48px;
   background: var(--paleBlue);
   padding: 0 16px;
+}
+
+.target-token>img {
+  margin: 0!important;
 }
 
 
@@ -373,6 +385,12 @@ label {
 
 .confirm-modal .btn-contain span:first-child {
   border-right: 1px solid var(--bgColor);
+}
+
+.modal .edit-address {
+  display: block;
+  text-align: right;
+  padding-top: 8px;
 }
 
 

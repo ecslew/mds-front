@@ -12,7 +12,7 @@
           <input name="targetTokenContract" type="text" v-model="addData.targetTokenContract" class="hide">
           <!-- 项目名称 title-->
           <label>{{$t('project_title')}}</label>
-          <input name="title" type="text" class="basic-input" v-model="addData.title" :placeholder="$t('project_title_pl')" autofocus>
+          <input name="title" type="text" class="basic-input" v-model="addData.title" :placeholder="$t('project_title_pl')" v-focus autofocus>
           <!-- 项目简介 des -->
           <label>{{$t('tell_story')}}</label>
           <div id="story">
@@ -224,6 +224,14 @@ export default {
       this.addData.targetTokenDecimals = 8
       this.addData.targetToken = 'EUSD'
       this.addData.targetTokenContract = 'bitpietokens'
+    }
+  },
+  directives: {
+    focus: {
+      // 指令的定义
+      inserted(el) {
+        el.focus()
+      }
     }
   },
   methods: {

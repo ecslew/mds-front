@@ -22,18 +22,26 @@
     </div>
     <div class="page">{{$t('step1_total2')}}</div>
   </div>
+  <mds-toast :toastInfo='toastInfo' :isWarn="isWarn" @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
 <script>
+import mdsToast from '@/base/toast'
+import user from 'static/js/user'
 export default {
   data() {
     return {
       project_type: this.$t("project_type1"),
-      type: 1
+      type: 1,
+      toastInfo: '',
+      isWarn: true
     }
   },
   methods: {
+    infoByToast: function (val) {
+      this.toastInfo = val
+    },
     selectType(e) {
       $('.dropdown-menu li').removeClass('active')
       e.target.className = "active"
@@ -41,15 +49,26 @@ export default {
       this.type = e.target.value
     },
     nextStep() {
-      if (this.project_type) {
-        this.$router.push({
-          path: '/projectRelease',
-          query: {
-            type: this.type
-          }
-        })
-      }
+      user.getAccount().then((res) => {
+        $(".login").hide()
+        $(".personal").show()
+        $(".currentAccount").html(res.name)
+        if (this.project_type) {
+          this.$router.push({
+            path: '/projectRelease',
+            query: {
+              type: this.type
+            }
+          })
+        }
+      }, () => {
+        // 未安装 scatter 或 登录失败
+        this.toastInfo = this.$t('connect_scatter')
+      })
     }
+  },
+  components: {
+    mdsToast
   }
 }
 </script>
@@ -80,7 +99,8 @@ export default {
   font-weight: 500;
   font-size: 16px;
   color: #fff;
-  border-radius:0 4px 4px 0;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
 }
 
 .select-type .dropdown-menu {
@@ -114,8 +134,6 @@ export default {
   line-height: 1.75;
 }
 
-
-
 @media (max-width: 767px) {
   .project-sm-container .col-md-8 {
     padding: 32px 15px;
@@ -124,7 +142,8 @@ export default {
   .select-type {
     margin: 70px 0 150px;
   }
-  .next{
+
+  .next {
     margin-top: 32px;
   }
 }

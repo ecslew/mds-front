@@ -222,6 +222,9 @@ export default {
     },
     payModal() {
       user.getAccount().then((currentAccount) => {
+        $(".login").hide()
+        $(".personal").show()
+        $(".currentAccount").html(currentAccount.name)
         this.currentAccount = currentAccount.name;
         if (this.programs.creator == this.currentAccount) {
           this.isWarn = true
@@ -643,6 +646,10 @@ export default {
 
   .detail-info {
     margin-top: 32px;
+  }
+
+  .detail-info.fixed {
+    padding-top: 60px;
   }
 
   .tab a {

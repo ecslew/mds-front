@@ -229,6 +229,8 @@ module.exports = {
   order: "订单",
   order_detail: "订单详情",
   total_amount: "总金额",
+  purchase_no_chosen: "您还没有选择宝贝哦",
+  purchase_no_number: "购买数量不能小于1",
   no_address: "无收货地址",
   add_shipping_address: "添加收货地址",
   change_shipping_address: "更换收货地址",

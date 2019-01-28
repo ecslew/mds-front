@@ -2,6 +2,10 @@
   padding: 32px 0;
 }
 
+.story_pl {
+  color: var(--light-grey-blue);
+}
+
 .photo-container {
   border: 1px solid #e7ecf0;
   border-radius: 4px;

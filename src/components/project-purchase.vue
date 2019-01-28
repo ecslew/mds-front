@@ -27,7 +27,7 @@
               <textarea v-model="note" :placeholder="$t('note_pl')"></textarea>
             </div>
           </div>
-          <div :class="[{active:selectedOrder},'confirm']" @click="submitOrder">{{$t('confirm')}}</div>
+          <div :class="[{active:selectedOrder&&selectedOrder.number>0},'confirm']" @click="submitOrder">{{$t('confirm')}}</div>
         </ul>
         <div class="col-sm-4 mds_notice">
           <h4>{{$t('mds_notice1')}}</h4>
@@ -81,10 +81,8 @@ export default {
       noteHash: '' //加密支付备注
     }
   },
-  created() {
-    this.getUser()
-  },
   mounted() {
+    this.getUser()
     this.gearList.map((list) => {
       this.$set(list, 'isSelected', false);
     })
@@ -153,26 +151,40 @@ export default {
       }
     },
     submitOrder() {
-      if (!this.selectedOrder) {
-        this.toastInfo = "您还没有选择宝贝哦"
-        return false
-      }
-      if (this.selectedOrder.number < 1) {
-        this.toastInfo = "购买数量不能小于1"
-        return false
-      }
-      this.selectedOrder.programs = this.programs
-      // 支付备注
-      this.selectedOrder.noteHash = sha.sha256(this.note)
-      this.selectedOrder.note = this.note
-      // 调接口提交数据
-      this.$router.push({
-        name: 'orderDetail',
-        params: {
-          'order': this.selectedOrder,
-          'id': this.id
+      user.getAccount().then((currentAccount) => {
+        $(".login").hide()
+        $(".personal").show()
+        $(".currentAccount").html(currentAccount.name)
+        this.currentAccount = currentAccount.name;
+        if (this.programs.creator == this.currentAccount) {
+          this.toastInfo = this.$t('not_support')
+          return false
         }
+        if (!this.selectedOrder) {
+          this.toastInfo = this.$t('purchase_no_chosen')
+          return false
+        }
+        if (this.selectedOrder.number < 1) {
+          this.toastInfo = this.$t('purchase_no_number')
+          return false
+        }
+        this.selectedOrder.programs = this.programs
+        // 支付备注
+        this.selectedOrder.noteHash = sha.sha256(this.note)
+        this.selectedOrder.note = this.note
+        // 调接口提交数据
+        this.$router.push({
+          name: 'orderDetail',
+          params: {
+            'order': this.selectedOrder,
+            'id': this.id
+          }
+        })
+      }, () => {
+        // 未安装 scatter 或 登录失败
+        this.toastInfo = this.$t('connect_scatter')
       })
+
     }
   },
   components: {

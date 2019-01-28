@@ -286,18 +286,19 @@ nav .open>a {
   border-radius: 4px;
   margin: 8px 10px;
   text-transform: capitalize;
+  cursor: pointer;
 }
 
 .ishome .pc-login {
   border: 1px solid #fff;
   color: #fff;
-  cursor: pointer;
 }
 
 .mobile-login {
   padding: 15px;
   line-height: 20px;
   float: right;
+  cursor: pointer;
 }
 
 .ishome .mobile-login {

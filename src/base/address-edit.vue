@@ -11,7 +11,12 @@
         <label>{{$t('contact')}}</label>
         <input type="tel" class="basic-input" v-model="edit.mobile" :placeholder="$t('contact_pl')">
         <label>{{$t('address')}}</label>
-        <input type="text" class="basic-input" v-model="edit.area" :placeholder="$t('address_pl')">
+        <div class="basic-group">
+          <span v-if="!isPositionFocus" class="basic-input">{{edit.area}}</span>
+          <input v-else type="text" class="basic-input" v-model="edit.area" :placeholder="$t('address_pl')" v-focus>
+          <span class="target-token"><img src="static/img/icon/position.png" height="32"></span>
+        </div>
+        <a href="javascript:;" class="edit-address" @click="positonFocus">{{$t('edit_address')}}</a>
         <label>{{$t('address_detail')}}</label>
         <input type="text" class="basic-input" v-model="edit.address" :placeholder="$t('address_detail_pl')">
         <div class="confirm" v-if="isOrder" @click="editAddress(edit.index)">{{$t('save_use')}}</div>
@@ -32,12 +37,30 @@ export default {
     return {
       editUrl: '/apiAddress/modify',
       toastInfo: '',
-      isWarn: true
+      isWarn: true,
+      isPositionFocus: false
     }
+  },
+  directives: {
+    focus: {
+      // 指令的定义
+      inserted(el) {
+        el.focus()
+      }
+    }
+  },
+  mounted() {
+    this.edit.area = this.$t('address_pl')
+    $('.modal').on('hidden.bs.modal', () => {
+      this.isPositionFocus = false
+    })
   },
   methods: {
     infoByToast: function (val) {
       this.toastInfo = val
+    },
+    positonFocus() {
+      this.isPositionFocus = true
     },
     editAddress(index) {
       this.isWarn = true
@@ -73,6 +96,7 @@ export default {
             $("#editAddress").modal('hide')
             this.isWarn = false
             this.toastInfo = this.$t('modify_success')
+            this.isPositionFocus = false
           } else {
             this.isWarn = true
             this.toastInfo = res.data.message

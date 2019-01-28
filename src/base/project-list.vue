@@ -36,6 +36,7 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
 
 .info {
@@ -46,8 +47,8 @@ export default {
 .info h4 {
   font-size: 20px;
   font-weight: 400;
-  height: 116px;
-  padding-bottom: 32px;
+  height: 4.2em;
+  margin-bottom: 32px;
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;

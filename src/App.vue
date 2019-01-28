@@ -19,9 +19,12 @@ export default {
     }
   },
   mounted() {
-    if (window.location.hash != '#/about' && window.location.hash != '#/myProject' && window.location.hash != '#/projectBacked') {
-      this.loginByScatter()
-    }
+    this.$router.afterEach((to, from) => {
+      if (to.path != '/about' && to.path != '/myProject' && to.path != '/projectBacked' && to.path != '/address' && to.path != '/projectPurchase') {
+        this.loginByScatter()
+      }
+      window.scrollTo(0, 0)
+    })
   },
   methods: {
     infoByToast: function (val) {
