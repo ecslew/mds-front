@@ -68,6 +68,7 @@ export default {
             project.releaseTime = util.timestampToDate(project.start).slice(0, 10)
           })
           _this.programs = res.rows
+
         }, 'json')
       }, () => {
         // 未安装 scatter 或 登录失败

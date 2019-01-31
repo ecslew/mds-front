@@ -22,7 +22,7 @@
         </div>
         <h4 class="pro-value main-color">{{programs.supportTotal}} {{programs.targetToken}}</h4>
         <p class="pro-key">{{$t("pledged")}} {{programs.amount}} {{programs.targetToken}}</p>
-        <h4 class="pro-value">{{programs.backers}}</h4>
+        <h4 class="pro-value">{{programs.backers?programs.backers:0}}</h4>
         <p class="pro-key">{{$t("backers")}}</p>
         <h4 class="pro-value">{{programs.endDate>0?programs.endDate:0}} {{$t("day")}} </h4>
         <p class="pro-key">{{$t("for_the_rest")}}</p>
@@ -80,12 +80,6 @@
         </p>
         <label>{{$t('note')}}</label>
         <textarea class="basic-input" rows="4" v-model="note" :placeholder="$t('note_pl')"></textarea>
-        <!-- <label>{{$t('name_of_consignee')}}</label>
-        <input type="text" class="basic-input" v-model="consignee_name" :placeholder="$t('name_of_consignee_pl')">
-        <label>{{$t('shipping_address')}}</label>
-        <input type="text" class="basic-input" v-model="address" :placeholder="$t('shipping_address_pl')">
-        <label>{{$t('contact')}}</label>
-        <input type="tel" class="basic-input" v-model="telephone" :placeholder="$t('contact_pl')"> -->
         <div class="confirm" @click="payFunc">{{$t('determine')}}</div>
       </div>
     </div>
@@ -105,7 +99,6 @@ export default {
   props: ['id'],
   data() {
     return {
-      type: 1,
       alertInfo: '',
       toastInfo: '',
       isWarn: false,
@@ -138,9 +131,6 @@ export default {
       totalEosPriceUsd: 0,
       amount: '', //支付金额
       note: '' //支付备注
-      // consignee_name: '', //收货人姓名
-      // address: '', //收货人地址
-      // telephone: '' //收货人联系电话
     }
   },
   mounted() {
@@ -230,14 +220,11 @@ export default {
           this.isWarn = true
           this.isFail = false
           this.toastInfo = this.$t('not_support')
-        } else if (this.type == 1) {
+        } else if (this.programs.type == 1) {
           this.$router.push({
             name: 'projectPurchase',
             query: {
               id: this.id
-            },
-            params: {
-              'programs': this.programs
             }
           })
         } else {
@@ -349,7 +336,7 @@ export default {
       let eosID = this.id;
       let _this = this;
 
-      var url = _this.globalData.domain + '/apiCrowdfunding/getInfo?eosID=' + eosID;
+      let url = _this.globalData.domain + '/apiCrowdfunding/getInfo?eosID=' + eosID;
 
       $.get(url, {}, function (res) {
         if (res.success) {

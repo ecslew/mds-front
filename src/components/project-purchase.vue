@@ -12,10 +12,10 @@
           <li v-for="(item,index) in gearList" :key="index" :class="[{selected:item.isSelected},'clearfix']">
             <div class="list-info clearfix" @click="selectGear(item)">
               <p class="pic" :style="{background: 'url(' + programs.photos +')no-repeat center/cover'}"></p>
-              <h3>{{item.sum}} EUSD</h3>
-              <div class="gear-type">{{$t('gear'+(index+1))}} : {{item.unit}} kg</div>
+              <h3>{{item.money/Math.pow(10,item.targetTokenDecimal)}} {{item.targetToken}}</h3>
+              <div class="gear-type">{{$t('gear'+item.level)}} : {{item.unitNum}} {{$t('unit_'+item.unit)}}</div>
             </div>
-            <div class="add_sub"><img src="static/img/icon/sub.jpg" width="34" @click="subNumber(item)"><input type="tel" class="add_number" v-model="item.number" @input="changeNumber(item)"><img src="static/img/icon/add.jpg" width="34" @click="addNumber(item)"></div>
+            <div class="add_sub"><img src="static/img/icon/sub.jpg" width="34" @click="subNumber(item)"><input type="tel" class="add_number" v-model="item.num" @input="changeNumber(item)"><img src="static/img/icon/add.jpg" width="34" @click="addNumber(item)"></div>
           </li>
           <div class="comment">
             <h4 class="select-title">{{$t('comments')}}</h4>
@@ -27,7 +27,7 @@
               <textarea v-model="note" :placeholder="$t('note_pl')"></textarea>
             </div>
           </div>
-          <div :class="[{active:selectedOrder&&selectedOrder.number>0},'confirm']" @click="submitOrder">{{$t('confirm')}}</div>
+          <div :class="[{active:selectedOrder&&selectedOrder.num>0},'confirm']" @click="submitOrder">{{$t('confirm')}}</div>
         </ul>
         <div class="col-sm-4 mds_notice">
           <h4>{{$t('mds_notice1')}}</h4>
@@ -51,28 +51,10 @@ export default {
   data() {
     return {
       getInfoUrl: '/apiCrowdfunding/getInfo?eosID=',
-      getGearUrl: '',
+      orderUrl: '/apiOrder/create',
       currentAccount: '',
       isEdit: false,
-      gearList: [{
-        id: '1',
-        sum: '10',
-        unit: '2',
-        max_number: 20,
-        number: 0
-      }, {
-        id: '2',
-        sum: '20',
-        unit: '4',
-        max_number: 20,
-        number: 0
-      }, {
-        id: '3',
-        sum: '30',
-        unit: '8',
-        max_number: 20,
-        number: 0
-      }],
+      gearList: [],
       selectedOrder: null,
       toastInfo: '',
       isWarn: true,
@@ -104,18 +86,28 @@ export default {
       })
     },
     getProjectInfo() {
-      if (this.$route.params.programs) {
-        this.programs = this.$route.params.programs
-      } else if (this.$route.params.order) {
-        let index = this.$route.params.order.id
+      if (this.$route.params.order) {
+        let index = this.$route.params.order.level - 1
         this.selectedOrder = this.$route.params.order
         this.programs = this.selectedOrder.programs
-        this.gearList[index - 1] = this.selectedOrder
+        this.gearList = JSON.parse(this.programs.json)
+        this.gearList.map((list) => {
+          this.$set(list, 'isSelected', false);
+          this.$set(list, 'num', 0);
+          this.$set(list, 'max_number', parseInt(this.programs.amount / list.money * Math.pow(10, list.targetTokenDecimal)));
+        })
+        this.gearList[index] = this.selectedOrder
         this.note = this.selectedOrder.note
       } else {
         this.$http.get(this.globalData.domain + this.getInfoUrl + this.id).then((res) => {
           if (res.data.success) {
             this.programs = res.data.data
+            this.gearList = JSON.parse(this.programs.json)
+            this.gearList.map((list) => {
+              this.$set(list, 'isSelected', false);
+              this.$set(list, 'num', 0);
+              this.$set(list, 'max_number', parseInt(this.programs.amount / list.money * Math.pow(10, list.targetTokenDecimal)));
+            })
           }
         }, (err) => {
           console.log(err)
@@ -131,23 +123,23 @@ export default {
       this.selectedOrder = item
     },
     subNumber(item) {
-      item.number--
-      if (item.number < 0) {
+      item.num--
+      if (item.num < 0) {
         this.toastInfo = "受不了了，宝贝不能再减少了哦"
-        item.number = 0
+        item.num = 0
       }
     },
     addNumber(item) {
-      item.number++
-      if (item.number > item.max_number) {
+      item.num++
+      if (item.num > item.max_number) {
         this.toastInfo = "该宝贝不能购买更多哦"
-        item.number = item.max_number
+        item.num = item.max_number
       }
     },
     changeNumber(item) {
-      if (item.number > item.max_number) {
+      if (item.num > item.max_number) {
         this.toastInfo = "数量超出范围"
-        item.number = item.max_number
+        item.num = item.max_number
       }
     },
     submitOrder() {
@@ -164,21 +156,44 @@ export default {
           this.toastInfo = this.$t('purchase_no_chosen')
           return false
         }
-        if (this.selectedOrder.number < 1) {
+        if (this.selectedOrder.num < 1) {
           this.toastInfo = this.$t('purchase_no_number')
           return false
         }
+
+        // 项目详情
         this.selectedOrder.programs = this.programs
+
         // 支付备注
         this.selectedOrder.noteHash = sha.sha256(this.note)
         this.selectedOrder.note = this.note
+
+        // 支付总额
+        this.selectedOrder.amount = this.selectedOrder.money / Math.pow(10, this.selectedOrder.targetTokenDecimal) * this.selectedOrder.num
+
         // 调接口提交数据
-        this.$router.push({
-          name: 'orderDetail',
-          params: {
-            'order': this.selectedOrder,
-            'id': this.id
+        this.$http.post(this.globalData.domain + this.orderUrl, {
+          account: this.currentAccount,
+          crowdfundingID: this.programs.crowdfundingID,
+          level: this.selectedOrder.level,
+          num: this.selectedOrder.num,
+          note: this.note,
+          noteHash: sha.sha256(this.note)
+        }, {
+          "emulateJSON": true
+        }).then(res => {
+          if (res.data.success) {
+            this.selectedOrder.orderNo = res.data.data.orderNo //订单号
+            this.$router.push({
+              name: 'orderDetail',
+              params: {
+                'order': this.selectedOrder,
+                'id': this.id //项目ID
+              }
+            })
           }
+        }, err => {
+          console.log(err)
         })
       }, () => {
         // 未安装 scatter 或 登录失败

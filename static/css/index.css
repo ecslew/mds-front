@@ -242,7 +242,7 @@ label {
 }
 
 .basic-group .basic-input {
-  padding-right: 40px;
+  padding-right: 60px;
 }
 
 span.basic-input {
@@ -253,17 +253,18 @@ span.basic-input {
   position: absolute;
   right: 10px;
   top: 16px;
-  z-index: 10;
+  z-index: 8;
   margin: 0;
 }
 
 .basic-group select {
   position: absolute;
   top: 0;
-  right: 20px;
+  right: 10px;
+  padding-right: 10px;
   height: 100%;
   border: none;
-  background: var(--paleBlue);
+  background: transparent;
   z-index: 10;
   outline: none;
   -webkit-tap-highlight-color: transparent;
@@ -275,7 +276,6 @@ span.basic-input {
   right: 0;
   top: 0;
   line-height: 48px;
-  background: var(--paleBlue);
   padding: 0 16px;
 }
 
@@ -555,9 +555,6 @@ span.basic-input {
   }
   .confirm-modal .modal-content {
     border-radius: 4px;
-  }
-  .ishome .tri {
-    background: url(../img/icon/tri.png)no-repeat center/contain;
   }
   .project-container,
   .project-sm-container {

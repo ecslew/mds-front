@@ -12,9 +12,9 @@
         <input type="tel" class="basic-input" v-model="add.mobile" :placeholder="$t('contact_pl')">
         <label>{{$t('address')}}</label>
         <div class="basic-group">
-          <span v-if="!isPositionFocus" class="basic-input">{{add.area}}</span>
-          <input v-else type="text" class="basic-input" v-model="add.area" :placeholder="$t('address_pl')" v-focus autofocus>
-          <span class="target-token"><img src="static/img/icon/position.png" height="32"></span>
+          <span v-show="!isPositionFocus" class="basic-input">{{add.area}}</span>
+          <input v-show="isPositionFocus" type="text" class="basic-input" v-model="add.area" :placeholder="$t('address_pl')" v-focus autofocus>
+          <span class="target-token" @click="addressDetail"><img src="static/img/icon/position.png" height="32"></span>
         </div>
         <a href="javascript:;" class="edit-address" @click="positonFocus">{{$t('edit_address')}}</a>
         <label>{{$t('address_detail')}}</label>
@@ -25,16 +25,12 @@
     </div>
   </div>
   <mds-toast :toastInfo='toastInfo' :isWarn="isWarn" @toast="infoByToast"></mds-toast>
-  <!-- <amap-wrapper class="map" center="shanghai"></amap-wrapper> -->
-
 </div>
 </template>
 
 <script>
 import mdsToast from '@/base/toast'
 import user from 'static/js/user'
-// import amapWrapper from '@/base/map'
-// import amapWrapper from '@/base/BMap'
 export default {
   props: ['addressList', 'isOrder'],
   data() {
@@ -60,6 +56,7 @@ export default {
     $('.modal').on('hidden.bs.modal', () => {
       this.isPositionFocus = false
     })
+    this.addressDetail()
   },
   methods: {
     infoByToast: function (val) {
@@ -67,6 +64,20 @@ export default {
     },
     positonFocus() {
       this.isPositionFocus = true
+    },
+    addressDetail(e) { //获取地理位置
+      user.getPosition().then((res) => {
+        console.log(res);
+        if (res.address) {
+          this.add.area = res.address
+        } else if (e) {
+          this.toastInfo = this.$t('position_error')
+        }
+      }, () => {
+        if (e) {
+          this.toastInfo = this.$t('position_error')
+        }
+      })
     },
     addAddress() {
       this.isWarn = true
@@ -123,7 +134,6 @@ export default {
   },
   components: {
     mdsToast
-    // amapWrapper
   }
 }
 </script>

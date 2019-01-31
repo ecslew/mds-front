@@ -12,8 +12,6 @@ import 'static/css/index.css'
 import clipboard from 'clipboard'
 import ScatterJS from 'scatterjs-core'
 import ScatterEOS from 'scatterjs-plugin-eosjs'
-// import VueAMap from 'vue-amap'
-import BaiduMap from 'vue-baidu-map'
 
 ScatterJS.plugins(new ScatterEOS())
 
@@ -23,21 +21,6 @@ Vue.prototype.clipboard = clipboard;
 
 Vue.config.productionTip = false
 Vue.use(resource)
-
-// Vue.use(VueAMap);
-// VueAMap.initAMapApiLoader({
-//   key: 'de4716dea081f7dbc69b1c3ece16462a',
-//   plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.Geolocation', 'AMap.CircleEditor'],
-//   uiVersion: '1.0', // ui库版本，不配置不加载,
-//   // 默认高德 sdk 版本为 1.4.4
-//   v: '1.4.4'
-// });
-
-
-Vue.use(BaiduMap, {
-  // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
-  ak: '7DgMV2aoB7prwOXNndQH2Yp8T1juwYGl'
-})
 
 /* eslint-disable no-new */
 new Vue({

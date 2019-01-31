@@ -6,7 +6,7 @@
     <div class="info col-sm-9">
       <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
       <p class="time">{{$t('release_time')}}: {{time}}</p>
-      <p class="btn-box"><span>{{$t('view_project')}}</span></p>
+        <p class="btn-box"><span>{{$t('view_project')}}</span></p>
     </div>
   </router-link>
   <!-- 我的项目 -->
@@ -68,7 +68,7 @@
           <p class="time">{{$t('release_time')}}: {{time}}</p>
         </router-link>
         <p class="btn-box">
-          <router-link class="editor" :to="{path: '/supportList',query: {eosID: id}}">{{$t('support_list')}}</router-link>
+          <router-link class="editor" :to="{name: 'supportList',params: {id: crowdfundingID}}">{{$t('support_list')}}</router-link>
         </p>
       </div>
     </template>
@@ -84,7 +84,7 @@
       <div class="info col-sm-9">
         <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
         <p class="time">{{$t('release_time')}}: {{time}}</p>
-        <p class="btn-box"><span class="main-color">{{$t('approved')}}</span></p>
+          <p class="btn-box"><span class="main-color">{{$t('approved')}}</span></p>
       </div>
     </router-link>
   </template>
@@ -107,7 +107,8 @@ export default {
     return {
       url: '/apiCrowdfunding/getInfo?eosID=',
       photos: '',
-      comment: ''
+      comment: '',
+      crowdfundingID: ''
     }
   },
   mounted() {
@@ -119,6 +120,7 @@ export default {
         if (res.data.success) {
           this.photos = res.data.data.photos
           this.comment = res.data.data.comment
+          this.crowdfundingID = res.data.data.crowdfundingID
         }
       }, (err) => {
         console.log(err);
@@ -137,6 +139,7 @@ export default {
   border: 1px solid var(--very-light-blue);
   border-radius: 4px;
   overflow: hidden;
+  margin-bottom: 24px;
 }
 
 .list-pic {

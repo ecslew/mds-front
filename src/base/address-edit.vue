@@ -2,7 +2,7 @@
 <div>
   <div class="modal" id="editAddress">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
+      <div class="modal-content" v-if="edit">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
         <img  v-if="isOrder" src="static/img/icon/back.png" width="32" class="back" data-dismiss="modal" data-target="#changeAddress" data-toggle="modal">
         <h4 class="modal-title">{{$t('edit_address')}}</h4>
@@ -14,7 +14,7 @@
         <div class="basic-group">
           <span v-if="!isPositionFocus" class="basic-input">{{edit.area}}</span>
           <input v-else type="text" class="basic-input" v-model="edit.area" :placeholder="$t('address_pl')" v-focus>
-          <span class="target-token"><img src="static/img/icon/position.png" height="32"></span>
+          <span class="target-token" @click="addressDetail"><img src="static/img/icon/position.png" height="32"></span>
         </div>
         <a href="javascript:;" class="edit-address" @click="positonFocus">{{$t('edit_address')}}</a>
         <label>{{$t('address_detail')}}</label>
@@ -50,7 +50,6 @@ export default {
     }
   },
   mounted() {
-    this.edit.area = this.$t('address_pl')
     $('.modal').on('hidden.bs.modal', () => {
       this.isPositionFocus = false
     })
@@ -61,6 +60,20 @@ export default {
     },
     positonFocus() {
       this.isPositionFocus = true
+    },
+    addressDetail(e) { //获取地理位置
+      user.getPosition().then((res) => {
+        console.log(res);
+        if (res.address) {
+          this.edit.area = res.address
+        } else if (e) {
+          this.toastInfo = this.$t('position_error')
+        }
+      }, () => {
+        if (e) {
+          this.toastInfo = this.$t('position_error')
+        }
+      })
     },
     editAddress(index) {
       this.isWarn = true

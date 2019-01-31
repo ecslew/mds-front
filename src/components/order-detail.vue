@@ -6,7 +6,7 @@
         <div class="col-sm-8">
           <div class="edit" @click="editOrder">{{$t('editor')}}</div>
           <h4 class="select-title">{{$t('order_detail')}}</h4>
-          <ul class="order-info">
+          <ul class="order-info" v-if='orderList'>
             <li>
               <h5>{{$t('project_name')}}:</h5>
               <p>{{orderList.programs.title}}</p>
@@ -14,16 +14,16 @@
             <li>
               <h5>{{$t('order')}}:</h5>
               <p>
-                <span>{{$t('gear'+orderList.id)}} : {{orderList.unit}} kg</span>
+                <span>{{$t('gear'+orderList.level)}} : {{orderList.unitNum}} {{$t('unit_'+orderList.unit)}}</span>
               </p>
             </li>
             <li>
               <h5>{{$t('quantity')}}:</h5>
-              <p>{{orderList.number}}</p>
+              <p>{{orderList.num}}</p>
             </li>
             <li>
               <h5>{{$t('total_amount')}}:</h5>
-              <p>{{orderList.sum*orderList.number}} EUSD</p>
+              <p>{{orderList.amount}} EUSD</p>
             </li>
           </ul>
           <div class="order-info">
@@ -33,8 +33,8 @@
             <template v-else>
               <div v-if="!defaultAddress" class="no-address" data-target="#changeAddress" data-toggle="modal">+ {{$t('add_shipping_address')}}</div>
               <div v-else>
-                <h4>{{defaultAddress?defaultAddress.name:''}} {{defaultAddress?defaultAddress.mobile:''}}</h4>
-                <p>{{defaultAddress?defaultAddress.area:''}}, {{defaultAddress?defaultAddress.address:''}} ;</p>
+                <h4>{{defaultAddress.name}} {{defaultAddress.mobile}}</h4>
+                <p>{{defaultAddress.area}}, {{defaultAddress.address}} ;</p>
                 <a class="change-address" href="#changeAddress" data-toggle="modal">{{$t('change_shipping_address')}}</a>
               </div>
             </template>
@@ -56,7 +56,7 @@
           <li v-for="(item,index) in addressList" :key="index" :class="{selected:item.isSelected}">
             <div class="list-top" @click="selectAddress(item)">
               <h4>{{item.name}} {{item.mobile}}</h4>
-              <p>{{item.address}}, {{item.address}} ;</p>
+              <p>{{item.area}}, {{item.address}} ;</p>
             </div>
             <div class="btn-box">
               <a href="#editAddress" data-dismiss="modal" data-toggle="modal" class="editor" @click="editModal(item,index)">{{$t('editor')}}</a>
@@ -91,32 +91,23 @@ import user from 'static/js/user'
 export default {
   data() {
     return {
+      bindAddress: '/apiOrder/bindAddress',
+      finishUrl: '/apiOrder/finished',
       getListUrl: '​/apiAddress/getList',
       deleteUrl: '​/apiAddress/delete',
+      transUrl: '​/apiCrowdfunding/trans',
+      currentAccount: '',
       alertInfo: '',
       toastInfo: '',
       isWarn: false,
       isOrder: true,
-      orderList: {
-        programs: {
-          title: 'loading...'
-        },
-        id: 1,
-        unit: 0,
-        number: 0,
-        sum: 0
-      },
-      id: '',
-      addressList: [],
-      defaultAddress: null,
-      edit: {
-        addressNo: '',
-        name: '',
-        mobile: '',
-        area: '',
-        address: ''
-      },
-      selectedAddress: null,
+      orderList: null, //订单详情
+      eosID: '', //项目ID
+      addressList: [], //地址列表
+      defaultAddress: null, //默认地址
+      edit: null, //编辑地址
+      programs: null, //项目详情
+      selectedAddress: null, //选中地址
       deleteItem: {
         id: '',
         index: ''
@@ -125,7 +116,6 @@ export default {
   },
   mounted() {
     this.getList()
-
     this.getOrder()
   },
   methods: {
@@ -136,7 +126,8 @@ export default {
     getOrder() {
       if (this.$route.params.order) {
         this.orderList = this.$route.params.order
-        this.id = this.$route.params.id
+        this.programs = this.orderList.programs
+        this.eosID = this.$route.params.id
       }
     },
     // 编辑订单
@@ -144,7 +135,7 @@ export default {
       this.$router.push({
         name: 'projectPurchase',
         query: {
-          id: this.id
+          id: this.eosID
         },
         params: {
           'order': this.orderList
@@ -205,9 +196,10 @@ export default {
       this.edit.index = index
       this.selectAddress(item)
     },
-    deleteModal(index, id) {
+    // 删除地址弹窗显示
+    deleteModal(index, addressNo) {
       this.deleteItem.index = index
-      this.deleteItem.id = id
+      this.deleteItem.id = addressNo
     },
     // 删除地址
     deleteAddress(index, id) {
@@ -246,7 +238,105 @@ export default {
       })
     },
     payment() {
+      //绑定地址
+      this.$http.post(this.globalData.domain + this.bindAddress, {
+        addressNo: this.selectedAddress.addressNo,
+        orderNo: this.orderList.orderNo
+      }, {
+        'emulateJSON': true
+      }).then(res => {
+        if (res.data.success) {
+          // 判断登录
+          user.getAccount().then((currentAccount) => {
+            $(".login").hide()
+            $(".personal").show()
+            $(".currentAccount").html(currentAccount.name)
+            this.currentAccount = currentAccount.name;
 
+            // 交易
+            user.getEos().transaction({
+              actions: [{
+                account: this.programs.targetTokenContract,
+                name: 'transfer',
+                authorization: [{
+                  actor: this.currentAccount,
+                  permission: 'active'
+                }],
+                data: {
+                  from: this.currentAccount,
+                  to: this.programs.targetAccount,
+                  quantity: parseFloat(this.orderList.amount).toFixed(this.programs.targetTokenDecimal) + ' ' + this.programs.targetToken,
+                  memo: '###{"ID":' + this.programs.eosID + ',"creator":"' + this.programs.creator + '","comment":"' + this.orderList.note + '"}###'
+                }
+              }]
+            }).then(result => {
+
+              // 交易完成
+              this.$http.post(this.globalData.domain + this.finishUrl, {
+                orderNo: this.orderList.orderNo,
+                hash: result.transaction_id
+              }, {
+                'emulateJSON': true
+              }).then(res => {
+                if (!res.data.success) {
+                  this.alertInfo = res.message;
+                  $('#alert').modal('show')
+                }
+              })
+              // end 交易完成
+
+              // 接口：trans
+              let args = {
+                crowdfundingNo: this.orderList.programs.crowdfundingNo,
+                hash: result.transaction_id,
+                amount: this.orderList.amount,
+                from: this.currentAccount,
+                to: this.orderList.programs.targetAccount,
+                comment: this.orderList.note
+              };
+
+              this.$http.post(this.globalData.domain + this.transUrl, {
+                crowdfundingNo: this.orderList.programs.crowdfundingNo,
+                hash: result.transaction_id,
+                amount: this.orderList.amount,
+                from: this.currentAccount,
+                to: this.orderList.programs.targetAccount,
+                comment: this.orderList.note
+              }, {
+                'emulateJSON': true
+              }).then(res => {
+                if (res.data.success) {
+                  this.alertInfo = this.$t('success');
+                  $('#alert').modal('show')
+                  $('#alert').on('hidden.bs.modal', (e) => {
+                    this.$router.push('/projectBacked')
+                  })
+                } else {
+                  this.alertInfo = res.message;
+                  $('#alert').modal('show')
+                }
+              })
+              //end  接口：trans
+
+            }).catch(error => {
+              // 失败
+              this.alertInfo = error;
+              $('#alert').modal('show')
+            })
+            // end 交易
+
+          }, () => {
+            // 未安装 scatter 或 登录失败
+            this.isWarn = true
+            this.isFail = false
+            this.toastInfo = this.$t('connect_scatter')
+          })
+          // 登录 end
+        }
+        // 绑定地址成功 end
+      }, err => {
+        console.log(err)
+      })
     }
   },
   components: {

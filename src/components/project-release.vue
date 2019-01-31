@@ -47,26 +47,25 @@
             <ul class="gear-list">
               <li v-for="(item, index) in gearList" :key="index">
                 <span class="delete-gear" @click="deleteGear(index)">{{$t('delete')}}</span>
-                <h3>{{$t('gear'+(index+1))}}</h3>
+                <h3>{{$t('gear'+ item.level)}}</h3>
                 <div class="gear-amount">{{$t('amount')}}</div>
                 <div class="row">
                   <div class="col-sm-6 basic-group">
-                    <input class="basic-input" type="number" v-model="item.sum" :placeholder="$t('total_price')">
-                    <span class="target-token">EUSD</span>
+                    <input class="basic-input" type="number" v-model="item.money" :placeholder="$t('total_price')">
+                    <span class="target-token">{{item.targetToken}}</span>
                   </div>
                   <div class="col-sm-6 basic-group">
-                    <input name="targetAmount" class="basic-input" type="number" v-model="item.unit" :placeholder="$t('unit')">
-                    <select id="unit" @change="changeUnit">
-                      <option value="1">{{$t('unit_jin')}}</option>
-                      <option value="2">{{$t('unit_kg')}}</option>
-                      <option value="3">{{$t('unit_piece')}}</option>
+                    <input class="basic-input" type="number" v-model="item.unitNum" :placeholder="$t('unit')">
+                    <select id="unit" @change="changeUnit" v-model="item.unit">
+                      <option value="jin">{{$t('unit_jin')}}</option>
+                      <option value="kg">{{$t('unit_kg')}}</option>
+                      <option value="piece">{{$t('unit_piece')}}</option>
                     </select>
                     <span class="tri"></span>
                   </div>
                 </div>
-                <input name="unit" type="text" v-model="unit" class="hide">
               </li>
-              <li class="continue-add" @click="addGear">{{$t("continue_add")}}</li>
+              <li class="continue-add" @click="addGear(gearList)">{{$t("continue_add")}}</li>
             </ul>
           </div>
           <!-- 筹款金额 targetAmount-->
@@ -211,11 +210,15 @@ export default {
         low: 0, //【 最低筹款金额 ，非必须 】
         high: 0 //【 最高筹款金额 ，非必须 】
       },
-      unit: '',
       gearList: [{
-        sum: '',
-        unit: ''
-      }] //档位
+        targetToken: 'EUSD', // token
+        targetTokenContract: 'bitpietokens', // 合约地址
+        targetTokenDecimal: 8, // 合约小数
+        money: '', // 金额整形
+        unitNum: '', // 单位数量
+        unit: 'kg', // 单位
+        level: 1 // 档位
+      }]
     }
   },
   mounted() {
@@ -278,15 +281,17 @@ export default {
     },
     // 提交表单
     nextStep() {
-      const that = this
       this.isWarn = true
+
       // 判断是否登录
       user.getAccount().then((res) => {
-        this.addData.creator = res.name
-        this.addData.targetAccount = res.name
         $(".login").hide()
         $(".personal").show()
         $(".currentAccount").html(res.name)
+
+        this.addData.creator = res.name
+        this.addData.targetAccount = res.name
+
         // 表单匹配
         if (!this.addData.title) {
           this.toastInfo = this.$t('form_match_title')
@@ -299,6 +304,25 @@ export default {
         if (!this.addData.photos) {
           this.toastInfo = this.$t('form_match_photos')
           return false
+        }
+        // 电商类项目
+        if (this.type == 1) {
+          let isGearListFalse = false
+          this.gearList.some((item, index) => {
+            if (item.money - 0 <= 0) {
+              isGearListFalse = true
+              this.toastInfo = this.$t('form_gear_money')
+              return true
+            }
+            if (item.unitNum - 0 <= 0) {
+              isGearListFalse = true
+              this.toastInfo = this.$t('form_gear_unitNum')
+              return true
+            }
+          })
+          if (isGearListFalse) {
+            return false
+          }
         }
         if (this.addData.amount == 0) {
           this.toastInfo = this.$t('form_match_amount')
@@ -327,9 +351,7 @@ export default {
           return false
         }
         if (this.addData.high - 0 > this.addData.amount - 0) {
-          this.toastInfo = this.$t('form_match_high')
           this.addData.high = this.addData.amount
-          return false
         }
         if (!this.addData.endTime) {
           this.toastInfo = this.$t('form_match_endTime')
@@ -346,6 +368,16 @@ export default {
         formData.append("targetAccount", res.name)
         formData.append("low", this.addData.low)
         formData.append("high", this.addData.high)
+        formData.append("type", this.type)
+
+        if (this.type == 1) {
+          // 档位信息
+          let gearJson = JSON.parse(JSON.stringify(this.gearList))
+          gearJson.map((item) => {
+            item.money = item.money * Math.pow(10, item.targetTokenDecimal)
+          })
+          formData.append("json", JSON.stringify(gearJson))
+        }
 
         // 去除空文件元素
         try {
@@ -360,43 +392,43 @@ export default {
         // 创建项目提交到链上
         eos.transaction({
           actions: [{
-            account: that.globalData.contract, // 合约名
+            account: this.globalData.contract, // 合约名
             name: 'add', // 合约方法
             authorization: [{
-              actor: that.addData.creator, // 登录当前账户
+              actor: this.addData.creator, // 登录当前账户
               permission: 'active'
             }],
             data: {
-              "initiator": that.addData.creator, // 项目发起人
-              "name": that.addData.title, // 项目名称
-              "item_digest": that.addData.desHash, //that.addData.desHash, // 项目简介sha256 后的值 64 位
-              "receiver": that.addData.targetAccount, // 收款人
+              "initiator": this.addData.creator, // 项目发起人
+              "name": this.addData.title, // 项目名称
+              "item_digest": this.addData.desHash, //this.addData.desHash, // 项目简介sha256 后的值 64 位
+              "receiver": this.addData.targetAccount, // 收款人
               "min_fund": {
-                amount: parseFloat(that.addData.low).toFixed(that.addData.targetTokenDecimals),
-                precision: that.addData.targetTokenDecimals,
-                symbol: that.addData.targetToken,
-                contract: that.addData.targetTokenContract
+                amount: parseFloat(this.addData.low).toFixed(this.addData.targetTokenDecimals),
+                precision: this.addData.targetTokenDecimals,
+                symbol: this.addData.targetToken,
+                contract: this.addData.targetTokenContract
               },
               "max_fund": {
-                amount: parseFloat(that.addData.high).toFixed(that.addData.targetTokenDecimals),
-                precision: that.addData.targetTokenDecimals,
-                symbol: that.addData.targetToken,
-                contract: that.addData.targetTokenContract
+                amount: parseFloat(this.addData.high).toFixed(this.addData.targetTokenDecimals),
+                precision: this.addData.targetTokenDecimals,
+                symbol: this.addData.targetToken,
+                contract: this.addData.targetTokenContract
               },
               "target_fund": {
-                amount: parseFloat(that.addData.amount).toFixed(that.addData.targetTokenDecimals),
-                precision: that.addData.targetTokenDecimals,
-                symbol: that.addData.targetToken,
-                contract: that.addData.targetTokenContract
+                amount: parseFloat(this.addData.amount).toFixed(this.addData.targetTokenDecimals),
+                precision: this.addData.targetTokenDecimals,
+                symbol: this.addData.targetToken,
+                contract: this.addData.targetTokenContract
 
               },
-              "deadline": that.addData.endTimeStamp // 结束时间 时间戳(s)
+              "deadline": this.addData.endTimeStamp // 结束时间 时间戳(s)
             }
           }]
         }).then(
           result => {
             // 成功，调用我们的接口
-            that.$http.post(that.globalData.domain + that.url, formData, {
+            this.$http.post(this.globalData.domain + this.url, formData, {
               cache: false,
               processData: false,
               contentType: false
@@ -404,7 +436,7 @@ export default {
               if (res.data.success) {
                 $('#successModal').modal('show')
               } else {
-                that.alertInfo = res.data.message
+                this.alertInfo = res.data.message
                 $('#alert').modal('show')
               }
             }, error => {
@@ -459,24 +491,20 @@ export default {
       }
     },
     changeUnit(event) {
-      const target = event.target.value
-      switch (target) {
-        case '1':
-          this.unit = this.$t('unit_jin')
-          break;
-        case '2':
-          this.unit = this.$t('unit_kg')
-          break;
-        default:
-          this.unit = this.$t('unit_piece')
-          break;
-      }
+      this.gearList.map((item) => {
+        item.unit = event.target.value
+      })
     },
     addGear() {
       if (this.gearList.length < 3) {
         this.gearList.push({
-          sum: '',
-          unit: ''
+          targetToken: this.gearList[0].targetToken, // token
+          targetTokenContract: this.gearList[0].targetTokenContract, // 合约地址
+          targetTokenDecimal: this.gearList[0].targetTokenDecimal, // 合约小数
+          money: '', // 金额整形
+          unitNum: '', // 单位数量
+          unit: this.gearList[0].unit, // 单位
+          level: this.gearList.length + 1 // 档位
         })
       } else {
         this.isWarn = true
@@ -486,6 +514,9 @@ export default {
     },
     deleteGear(index) {
       this.gearList.splice(index, 1)
+      this.gearList.map((item, index) => {
+        item.level = index + 1
+      })
     }
   },
   watch: {

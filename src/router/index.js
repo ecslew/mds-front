@@ -36,8 +36,7 @@ export default new Router({
       path: '/projectModify',
       component: resolve => require(['@/components/project-modify'], resolve),
       props: (route) => ({
-        eosID: route.query.eosID,
-        type: route.query.type
+        eosID: route.query.eosID
       })
     },
     // 项目详情
@@ -86,10 +85,8 @@ export default new Router({
     // 支持列表
     {
       path: '/supportList',
-      component: resolve => require(['@/components/support-list'], resolve),
-      props: (route) => ({
-        id: route.query.id
-      })
+      name: 'supportList',
+      component: resolve => require(['@/components/support-list'], resolve)
     }
   ]
 })

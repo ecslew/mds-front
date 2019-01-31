@@ -13,8 +13,8 @@
           <p class="next col-sm-3" @click="nextStep">{{$t('next_step')}}</p>
           <ul class="dropdown-menu">
             <li value="1" class="active" @click="selectType">{{$t("project_type1")}}</li>
-            <li value="2" @click="selectType">{{$t("project_type2")}}</li>
-            <li value="3" @click="selectType">{{$t("project_type3")}}</li>
+            <li value="0" @click="selectType">{{$t("project_type2")}}</li>
+            <li value="0" @click="selectType">{{$t("project_type3")}}</li>
           </ul>
         </div>
         <div class="notice">{{$t('mds_notice1')}}{{$t('mds_notice2')}}</div>
