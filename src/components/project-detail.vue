@@ -1,77 +1,95 @@
 <template>
 <div class='project-detail'>
-  <div class="container">
-    <div class="title">{{programs.title}}</div>
-    <div class="row">
-      <div class="col-sm-8">
-        <p class="pic" :style="{background: 'rgba(0,0,0,0.05) url(' + programs.photos +')no-repeat center/cover'}"></p>
-        <div class="author-info clearfix">
-          <div class="copy-link">
-            <img src="static/img/icon/web_icon_share.png" height="51" @click="linkShow">
-            <div ref="copyContent" id="copyContent">{{link}}</div>
-            <p ref="copy" v-show="link_isShow" @click="copyLink" class="copy-btn" data-clipboard-target="#copyContent" data-clipboard-action="copy">{{$t('copy_link')}}</p>
-          </div>
-          <p class="avator"><img :src="'https://api.medishares.net/apiTools/getAddressHead?address=' + programs.creator + '&v=1.0'" width="20"></p>
-            <p class="address">{{programs.creator}}</p>
-            <p>{{$t('release_time')}}: {{programs.releaseTime.replace(/\//g,'-')}}</p>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="progress">
-          <p class="progress-bar" :style="'width:'+parseFloat(programs.supportTotal/programs.amount*100)+'%'"></p>
-        </div>
-        <h4 class="pro-value main-color">{{programs.supportTotal}} {{programs.targetToken}}</h4>
-        <p class="pro-key">{{$t("pledged")}} {{programs.amount}} {{programs.targetToken}}</p>
-        <h4 class="pro-value">{{programs.backers?programs.backers:0}}</h4>
-        <p class="pro-key">{{$t("backers")}}</p>
-        <h4 class="pro-value">{{programs.endDate>0?programs.endDate:0}} {{$t("day")}} </h4>
-        <p class="pro-key">{{$t("for_the_rest")}}</p>
-        <div class="confirm supportBtn" @click="payModal">{{$t('payment')}}</div>
-      </div>
-    </div>
-  </div>
-  <section class="detail-info">
-    <div class="tab">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-8">
-            <a :class="{'active':isActive}" @click='toggleDetails'>{{$t('details')}}</a>
-            <a :class="{'active':!isActive}" @click='toggleTransfer'>{{$t('transfer')}}</a>
-          </div>
-          <div class="col-sm-4 hidden-xs">
-            <div class="confirm" @click="payModal">{{$t('payment')}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="container detail-info-container">
+  <div class="isNull" v-if='isNull'>{{$t('project_error')}}</div>
+  <template v-else>
+    <div class="container">
+      <div class="title">{{programs.title}}</div>
       <div class="row">
         <div class="col-sm-8">
-          <div class="details" v-show="isActive" v-html="programs.des">
+          <p class="pic" :style="{background: 'rgba(0,0,0,0.05) url(' + programs.photos +')no-repeat center/cover'}"></p>
+          <div class="author-info clearfix">
+            <div class="copy-link">
+              <img src="static/img/icon/web_icon_share.png" height="51" @click="linkShow">
+              <div ref="copyContent" id="copyContent">{{link}}</div>
+              <p ref="copy" v-show="link_isShow" @click="copyLink" class="copy-btn" data-clipboard-target="#copyContent" data-clipboard-action="copy">{{$t('copy_link')}}</p>
+            </div>
+            <p class="avator"><img :src="'https://api.medishares.net/apiTools/getAddressHead?address=' + programs.creator + '&v=1.0'" width="20"></p>
+              <p class="address">{{programs.creator}}</p>
+              <p>{{$t('release_time')}}: {{programs.releaseTime.replace(/\//g,'-')}}</p>
           </div>
-          <div class="transfer" v-show="!isActive">
-            <div class="info-title">{{support.length}} {{$t('support')}}</div>
-            <div class="transfer-list" v-for="trans in support" :key="trans.id">
-              <img src="static/img/icon/web_icon_ID.png" width="48" class="trans-avator">
-              <div class="trans-info">
-                <p class="trans-amount">{{trans.amount}}</p>
-                <p class="address">{{trans.address}}</p>
-                <p class="trans-comments" v-if="trans.comments">{{trans.comments}}</p>
-                <p class="trans-time">{{trans.time}}</p>
+        </div>
+        <div class="col-sm-4">
+          <div class="progress">
+            <p class="progress-bar" :style="'width:'+parseFloat(programs.supportTotal/programs.amount*100)+'%'"></p>
+          </div>
+          <h4 class="pro-value main-color">{{programs.supportTotal}} {{programs.targetToken}}</h4>
+          <p class="pro-key">{{$t("pledged")}} {{programs.amount}} {{programs.targetToken}}</p>
+          <h4 class="pro-value">{{programs.backers?programs.backers:0}}</h4>
+          <p class="pro-key">{{$t("backers")}}</p>
+          <h4 class="pro-value">{{programs.endDate>0?programs.endDate:0}} {{$t("day")}} </h4>
+          <p class="pro-key">{{$t("for_the_rest")}}</p>
+          <div class="confirm supportBtn" @click="payModal">
+            <template v-if='programs.type==1'>
+              {{$t('payment')}}
+            </template>
+            <template v-else>
+              {{$t('donate')}}
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+    <section class="detail-info">
+      <div class="tab">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-8">
+              <a :class="{'active':isActive}" @click='toggleDetails'>{{$t('details')}}</a>
+              <a :class="{'active':!isActive}" @click='toggleTransfer'>{{$t('transfer')}}</a>
+            </div>
+            <div class="col-sm-4 hidden-xs">
+              <div class="confirm" @click="payModal">
+                <template v-if='programs.type==1'>
+                  {{$t('payment')}}
+                </template>
+                <template v-else>
+                  {{$t('donate')}}
+                </template>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+      <div class="container detail-info-container">
+        <div class="row">
+          <div class="col-sm-8">
+            <div class="details" v-show="isActive" v-html="programs.des">
+            </div>
+            <div class="transfer" v-show="!isActive">
+              <div class="info-title">{{support.length}} {{$t('support')}}</div>
+              <div class="transfer-list" v-for="trans in support" :key="trans.id">
+                <img src="static/img/icon/web_icon_ID.png" width="48" class="trans-avator">
+                <div class="trans-info">
+                  <p class="trans-amount">{{trans.amount}}</p>
+                  <p class="address">{{trans.address}}</p>
+                  <p class="trans-comments" v-if="trans.comments">{{trans.comments}}</p>
+                  <p class="trans-time">{{trans.time}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </template>
+
   <foot></foot>
   <!-- Modal -->
   <div class="modal" id="payment">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">{{$t('payment')}}</h4>
+        <h4 class="modal-title">{{$t('donate')}}</h4>
         <label>{{$t('pay_amount')}}</label>
         <p class="basic-group">
           <input class="basic-input" type="number" v-model="amount" :placeholder="$t('pay_amount_pl')" @blur="getEosPrice">
@@ -125,6 +143,7 @@ export default {
         high: 0,
         low: 0
       },
+      isNull: false,
       support: [],
       link_isShow: false,
       isActive: true,
@@ -262,13 +281,6 @@ export default {
         $(".personal").show()
         $(".currentAccount").html(currentAccount.name)
 
-        // 附加信息
-        // var additional = JSON.stringify({
-        //   "name": _this.consignee_name,
-        //   "address": _this.address,
-        //   "telephone": _this.telephone
-        // });
-
         // 交易
         user.getEos().transaction({
           actions: [{
@@ -276,13 +288,12 @@ export default {
             name: 'transfer',
             authorization: [{
               actor: _this.currentAccount,
-              permission: 'active'
+              permission: currentAccount.authority
             }],
             data: {
               from: _this.currentAccount,
               to: _this.programs.targetAccount,
               quantity: parseFloat(amount).toFixed(_this.programs.targetTokenDecimal) + ' ' + _this.programs.targetToken,
-              // memo: '###{"ID":' + _this.programs.eosID + ',"creator":"' + _this.programs.creator + '","comment":"' + note + '","additional":"' + sha.sha256(additional) + '"}###'
               memo: '###{"ID":' + _this.programs.eosID + ',"creator":"' + _this.programs.creator + '","comment":"' + note + '"}###'
             }
           }]
@@ -297,7 +308,6 @@ export default {
               from: _this.currentAccount,
               to: _this.programs.targetAccount,
               comment: note
-              // additional: additional
             };
 
             $.post(url, args, function (res) {
@@ -314,13 +324,12 @@ export default {
               }
             }, 'json')
           }
-        ).catch(
-          error => {
-            // 失败
-            _this.alertInfo = error;
-            $('#alert').modal('show')
-          }
-        )
+        ).catch(error => {
+          // 失败
+          console.log(error)
+          _this.alertInfo = _this.$t('pay_error')
+          $('#alert').modal('show')
+        })
         // end 交易
 
       }, () => {
@@ -371,6 +380,8 @@ export default {
 
           }, 'json')
 
+        } else {
+          _this.isNull = true
         }
       }, 'json')
 
@@ -395,7 +406,6 @@ export default {
 .project-detail {
   padding: 68px 0 0;
 }
-
 #copyContent {
   position: absolute;
   right: 0;

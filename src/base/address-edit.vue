@@ -10,15 +10,8 @@
         <input type="text" class="basic-input" v-model="edit.name" :placeholder="$t('contact_name_pl')">
         <label>{{$t('contact')}}</label>
         <input type="tel" class="basic-input" v-model="edit.mobile" :placeholder="$t('contact_pl')">
-        <label>{{$t('address')}}</label>
-        <div class="basic-group">
-          <span v-if="!isPositionFocus" class="basic-input">{{edit.area}}</span>
-          <input v-else type="text" class="basic-input" v-model="edit.area" :placeholder="$t('address_pl')" v-focus>
-          <span class="target-token" @click="addressDetail"><img src="static/img/icon/position.png" height="32"></span>
-        </div>
-        <a href="javascript:;" class="edit-address" @click="positonFocus">{{$t('edit_address')}}</a>
-        <label>{{$t('address_detail')}}</label>
-        <input type="text" class="basic-input" v-model="edit.address" :placeholder="$t('address_detail_pl')">
+        <label>{{$t('shipping_address')}}</label>
+        <input type="text" class="basic-input" v-model="edit.address" :placeholder="$t('shipping_address_pl')">
         <div class="confirm" v-if="isOrder" @click="editAddress(edit.index)">{{$t('save_use')}}</div>
         <div class="confirm" v-else @click="editAddress(edit.index)">{{$t('save')}}</div>
       </div>
@@ -37,8 +30,7 @@ export default {
     return {
       editUrl: '/apiAddress/modify',
       toastInfo: '',
-      isWarn: true,
-      isPositionFocus: false
+      isWarn: true
     }
   },
   directives: {
@@ -50,30 +42,11 @@ export default {
     }
   },
   mounted() {
-    $('.modal').on('hidden.bs.modal', () => {
-      this.isPositionFocus = false
-    })
+
   },
   methods: {
     infoByToast: function (val) {
       this.toastInfo = val
-    },
-    positonFocus() {
-      this.isPositionFocus = true
-    },
-    addressDetail(e) { //获取地理位置
-      user.getPosition().then((res) => {
-        console.log(res);
-        if (res.address) {
-          this.edit.area = res.address
-        } else if (e) {
-          this.toastInfo = this.$t('position_error')
-        }
-      }, () => {
-        if (e) {
-          this.toastInfo = this.$t('position_error')
-        }
-      })
     },
     editAddress(index) {
       this.isWarn = true
@@ -89,10 +62,6 @@ export default {
         this.toastInfo = this.$t('contact_error')
         return false
       }
-      if (!this.edit.area) {
-        this.toastInfo = this.$t('address_error')
-        return false
-      }
       if (!this.edit.address) {
         this.toastInfo = this.$t('address_detail_error')
         return false
@@ -106,6 +75,7 @@ export default {
           if (res.data.success) {
             this.addressList[index] = this.edit
             this.$emit('defaultAddress', this.edit)
+            this.$emit('addressList', this.addressList)
             $("#editAddress").modal('hide')
             this.isWarn = false
             this.toastInfo = this.$t('modify_success')

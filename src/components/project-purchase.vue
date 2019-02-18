@@ -1,41 +1,44 @@
 <template>
 <div class='project-purchase'>
-  <div class="container top-container hidden-xs">
-    <h4 class="select-title">{{$t('project_name')}}:</h4>
-    <div class="title">{{programs.title}}</div>
-  </div>
-  <section class="select-gear">
-    <div class="container">
-      <h4 class="select-title">{{$t('choose_gear')}}</h4>
-      <div class="row">
-        <ul class="col-sm-8 select-list">
-          <li v-for="(item,index) in gearList" :key="index" :class="[{selected:item.isSelected},'clearfix']">
-            <div class="list-info clearfix" @click="selectGear(item)">
-              <p class="pic" :style="{background: 'url(' + programs.photos +')no-repeat center/cover'}"></p>
-              <h3>{{item.money/Math.pow(10,item.targetTokenDecimal)}} {{item.targetToken}}</h3>
-              <div class="gear-type">{{$t('gear'+item.level)}} : {{item.unitNum}} {{$t('unit_'+item.unit)}}</div>
-            </div>
-            <div class="add_sub"><img src="static/img/icon/sub.jpg" width="34" @click="subNumber(item)"><input type="tel" class="add_number" v-model="item.num" @input="changeNumber(item)"><img src="static/img/icon/add.jpg" width="34" @click="addNumber(item)"></div>
-          </li>
-          <div class="comment">
-            <h4 class="select-title">{{$t('comments')}}</h4>
-            <div class="comment-info">
-              <div class="user-info hidden-xs">
-                <img src="static/img/icon/web_icon_ID.png">
-                <p>{{currentAccount}}</p>
+  <div class="isNull" v-if='isNull'>{{$t('project_error')}}</div>
+  <template v-else>
+    <div class="container top-container hidden-xs">
+      <h4 class="select-title">{{$t('project_name')}}:</h4>
+      <div class="title">{{programs.title}}</div>
+    </div>
+    <section class="select-gear">
+      <div class="container">
+        <h4 class="select-title">{{$t('choose_gear')}}</h4>
+        <div class="row">
+          <ul class="col-sm-8 select-list">
+            <li v-for="(item,index) in gearList" :key="index" :class="[{selected:item.isSelected},'clearfix']">
+              <div class="list-info clearfix" @click="selectGear(item)">
+                <p class="pic" :style="{background: 'url(' + programs.photos +')no-repeat center/cover'}"></p>
+                <h3>{{item.money/Math.pow(10,item.targetTokenDecimal)}} {{item.targetToken}}</h3>
+                <div class="gear-type">{{$t('gear'+item.level)}} : {{item.unitNum}} {{$t('unit_'+item.unit)}}</div>
               </div>
-              <textarea v-model="note" :placeholder="$t('note_pl')"></textarea>
+              <div class="add_sub"><img src="static/img/icon/sub.jpg" width="34" @click="subNumber(item)"><input type="tel" class="add_number" v-model="item.num" @input="changeNumber(item)"><img src="static/img/icon/add.jpg" width="34" @click="addNumber(item)"></div>
+            </li>
+            <div class="comment">
+              <h4 class="select-title">{{$t('comments')}}</h4>
+              <div class="comment-info">
+                <div class="user-info hidden-xs">
+                  <img src="static/img/icon/web_icon_ID.png">
+                  <p>{{currentAccount}}</p>
+                </div>
+                <textarea v-model="note" :placeholder="$t('note_pl')"></textarea>
+              </div>
             </div>
+            <div :class="[{active:selectedOrder&&selectedOrder.num>0},'confirm']" @click="submitOrder">{{$t('confirm')}}</div>
+          </ul>
+          <div class="col-sm-4 mds_notice">
+            <h4>{{$t('mds_notice1')}}</h4>
+            <p>{{$t('mds_notice2')}}</p>
           </div>
-          <div :class="[{active:selectedOrder&&selectedOrder.num>0},'confirm']" @click="submitOrder">{{$t('confirm')}}</div>
-        </ul>
-        <div class="col-sm-4 mds_notice">
-          <h4>{{$t('mds_notice1')}}</h4>
-          <p>{{$t('mds_notice2')}}</p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </template>
   <foot></foot>
   <mds-toast :toastInfo='toastInfo' :isWarn="isWarn" @toast="infoByToast"></mds-toast>
 </div>
@@ -60,7 +63,8 @@ export default {
       isWarn: true,
       programs: '',
       note: '', //支付备注
-      noteHash: '' //加密支付备注
+      noteHash: '', //加密支付备注
+      isNull: false
     }
   },
   mounted() {
@@ -101,13 +105,19 @@ export default {
       } else {
         this.$http.get(this.globalData.domain + this.getInfoUrl + this.id).then((res) => {
           if (res.data.success) {
-            this.programs = res.data.data
-            this.gearList = JSON.parse(this.programs.json)
-            this.gearList.map((list) => {
-              this.$set(list, 'isSelected', false);
-              this.$set(list, 'num', 0);
-              this.$set(list, 'max_number', parseInt(this.programs.amount / list.money * Math.pow(10, list.targetTokenDecimal)));
-            })
+            if (res.data.data.type == 1) {
+              this.programs = res.data.data
+              this.gearList = JSON.parse(this.programs.json)
+              this.gearList.map((list) => {
+                this.$set(list, 'isSelected', false);
+                this.$set(list, 'num', 0);
+                this.$set(list, 'max_number', parseInt(this.programs.amount / list.money * Math.pow(10, list.targetTokenDecimal)));
+              })
+            } else {
+              this.isNull = true
+            }
+          } else {
+            this.isNull = true
           }
         }, (err) => {
           console.log(err)
@@ -125,21 +135,34 @@ export default {
     subNumber(item) {
       item.num--
       if (item.num < 0) {
-        this.toastInfo = "受不了了，宝贝不能再减少了哦"
+        this.toastInfo = this.$t('subNumber_limit')
         item.num = 0
+      } else if (item.num > 0) {
+        this.selectGear(item)
+      } else if (item.num == 0) {
+        item.isSelected = false
+        this.selectedOrder = null
       }
     },
     addNumber(item) {
       item.num++
       if (item.num > item.max_number) {
-        this.toastInfo = "该宝贝不能购买更多哦"
+        this.toastInfo = this.$t('addNumber_limit')
         item.num = item.max_number
       }
+      this.selectGear(item)
     },
     changeNumber(item) {
       if (item.num > item.max_number) {
-        this.toastInfo = "数量超出范围"
+        this.toastInfo = this.$t('buyNumber_limit')
         item.num = item.max_number
+      }
+      if (item.num > 0) {
+        this.selectGear(item)
+      }
+      if (item.num == 0) {
+        item.isSelected = false
+        this.selectedOrder = null
       }
     },
     submitOrder() {

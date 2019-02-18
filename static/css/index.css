@@ -523,6 +523,64 @@ span.basic-input {
 }
 
 
+/* 加载更多 */
+
+.load-more {
+  text-align: center;
+  background: transparent !important;
+}
+
+.load-more p {
+  display: inline-block;
+  border: 1px solid var(--bgColor);
+  font-size: 16px;
+  font-family: Gotham-Medium;
+  font-weight: 500;
+  padding: 14px 32px;
+  margin: 32px 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.load-more img {
+  animation: rotate 0.6s linear infinite;
+  margin-right: 16px;
+}
+
+
+/* 返回顶部 */
+
+.goToTop {
+  position: fixed;
+  right: 15%;
+  bottom: 40px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.goToTop img {
+  width: 76px;
+}
+
+
+/* 项目为空 */
+
+.isNull {
+  font-family: Gotham-Medium;
+  font-weight: 500;
+  text-align: center;
+  padding: 100px 0;
+  font-size: 16px;
+  color: var(--blueGrey);
+}
+
+@media (max-width: 1500px) {
+  .goToTop {
+    right: 15px;
+  }
+}
+
+
 /*小于768px屏幕 手机 xs*/
 
 @media (max-width: 767px) {
@@ -614,78 +672,44 @@ span.basic-input {
     font-size: 24px;
     margin-bottom: 32px;
   }
-}
-
-@-webkit-keyframes scale {
-  0% {
-    -webkit-transform: scale(1) translate(0, 0);
-    transform: scale(1) translate(0, 0);
+  .goToTop {
+    right: 0;
   }
-  25% {
-    -webkit-transform: scale(2) translate(20%, 20%);
-    transform: scale(2) translate(20%, 20%);
-  }
-  50% {
-    -webkit-transform: scale(1) translate(0, 0);
-    transform: scale(1) translate(0, 0);
-  }
-  75% {
-    -webkit-transform: scale(2) translate(-20%, -20%);
-    transform: scale(2) translate(-20%, -20%);
-  }
-  100% {
-    -webkit-transform: scale(1) translate(0, 0);
-    transform: scale(1) translate(0, 0);
+  .goToTop img {
+    width: 56px;
   }
 }
 
-@-moz-keyframes scale {
-  0% {
-    -moz-transform: scale(1) translate(0, 0);
-    transform: scale(1) translate(0, 0);
+@media (min-width: 1500px) {
+  .goToTop {
+    right: 50%;
+    transform: translateX(700px);
   }
-  25% {
-    -moz-transform: scale(2) translate(20%, 20%);
-    transform: scale(2) translate(20%, 20%);
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0)
   }
-  50% {
-    -moz-transform: scale(1) translate(0, 0);
-    transform: scale(1) translate(0, 0);
-  }
-  75% {
-    -moz-transform: scale(2) translate(-20%, -20%);
-    transform: scale(2) translate(-20%, -20%);
-  }
-  100% {
-    -moz-transform: scale(1) translate(0, 0);
-    transform: scale(1) translate(0, 0);
+  to {
+    transform: rotate(360deg);
   }
 }
 
 @keyframes scale {
   0% {
-    -webkit-transform: scale(1) translate(0, 0);
-    -moz-transform: scale(1) translate(0, 0);
     transform: scale(1) translate(0, 0);
   }
   25% {
-    -webkit-transform: scale(2) translate(20%, 20%);
-    -moz-transform: scale(2) translate(20%, 20%);
     transform: scale(2) translate(20%, 20%);
   }
   50% {
-    -webkit-transform: scale(1) translate(0, 0);
-    -moz-transform: scale(1) translate(0, 0);
     transform: scale(1) translate(0, 0);
   }
   75% {
-    -webkit-transform: scale(2) translate(-20%, -20%);
-    -moz-transform: scale(2) translate(-20%, -20%);
     transform: scale(2) translate(-20%, -20%);
   }
   100% {
-    -webkit-transform: scale(1) translate(0, 0);
-    -moz-transform: scale(1) translate(0, 0);
     transform: scale(1) translate(0, 0);
   }
 }

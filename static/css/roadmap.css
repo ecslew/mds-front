@@ -149,7 +149,7 @@
 
 @media (min-width: 768px) {
   .scroll-box>ul {
-    width: 2100px;
+    width: 2400px;
     border-top: 4px solid #c8d2d7;
     padding-left: 132px;
     margin-top: 170px;
@@ -199,7 +199,7 @@
   }
 }
 
-@media (min-width: 2100px) {
+@media (min-width: 2400px) {
   .iScrollHorizontalScrollbar {
     display: none;
   }
@@ -209,6 +209,6 @@
     width: 100%;
   }
   .mds-develop-list {
-    width: 14%;
+    width: 12%;
   }
 }

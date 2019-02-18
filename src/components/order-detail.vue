@@ -23,7 +23,7 @@
             </li>
             <li>
               <h5>{{$t('total_amount')}}:</h5>
-              <p>{{orderList.amount}} EUSD</p>
+              <p>{{orderList.amount}} {{programs.targetToken}}</p>
             </li>
           </ul>
           <div class="order-info">
@@ -34,7 +34,7 @@
               <div v-if="!defaultAddress" class="no-address" data-target="#changeAddress" data-toggle="modal">+ {{$t('add_shipping_address')}}</div>
               <div v-else>
                 <h4>{{defaultAddress.name}} {{defaultAddress.mobile}}</h4>
-                <p>{{defaultAddress.area}}, {{defaultAddress.address}} ;</p>
+                <p>{{defaultAddress.address}} ;</p>
                 <a class="change-address" href="#changeAddress" data-toggle="modal">{{$t('change_shipping_address')}}</a>
               </div>
             </template>
@@ -56,7 +56,7 @@
           <li v-for="(item,index) in addressList" :key="index" :class="{selected:item.isSelected}">
             <div class="list-top" @click="selectAddress(item)">
               <h4>{{item.name}} {{item.mobile}}</h4>
-              <p>{{item.area}}, {{item.address}} ;</p>
+              <p>{{item.address}} ;</p>
             </div>
             <div class="btn-box">
               <a href="#editAddress" data-dismiss="modal" data-toggle="modal" class="editor" @click="editModal(item,index)">{{$t('editor')}}</a>
@@ -260,7 +260,7 @@ export default {
                 name: 'transfer',
                 authorization: [{
                   actor: this.currentAccount,
-                  permission: 'active'
+                  permission: currentAccount.authority
                 }],
                 data: {
                   from: this.currentAccount,
@@ -320,7 +320,8 @@ export default {
 
             }).catch(error => {
               // 失败
-              this.alertInfo = error;
+              console.log(error)
+              this.alertInfo = this.$t('pay_error')
               $('#alert').modal('show')
             })
             // end 交易

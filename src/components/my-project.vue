@@ -88,7 +88,7 @@ export default {
             name: 'erase', // 合约方法
             authorization: [{
               actor: res.name, // 登录当前账户
-              permission: 'active'
+              permission: res.authority
             }],
             data: {
               "initiator": res.name, // 项目发起人
@@ -104,18 +104,21 @@ export default {
                 this.alertInfo = this.$t('deleted_success')
                 $('#alert').modal('show')
               } else {
-                console.log(res.data.message);
+                this.alertInfo = res.data.message
+                $('#alert').modal('show')
               }
-            }, err => {
-              console.log(err);
+            }, () => {
+              // 失败
+              this.alertInfo = _this.$t('delete_error');
+              $('#alert').modal('show')
             })
           }
-        ).catch(
-          error => {
-            // 失败
-            console.log(error)
-          }
-        )
+        ).catch(error => {
+          // 失败
+          console.log(error)
+          this.alertInfo = _this.$t('delete_error')
+          $('#alert').modal('show')
+        })
       }, () => {
         // 未安装 scatter 或 登录失败
         this.isWarn = true

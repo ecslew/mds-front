@@ -10,15 +10,8 @@
         <input type="text" class="basic-input" v-model="add.name" :placeholder="$t('contact_name_pl')">
         <label>{{$t('contact')}}</label>
         <input type="tel" class="basic-input" v-model="add.mobile" :placeholder="$t('contact_pl')">
-        <label>{{$t('address')}}</label>
-        <div class="basic-group">
-          <span v-show="!isPositionFocus" class="basic-input">{{add.area}}</span>
-          <input v-show="isPositionFocus" type="text" class="basic-input" v-model="add.area" :placeholder="$t('address_pl')" v-focus autofocus>
-          <span class="target-token" @click="addressDetail"><img src="static/img/icon/position.png" height="32"></span>
-        </div>
-        <a href="javascript:;" class="edit-address" @click="positonFocus">{{$t('edit_address')}}</a>
-        <label>{{$t('address_detail')}}</label>
-        <input type="text" class="basic-input" v-model="add.address" :placeholder="$t('address_detail_pl')">
+        <label>{{$t('shipping_address')}}</label>
+        <input type="text" class="basic-input" v-model="add.address" :placeholder="$t('shipping_address_pl')">
         <div class="confirm" v-if="isOrder" @click="addAddress">{{$t('save_use')}}</div>
         <div class="confirm" v-else @click="addAddress">{{$t('save')}}</div>
       </div>
@@ -38,10 +31,7 @@ export default {
       addUrl: '​/apiAddress/add',
       toastInfo: '',
       isWarn: true,
-      isPositionFocus: false,
-      add: {
-        area: this.$t('address_pl')
-      }
+      add: {}
     }
   },
   directives: {
@@ -53,31 +43,10 @@ export default {
     }
   },
   mounted() {
-    $('.modal').on('hidden.bs.modal', () => {
-      this.isPositionFocus = false
-    })
-    this.addressDetail()
   },
   methods: {
     infoByToast: function (val) {
       this.toastInfo = val
-    },
-    positonFocus() {
-      this.isPositionFocus = true
-    },
-    addressDetail(e) { //获取地理位置
-      user.getPosition().then((res) => {
-        console.log(res);
-        if (res.address) {
-          this.add.area = res.address
-        } else if (e) {
-          this.toastInfo = this.$t('position_error')
-        }
-      }, () => {
-        if (e) {
-          this.toastInfo = this.$t('position_error')
-        }
-      })
     },
     addAddress() {
       this.isWarn = true
@@ -91,10 +60,6 @@ export default {
       }
       if (!/^1[3-8]\d{9}$/.test(this.add.mobile)) {
         this.toastInfo = this.$t('contact_error')
-        return false
-      }
-      if (!this.add.area) {
-        this.toastInfo = this.$t('address_error')
         return false
       }
       if (!this.add.address) {

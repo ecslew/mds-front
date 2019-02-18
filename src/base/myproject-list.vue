@@ -148,6 +148,7 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  display: block;
 }
 
 .info {

@@ -14,7 +14,7 @@
           <ul class="dropdown-menu">
             <li value="1" class="active" @click="selectType">{{$t("project_type1")}}</li>
             <li value="0" @click="selectType">{{$t("project_type2")}}</li>
-            <li value="0" @click="selectType">{{$t("project_type3")}}</li>
+            <!-- <li value="0" @click="selectType">{{$t("project_type3")}}</li> -->
           </ul>
         </div>
         <div class="notice">{{$t('mds_notice1')}}{{$t('mds_notice2')}}</div>
@@ -88,6 +88,7 @@ export default {
   border-radius: 4px 0 0 4px;
   padding-left: 16px;
   background: var(--paleBlue);
+  cursor: pointer;
 }
 
 .next {

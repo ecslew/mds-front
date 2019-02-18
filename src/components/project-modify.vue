@@ -1,6 +1,7 @@
 <template>
 <div class='project-modify project-sm-container'>
-  <div class="container">
+  <div class="isNull" v-if='isNull'>{{$t('project_error')}}</div>
+  <div class="container" v-else>
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
         <div class="title">{{$t('basic_project_information')}}</div>
@@ -24,9 +25,6 @@
           <div id="story">
             <div v-if="!isFocus" class="story_pl">{{$t('tell_story_pl')}}</div>
           </div>
-          <textarea name="des" class="hide" v-model="modify.des"></textarea>
-          <!-- 简介做 sha256 后的值 desHash -->
-          <input name="desHash" type="text" class="hide" v-model="desHash">
           <!-- 封面图片，注意name为数组，以后可能要传多张 photos[]-->
           <label>{{$t('position_photo')}}</label>
           <div class="photo-container">
@@ -71,7 +69,7 @@
                   </div>
                 </div>
               </li>
-              <li class="continue-add" @click="addGear">{{$t("continue_add")}}</li>
+              <li class="continue-add" v-if="gearList.length<3" @click="addGear">{{$t("continue_add")}}</li>
             </ul>
           </div>
           <!-- 筹款金额 targetAmount-->
@@ -219,7 +217,8 @@ export default {
         low: 0, //【 最低筹款金额 ，非必须 】
         high: 0 //【 最高筹款金额 ，非必须 】
       },
-      gearList: [] //档位
+      gearList: [], //档位
+      isNull: false
     }
   },
   mounted() {
@@ -259,7 +258,6 @@ export default {
     editor.customConfig.onchange = function (html) {
       that.isFocus = true
       that.modify.des = html.replace(/<div class="story_pl">&\s*\S*&<\/div>/g, '')
-      that.desHash = sha.sha256(that.modify.des)
     }
     editor.create()
 
@@ -280,12 +278,13 @@ export default {
         }
         if (this.modify.des) {
           editor.txt.html(this.modify.des)
-          this.desHash = sha.sha256(this.modify.des)
         }
         if (this.modify.endTime) {
           this.modify.endTime = res.data.data.endTime.slice(0, 10)
           this.timeToStamp()
         }
+      } else {
+        this.isNull = true
       }
     }, (err) => {
       console.log(err)
@@ -297,6 +296,12 @@ export default {
     },
     nextStep() {
       this.isWarn = true
+      // 先做base64加密
+      let Base64 = require('js-base64').Base64
+      this.modify.des = Base64.encode(this.modify.des)
+      // 再做sha256加密
+      this.desHash = sha.sha256(this.modify.des)
+
       // 判断是否登录
       user.getAccount().then((res) => {
         this.modify.creator = res.name
@@ -380,6 +385,8 @@ export default {
         formData.append("low", this.modify.low)
         formData.append("high", this.modify.high)
         formData.append("type", this.type)
+        formData.append("des", this.modify.des)
+        formData.append("desHash", this.desHash)
 
         if (this.type == 1) {
           // 档位信息
@@ -408,13 +415,13 @@ export default {
             name: 'modify', // 合约方法
             authorization: [{
               actor: this.modify.creator, // 登录当前账户
-              permission: 'active'
+              permission: res.authority
             }],
             data: {
               "initiator": this.modify.creator, // 项目发起人
               "id": this.modify.eosID,
               "name": this.modify.title, // 项目名称
-              "item_digest": this.desHash, //this.modify.desHash, // 项目简介sha256 后的值 64 位
+              "item_digest": this.desHash, //this.desHash, // 项目简介sha256 后的值 64 位
               "receiver": this.modify.targetAccount, // 收款人
               "min_fund": {
                 amount: parseFloat(this.modify.low).toFixed(this.modify.targetTokenDecimal),
@@ -452,16 +459,18 @@ export default {
                 this.alertInfo = res.data.message
                 $('#alert').modal('show')
               }
-            }, error => {
-              console.info(error)
+            }, () => {
+              // 失败
+              this.alertInfo = this.$t('modify_error')
+              $('#alert').modal('show')
             })
           }
-        ).catch(
-          error => {
-            // 失败
-            console.log(error)
-          }
-        )
+        ).catch(error => {
+          // 失败
+          console.log(error)
+          this.alertInfo = this.$t('modify_error')
+          $('#alert').modal('show')
+        })
       }, () => {
         // 未安装 scatter 或 登录失败
         this.toastInfo = this.$t('connect_scatter')
@@ -519,6 +528,16 @@ export default {
           unitNum: '', // 单位数量
           unit: this.gearList[0].unit, // 单位
           level: this.gearList.length + 1 // 档位
+        })
+      } else if (this.gearList.length == 0) {
+        this.gearList.push({
+          targetToken: 'EUSD', // token
+          targetTokenContract: 'bitpietokens', // 合约地址
+          targetTokenDecimal: 8, // 合约小数
+          money: '', // 金额整形
+          unitNum: '', // 单位数量
+          unit: 'kg', // 单位
+          level: 1 // 档位
         })
       } else {
         this.isWarn = true

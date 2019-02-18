@@ -18,9 +18,6 @@
           <div id="story">
             <div v-if="!isFocus" class="story_pl">{{$t('tell_story_pl')}}</div>
           </div>
-          <textarea name="des" class="hide" v-model="addData.des"></textarea>
-          <!-- 简介做 sha256 后的值 desHash -->
-          <input name="desHash" type="text" class="hide" v-model="addData.desHash">
           <!-- 封面图片，注意name为数组，以后可能要传多张 photos[]-->
           <label>{{$t('position_photo')}}</label>
           <div class="photo-container">
@@ -65,7 +62,7 @@
                   </div>
                 </div>
               </li>
-              <li class="continue-add" @click="addGear(gearList)">{{$t("continue_add")}}</li>
+              <li class="continue-add" v-if="gearList.length<3" @click="addGear(gearList)">{{$t("continue_add")}}</li>
             </ul>
           </div>
           <!-- 筹款金额 targetAmount-->
@@ -275,13 +272,17 @@ export default {
       editor.customConfig.onchange = function (html) {
         that.isFocus = true
         that.addData.des = html.replace(/<div class="story_pl">&\s*\S*&<\/div>/g, '')
-        that.addData.desHash = sha.sha256(that.addData.des)
       }
       editor.create()
     },
     // 提交表单
     nextStep() {
       this.isWarn = true
+      // 先做base64加密
+      let Base64 = require('js-base64').Base64
+      this.addData.des = Base64.encode(this.addData.des)
+      // 再做sha256加密
+      this.addData.desHash = sha.sha256(this.addData.des)
 
       // 判断是否登录
       user.getAccount().then((res) => {
@@ -369,6 +370,8 @@ export default {
         formData.append("low", this.addData.low)
         formData.append("high", this.addData.high)
         formData.append("type", this.type)
+        formData.append("des", this.addData.des)
+        formData.append("desHash", this.addData.desHash)
 
         if (this.type == 1) {
           // 档位信息
@@ -396,7 +399,7 @@ export default {
             name: 'add', // 合约方法
             authorization: [{
               actor: this.addData.creator, // 登录当前账户
-              permission: 'active'
+              permission: res.authority
             }],
             data: {
               "initiator": this.addData.creator, // 项目发起人
@@ -440,15 +443,17 @@ export default {
                 $('#alert').modal('show')
               }
             }, error => {
-              console.info(error)
+              console.log(error)
+              this.alertInfo = this.$t('release_error')
+              $('#alert').modal('show')
             })
           }
-        ).catch(
-          error => {
-            // 失败
-            console.log(error)
-          }
-        )
+        ).catch(error => {
+          // 失败
+          console.log(error)
+          this.alertInfo = this.$t('release_error')
+          $('#alert').modal('show')
+        })
       }, () => {
         // 未安装 scatter 或 登录失败
         this.toastInfo = this.$t('connect_scatter')
@@ -496,7 +501,7 @@ export default {
       })
     },
     addGear() {
-      if (this.gearList.length < 3) {
+      if (this.gearList.length < 3 && this.gearList.length > 0) {
         this.gearList.push({
           targetToken: this.gearList[0].targetToken, // token
           targetTokenContract: this.gearList[0].targetTokenContract, // 合约地址
@@ -505,6 +510,16 @@ export default {
           unitNum: '', // 单位数量
           unit: this.gearList[0].unit, // 单位
           level: this.gearList.length + 1 // 档位
+        })
+      } else if (this.gearList.length == 0) {
+        this.gearList.push({
+          targetToken: 'EUSD', // token
+          targetTokenContract: 'bitpietokens', // 合约地址
+          targetTokenDecimal: 8, // 合约小数
+          money: '', // 金额整形
+          unitNum: '', // 单位数量
+          unit: 'kg', // 单位
+          level: 1 // 档位
         })
       } else {
         this.isWarn = true

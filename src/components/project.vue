@@ -9,7 +9,11 @@
       </li>
     </ul>
     <blank-page v-else></blank-page>
-    <div class="load-more" v-show="!isAll"><span>{{$t("load_more")}}</span></div>
+    <!-- <div class="load-more" v-show="!isAll"><span>{{$t("load_more")}}</span></div> -->
+    <div class="load-more" v-if="!isLoadEnd">
+      <p><img src="static/img/icon/loading_icon.png" width="24"> <span>{{$t('load_more')}}</span></p>
+    </div>
+    <div v-if="programs.length>0&&isOver" class="bottom-line"><span>{{$t('bottom_line')}}</span></div>
   </div>
   <foot></foot>
   <loading v-if="!isLoaded"></loading>
@@ -24,8 +28,10 @@ import foot from '@/base/foot'
 export default {
   data() {
     return {
-      isAll: true,
-      url: '/apiCrowdfunding/homePage?page=1',
+      isOver: false, //全部已加载
+      isLoadEnd: false, //加载更多
+      url: '/apiCrowdfunding/homePage?page=',
+      page: 1,
       transferUrl: '/apiEos/getCrowdfundingTransfer?account=',
       programs: [],
       isLoaded: false
@@ -36,14 +42,53 @@ export default {
   },
   methods: {
     getPrograms() {
-      this.$http.get(this.globalData.domain + this.url).then((res) => {
+      // 设置一个开关来避免重负请求数据
+      let sw = false
+      this.$http.get(this.globalData.domain + this.url + this.page).then((res) => {
         if (res.data.success) {
           this.isLoaded = true
-          const pageData = res.data.data.pageData
-          this.programs = pageData
+          this.isLoadEnd = true
+          // 将得到的数据放到vue中的data
+          this.programs = res.data.data.pageData;
+          if (res.data.data.pageData.length < 9) {
+            // 如果显示全部已加载则放开此注释
+            // this.isOver = true
+            sw = false
+          } else {
+            sw = true
+          }
         }
-      }, (err) => {
-        console.log('err' + err);
+      }, (error) => {
+        console.log(error)
+      })
+
+      // 注册scroll事件并监听
+      $(window).scroll(() => {
+        // 判断是否打开开关
+        if (sw == true) {
+          // 判断是否滚动到底部
+          if ($(window).scrollTop() + $(window).height() >= $('#app').outerHeight(true) - $('footer').outerHeight(true)) {
+            this.page++
+            // 将开关关闭
+            sw = false
+            this.isLoadEnd = false
+            this.$http.get(this.globalData.domain + this.url + this.page).then((res) => {
+              // 将新获取的数据push到vue中的data，就会反应到视图中了
+              this.programs.concat(res.data.data.pageData)
+              this.isLoadEnd = true
+              // 数据更新完毕，将开关打开
+              if (res.data.data.pageData.length < 9) {
+                // 如果显示全部已加载则放开此注释
+                // this.isOver = true
+                sw = false
+              } else {
+                sw = true
+              }
+            }, (error) => {
+              console.log(error)
+            })
+          }
+        }
       })
     }
   },

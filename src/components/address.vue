@@ -7,30 +7,34 @@
         <div class="subtitle">{{$t('address_manage_subtitle')}}</div>
         <div class="started">{{$t("address_list")}}</div>
         <ul class="list">
-          <li v-for="(item,index) in addressList" :key="item.addressNo">
-            <h4>{{item.name}} {{item.mobile}}</h4>
-            <p>{{item.area}}, {{item.address}} ;</p>
-            <div class="btn-box">
-              <a href="#editAddress" class="editor" data-toggle="modal" @click="editModal(item,index)">{{$t('editor')}}</a>
-              <a href="#deleteAddress" class="delete" data-toggle="modal" @click="deleteModal(index, item.addressNo)">{{$t('delete')}}</a>
-            </div>
-          </li>
+          <template v-if='addressList.length>0'>
+            <li v-for="(item,index) in addressList" :key="item.addressNo">
+              <h4>{{item.name}} {{item.mobile}}</h4>
+              <p>{{item.address}} ;</p>
+              <div class="btn-box">
+                <a href="#editAddress" class="editor" data-toggle="modal" @click="editModal(item,index)">{{$t('editor')}}</a>
+                <a href="#deleteAddress" class="delete" data-toggle="modal" @click="deleteModal(index, item.addressNo)">{{$t('delete')}}</a>
+              </div>
+            </li>
+          </template>
           <li class="add-address" data-toggle="modal" data-target="#addAddress">+ {{$t("add_address")}}</li>
         </ul>
       </div>
     </div>
   </div>
   <!-- 新增地址弹窗 -->
-  <add-address :addressList="addressList" @defaultAddress="getDefaultAddress"></add-address>
+  <add-address :addressList="addressList"></add-address>
   <!-- 编辑地址 -->
-  <edit-address :addressList="addressList" :edit="edit" @defaultAddress="getDefaultAddress"></edit-address>
+  <edit-address :addressList="addressList" :edit="edit" @addressList="getAddressList"></edit-address>
   <!-- 删除地址 -->
   <delete-address :id="deleteItem.id" :index="deleteItem.index" @deleteAddress="deleteAddress"></delete-address>
   <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <loading v-if="!isLoaded"></loading>
 </div>
 </template>
 
 <script>
+import loading from '@/base/loading'
 import mdsToast from '@/base/toast'
 import addAddress from '@/base/address-add'
 import editAddress from '@/base/address-edit'
@@ -42,13 +46,12 @@ export default {
       getListUrl: '​/apiAddress/getList',
       deleteUrl: '​/apiAddress/delete',
       toastInfo: '',
-      isWarn: false,
-      defaultAddress: {},
+      isWarn: true,
+      isLoaded: false,
       addressList: [],
       edit: {
         addressNo: '', // 地址编号
         name: '', // 姓名
-        area: '', // 地区
         address: '', // 详细地址
         mobile: '' // 手机号
       },
@@ -76,8 +79,10 @@ export default {
           "emulateJSON": true
         }).then((res) => {
           if (res.data.success) {
+            this.isLoaded = true
             this.addressList = res.data.data.pageData
           } else {
+            this.isWarn = true
             this.toastInfo = res.data.message
           }
         }, (err) => {
@@ -89,13 +94,13 @@ export default {
         this.toastInfo = this.$t('connect_scatter')
       })
     },
-    getDefaultAddress(obj) {
-      this.defaultAddress = JSON.parse(JSON.stringify(obj))
+    // 编辑完成后更改地址列表
+    getAddressList(obj) {
+      this.addressList = JSON.parse(JSON.stringify(obj))
     },
     // 编辑地址弹窗显示
     editModal(item, index) {
-      // this.edit = JSON.parse(JSON.stringify(item))
-      this.edit = item
+      this.edit = JSON.parse(JSON.stringify(item))
       this.edit.index = index
     },
     deleteModal(index, id) {
@@ -129,6 +134,7 @@ export default {
     }
   },
   components: {
+    loading,
     mdsToast,
     addAddress,
     editAddress,

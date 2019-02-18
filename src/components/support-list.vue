@@ -29,12 +29,17 @@
                 <td>{{index+1}}</td>
                 <td>{{item.name}}</td>
                 <td>{{item.mobile}}</td>
-                <td>{{item.area}}, {{item.address}}</td>
+                <td>{{item.address}}</td>
                 <td>{{item.num}}</td>
                 <td class="price">{{$t('gear'+item.level)}}<br>{{item.money}} {{item.targetToken}}</td>
                 <td class="status">
                   <span v-if="item.status==4">{{$t('delivery_status4')}}</span>
                   <span v-else class="status0" @click="changeStatus(item)">{{$t('delivery_status3')}}</span>
+                </td>
+              </tr>
+              <tr class="load-more" v-if="!isLoadEnd">
+                <td colspan="7">
+                  <p><img src="static/img/icon/loading_icon.png" width="24"> <span>{{$t('load_more')}}</span></p>
                 </td>
               </tr>
             </template>
@@ -62,7 +67,7 @@
             <div class="serial-number">{{index+1}}</div>
             <div class="support-info">
               <p>{{item.name}}</p>
-              <p>{{item.area}}, {{item.address}}</p>
+              <p>{{item.address}}</p>
               <h5>{{$t('gear'+item.level)}} : {{item.money}} {{item.targetToken}}</h5>
               <p>{{$t('quantity')}} : {{item.num}}</p>
               <p>{{item.mobile}}</p>
@@ -72,6 +77,9 @@
               <span v-else class="status0" @click="changeStatus(item)">{{$t('delivery_status3')}}</span>
             </div>
           </li>
+          <div class="load-more" v-if="!isLoadEnd">
+            <p><img src="static/img/icon/loading_icon.png" width="24"> <span>{{$t('load_more')}}</span></p>
+          </div>
         </template>
         <template v-else>
           <!-- 已发货为0 -->
@@ -86,7 +94,8 @@
     <div v-if="supportList.length>0&&isOver" class="bottom-line"><span>{{$t('bottom_line')}}</span></div>
   </div>
   <loading v-if="!isLoaded"></loading>
-</div>
+  <div class="goToTop" v-if="isShowTop" @click='toTop'><img src="static/img/icon/top.png"></div>
+  </div>
 </template>
 
 <script>
@@ -103,83 +112,104 @@ export default {
       allList: [], //全部列表
       sendOutList: [], //已发货列表
       unsentList: [], //待发货列表
-      supportList: [],
+      supportList: [], //数据渲染列表
       isLoaded: false,
       id: this.$route.params.id ? this.$route.params.id : '',
-      isOver: false
+      isOver: false, //全部已加载
+      isLoadEnd: false, //加载更多
+      isShowTop: false
     }
   },
   mounted() {
-    this.getSupportList()
-  },
-  updated() {
-    $(window).scroll(() => {
-      this.getMore();
-    })
+    this.getSupportList('')
   },
   methods: {
-    getSupportList() {
+    getSupportList(status) {
+      // 设置一个开关来避免重负请求数据
+      let sw = false
       this.$http.post(this.globalData.domain + this.supportUrl, {
         crowdfundingID: this.id,
-        page: this.page
+        page: this.page,
+        status: status
       }, {
         'emulateJSON': true
       }).then(res => {
         if (res.data.success) {
           this.isLoaded = true
+          this.isLoadEnd = true
           if (res.data.data.length > 0) {
             this.allList = this.allList.concat(res.data.data)
             this.supportList = this.allList
             this.allList.map(item => {
               if (item.status == 3) {
-                this.unsentList.push(item)
+                this.unsentList.push(item) // 待发货
+              } else {
+                this.sendOutList.push(item) // 已发货
               }
             })
-            if (res.data.data.length < 10) {
+            if (res.data.data.length < 15) {
               this.isOver = true
+              sw = false
+            } else {
+              sw = true
             }
           } else {
             this.isOver = true
+            sw = false
           }
         }
       })
-    },
-    getMore() {
-      if ($('.support-box').length > 0) {
-        if ($(window).scrollTop() >= $('.support').outerHeight(true) + $('.support').offset().top - $(window).height()) {
-          this.page++
-          console.log(this.page)
-          if (this.selectedType == 3 || this.selectedType == 4) {
-            this.getMoreList(this.selectedType)
+
+      // 滚动加载更多
+      $(window).scroll(() => {
+        // 返回顶部按钮
+        if ($('.table').length > 0) {
+          if ($(window).scrollTop() > $('.table').offset().top) {
+            this.isShowTop = true
           } else {
-            this.getSupportList()
+            this.isShowTop = false
           }
         }
-      }
-    },
-    getMoreList(status) {
-      this.isOver = false
-      this.$http.post(this.globalData.domain + this.supportUrl, {
-        crowdfundingID: this.id,
-        status: status,
-        page: this.page
-      }, {
-        'emulateJSON': true
-      }).then(res => {
-        if (res.data.success) {
-          if (res.data.data.length > 0) {
-            if (status == 3) {
-              this.unsentList = this.unsentList.concat(res.data.data)
-              this.supportList = this.unsentList
-            } else if (status == 4) {
-              this.sendOutList = this.sendOutList.concat(res.data.data)
-              this.supportList = this.sendOutList
-            }
-            if (res.data.data.length < 10) {
-              this.isOver = true
-            }
-          } else {
-            this.isOver = true
+        // 判断是否打开开关
+        if (sw == true) {
+          // 判断是否滚动到底部
+          if ($(window).scrollTop() + $(window).height() >= $('#app').outerHeight(true)) {
+            this.page++
+            // 将开关关闭
+            sw = false
+            this.isLoadEnd = false
+            this.$http.post(this.globalData.domain + this.supportUrl, {
+              crowdfundingID: this.id,
+              page: this.page,
+              status: status
+            }, {
+              'emulateJSON': true
+            }).then(res => {
+              if (res.data.success) {
+                this.isLoadEnd = true
+                if (res.data.data.length > 0) {
+                  this.allList = this.allList.concat(res.data.data)
+                  this.supportList = this.allList
+                  this.allList.map(item => {
+                    if (item.status == 3) {
+                      this.unsentList.push(item) // 待发货
+                    } else {
+                      this.sendOutList.push(item) // 已发货
+                    }
+                  })
+                  // 数据更新完毕，将开关打开
+                  if (res.data.data.length < 15) {
+                    this.isOver = true
+                    sw = false
+                  } else {
+                    sw = true
+                  }
+                } else {
+                  this.isOver = true
+                  sw = false
+                }
+              }
+            })
           }
         }
       })
@@ -193,28 +223,13 @@ export default {
       if (item == 2) {
         item = ''
       }
-      this.$http.post(this.globalData.domain + this.supportUrl, {
-        crowdfundingID: this.id,
-        status: item,
-        page: this.page
-      }, {
-        'emulateJSON': true
-      }).then(res => {
-        if (res.data.success) {
-          this.isLoaded = true
-          if (item == 3) {
-            this.unsentList = res.data.data
-          } else if (item == 4) {
-            this.sendOutList = res.data.data
-          }
-          this.allList = res.data.data
-          this.supportList = res.data.data
-          if (res.data.data.length < 10) {
-            this.isOver = true
-          }
-        }
-      })
+      this.allList = [] //全部列表
+      this.sendOutList = [] //已发货列表
+      this.unsentList = [] //待发货列表
+      this.supportList = [] //数据渲染列表
+      this.getSupportList(item)
     },
+    // 点击发货
     changeStatus(item) {
       user.getAccount().then((currentAccount) => {
         $(".login").hide()
@@ -235,6 +250,9 @@ export default {
         // 未安装 scatter 或 登录失败
         this.toastInfo = this.$t('connect_scatter')
       })
+    },
+    toTop() {
+      window.scrollTo(0, 0)
     }
   },
   components: {
@@ -384,6 +402,7 @@ tr.list-null {
 .bottom-line {
   text-align: center;
   margin-top: 50px;
+  height: 20px;
   position: relative;
 }
 

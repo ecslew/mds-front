@@ -99,6 +99,9 @@
                   <li><span class="mds-des-dot">•</span>
                     <div>{{$t("roadmap_step6_3")}}</div>
                   </li>
+                  <li><span class="mds-des-dot">•</span>
+                    <div>{{$t("roadmap_step6_4")}}</div>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -110,6 +113,21 @@
                 <ul>
                   <li><span class="mds-des-dot">•</span>
                     <div>{{$t("roadmap_step7_1")}}</div>
+                  </li>
+                  <li><span class="mds-des-dot">•</span>
+                    <div>{{$t("roadmap_step7_2")}}</div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
+          <li class="mds-develop-list">
+            <div class="develop-box">
+              <div class="dev-date">2019 Q4</div>
+              <div class="dev-des">
+                <ul>
+                  <li><span class="mds-des-dot">•</span>
+                    <div>{{$t("roadmap_step8_1")}}</div>
                   </li>
                 </ul>
               </div>
