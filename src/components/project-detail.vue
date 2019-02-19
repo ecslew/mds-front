@@ -9,9 +9,10 @@
           <p class="pic" :style="{background: 'rgba(0,0,0,0.05) url(' + programs.photos +')no-repeat center/cover'}"></p>
           <div class="author-info clearfix">
             <div class="copy-link">
-              <img src="static/img/icon/web_icon_share.png" height="51" @click="linkShow">
+              <!-- <img src="static/img/icon/web_icon_share.png" height="51" @click="linkShow"> -->
+              <p ref="copy" @click="copyLink" data-clipboard-target="#copyContent" data-clipboard-action="copy"><img src="static/img/icon/web_icon_link.png" height="48"></p>
               <div ref="copyContent" id="copyContent">{{link}}</div>
-              <p ref="copy" v-show="link_isShow" @click="copyLink" class="copy-btn" data-clipboard-target="#copyContent" data-clipboard-action="copy">{{$t('copy_link')}}</p>
+              <!-- <p ref="copy" v-show="link_isShow" @click="copyLink" class="copy-btn" data-clipboard-target="#copyContent" data-clipboard-action="copy">{{$t('copy_link')}}</p> -->
             </div>
             <p class="avator"><img :src="'https://api.medishares.net/apiTools/getAddressHead?address=' + programs.creator + '&v=1.0'" width="20"></p>
               <p class="address">{{programs.creator}}</p>
@@ -26,7 +27,7 @@
           <p class="pro-key">{{$t("pledged")}} {{programs.amount}} {{programs.targetToken}}</p>
           <h4 class="pro-value">{{programs.backers?programs.backers:0}}</h4>
           <p class="pro-key">{{$t("backers")}}</p>
-          <h4 class="pro-value">{{programs.endDate>0?programs.endDate:0}} {{$t("day")}} </h4>
+          <h4 class="pro-value">{{programs.endDate>0?programs.endDate:0}}</h4>
           <p class="pro-key">{{$t("for_the_rest")}}</p>
           <div class="confirm supportBtn" @click="payModal">
             <template v-if='programs.type==1'>
@@ -465,7 +466,7 @@ export default {
   font-weight: 500;
   font-size: 20px;
   line-height: 1.6;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .copy-btn {
@@ -517,7 +518,8 @@ export default {
 }
 
 .tab a {
-  color: var(--darkColor);
+  color: var(--blueGrey);
+
   font-size: 20px;
   font-family: Gotham-Medium;
   font-weight: 500;
@@ -528,15 +530,8 @@ export default {
   text-transform: capitalize;
 }
 
-.tab .active:after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 18px;
-  height: 4px;
-  background: var(--primaryColor);
-  border-radius: 4px;
+.tab .active {
+  color: var(--darkColor);
 }
 
 .tab .confirm {

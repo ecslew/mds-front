@@ -4,8 +4,8 @@
     <div class="row">
       <div class="col-sm-10 col-sm-offset-1">
         <h4 class="title">{{$t('support_projects')}}</h4>
-        <div class="subtitle">{{$t('support_projects_subtitle')}}</div>
-        <div class="started">{{$t("started")}}</div>
+        <!-- <div class="subtitle">{{$t('support_projects_subtitle')}}</div>
+        <div class="started">{{$t("started")}}</div> -->
         <template v-if="programs.length>0">
           <div class="list" v-for="item in programs" :key="item.id">
             <myproject-list :isBacked="isBacked" :id="item.eosID" :title="item.title" :time="item.releaseTime"></myproject-list>
@@ -81,4 +81,12 @@ export default {
 </script>
 
 <style scoped>
+.title{
+  margin-bottom: 64px;
+}
+@media(max-width: 768px){
+  .title{
+    margin-bottom: 32px;
+  }
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
 <div class="blank-page">
   <p>{{$t("no_project")}}</p>
-  <router-link to="/projectRelease"><span>{{$t("to_publish_projects")}}</span><img src="static/img/icon/guide.png" width="26"></router-link>
+  <router-link to="/projectRelease"><span>{{$t("to_publish_projects")}}</span></router-link>
 </div>
 </template>
 
@@ -13,7 +13,7 @@ export default {
 
 <style>
 .blank-page {
-  padding: 120px 0;
+  padding: 80px 0 100px;
   color: var(--blueGrey);
   font-size: 16px;
   text-align: center;

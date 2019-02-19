@@ -2,8 +2,6 @@
 <div class="modal confirm-modal" id="deleteAddress">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">{{$t('delete_address')}}</h4>
       <p class="modal-info">{{$t('delete_address_info')}}</p>
       <div class="btn-contain clearfix">
         <span data-dismiss="modal">{{$t('cancel')}}</span>
@@ -17,6 +15,11 @@
 <script>
 export default {
   props: ['index', 'id'],
+  mounted() {
+    $('#deleteAddress').on('shown.bs.modal', function () {
+      $('.modal-backdrop:eq(1)').css('z-index', '1052')
+    })
+  },
   methods: {
     deleteAddress() {
       this.$emit('deleteAddress', this.index, this.id)
@@ -26,5 +29,7 @@ export default {
 </script>
 
 <style scoped>
-
+#deleteAddress {
+  z-index: 1060;
+}
 </style>

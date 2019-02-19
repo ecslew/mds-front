@@ -4,7 +4,7 @@
     <div class="row">
       <div class="col-sm-10 col-sm-offset-1">
         <h4 class="title">{{$t('address_manage')}}</h4>
-        <div class="subtitle">{{$t('address_manage_subtitle')}}</div>
+        <!-- <div class="subtitle">{{$t('address_manage_subtitle')}}</div> -->
         <div class="started">{{$t("address_list")}}</div>
         <ul class="list">
           <template v-if='addressList.length>0'>

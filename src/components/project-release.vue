@@ -4,7 +4,7 @@
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
         <div class="title">{{$t('basic_project_information')}}</div>
-        <div class="subtitle">{{$t('submit_information')}}</div>
+        <!-- <div class="subtitle">{{$t('submit_information')}}</div> -->
         <form class="basic-form" accept-charset="utf-8" ref="form" enctype="multipart/form-data">
           <!-- 筹款Token,比如：EOS，IQ，MEV. targetToken -->
           <input name="targetToken" type="text" v-model="addData.targetToken" class="hide">
@@ -26,7 +26,7 @@
               <template v-if='!isLoad'>
                 <img src="static/img/icon/web_icon_pic.png" width="72">
                 <h5>{{$t('position_photo_pl')}}</h5>
-                <p>{{$t('position_photo_tip')}}</p>
+                <p class="photo-tip">{{$t('position_photo_tip')}}</p>
               </template>
             </div>
             <div class="photo-ext" v-if='isLoad'>
@@ -39,7 +39,7 @@
           </div>
           <!-- 添加产品档位 只有电商产品存在 type==1 -->
           <div class="gear" v-if="type==1">
-            <span class="what-gear" data-toggle="modal" data-target="#gear_des">{{$t('what_is_gear')}}</span>
+            <a href="#gear_des" class="what-gear" data-toggle="modal">{{$t('what_is_gear')}}</a>
             <label>{{$t('add_gear')}}</label>
             <ul class="gear-list">
               <li v-for="(item, index) in gearList" :key="index">
@@ -165,7 +165,7 @@
       </div>
     </div>
   </div>
-  <div class="page">{{$t('step1_total2')}}</div>
+  <div class="page">1 / <span>2</span></div>
   <alert-modal :info='alertInfo'></alert-modal>
   <mds-toast :toastInfo='toastInfo' :isWarn="isWarn" @toast="infoByToast"></mds-toast>
 </div>

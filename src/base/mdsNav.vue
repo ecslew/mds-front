@@ -42,7 +42,7 @@
           </li>
           <li @click="removeWh100"><a :href="$t('news_link')" target="_blank">{{$t("news")}}</a></li>
           <li @click="removeWh100"><a :href="$t('mathwallet_link')" target="_blank">{{$t("MathWallet")}}</a></li>
-          <div class="dropdown">
+          <div class="dropdown lang">
             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button">{{$t("lang")}}<span class="tri"></span></a>
             <ul class="dropdown-menu">
               <li><a href="javascript:;" name="cn" @click="changeLang">中文</a></li>
@@ -232,7 +232,6 @@ export default {
 .navbar-brand:after {
   display: none;
 }
-
 .header-nav a:hover,
 .header-nav a:focus,
 nav .open>a {
@@ -244,10 +243,10 @@ nav .open>a {
   text-align: center;
   border: none;
   padding: 10px 16px;
-  margin-top: 15px;
+  /* margin-top: 15px; */
 }
 
-.dropdown-menu:after {
+/* .dropdown-menu:after {
   content: '';
   position: absolute;
   top: -12px;
@@ -256,7 +255,7 @@ nav .open>a {
   border: 6px solid transparent;
   border-bottom-color: #fff;
   right: 12px;
-}
+} */
 
 .header-nav .dropdown-menu>li>a {
   padding: 4px 0;
@@ -306,6 +305,9 @@ nav .open>a {
 }
 
 @media (max-width: 767px) {
+  .navbar-nav{
+    min-height: calc(100vh - 85px);
+  }
   #mds-nav {
     background: #fff;
     position: fixed;
@@ -339,9 +341,14 @@ nav .open>a {
     left: auto;
     right: -45px;
   }
-
+  .header-nav .lang .dropdown-menu{
+    padding: 0;
+  }
   .personal a {
     padding: 15px;
+  }
+  .ishome .lang .tri{
+    background: url('../../static/img/icon/tri.png')no-repeat center/contain;
   }
 }
 

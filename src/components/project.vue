@@ -2,7 +2,7 @@
 <div class='project'>
   <div class="container">
     <h4 class="title text-center">{{$t('all_projects')}}</h4>
-    <div class="subtitle text-center">{{$t('projects_list')}}</div>
+    <!-- <div class="subtitle text-center">{{$t('projects_list')}}</div> -->
     <ul class="row project-list" v-if="programs.length>0">
       <li class="col-sm-4 col-xs-12" v-for="item in programs" :key="item.id">
         <project-list :id="item.eosID" :picture="item.img" :title="item.title" :targetAmount="item.targetAmount" :amount="item.reciveAmount" :time="item.releaseTime" :targetToken="item.targetToken"></project-list>

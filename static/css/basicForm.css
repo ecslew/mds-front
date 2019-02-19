@@ -38,6 +38,10 @@
   margin: 16px 0 8px;
 }
 
+.photo-tip {
+  color: var(--light-grey-blue);
+}
+
 .photo-ext {
   border-top: 1px solid #e7ecf0;
 }
@@ -100,7 +104,7 @@
 
 .agree a {
   cursor: pointer;
-  color: var(--blueColor);
+  color: var(--blueColor)!important;
 }
 
 .agree input:checked+div {
@@ -128,12 +132,17 @@
   margin-top: 196px;
 }
 
+#rule h5 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
 
 /* 档位 */
 
 .what-gear {
   float: right;
-  color: var(--blueColor);
+  color: var(--blueColor)!important;
   margin-top: 32px;
   cursor: pointer;
 }

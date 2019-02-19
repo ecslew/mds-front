@@ -32,8 +32,9 @@
             <div :class="[{active:selectedOrder&&selectedOrder.num>0},'confirm']" @click="submitOrder">{{$t('confirm')}}</div>
           </ul>
           <div class="col-sm-4 mds_notice">
-            <h4>{{$t('mds_notice1')}}</h4>
-            <p>{{$t('mds_notice2')}}</p>
+            <h4 class='hidden-xs'>{{$t('mds_notice1')}}</h4>
+            <p class='hidden-xs'>{{$t('mds_notice2')}}</p>
+            <p  class='notice-xs hidden-sm hidden-md hidden-lg'>{{$t('mds_notice1')}}{{$t('mds_notice2')}}</p>
           </div>
         </div>
       </div>
@@ -360,7 +361,10 @@ export default {
 .confirm.active {
   opacity: 1;
 }
-
+.notice-xs{
+  color: var(--light-grey-blue);
+  font-size: 14px;
+}
 @media(max-width: 991px) {
   .select-list .list-info {
     padding-left: 40px;

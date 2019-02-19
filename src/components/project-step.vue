@@ -4,7 +4,7 @@
     <div class="row">
       <div class="col-md-offset-2 col-md-8">
         <h4 class="title">{{$t('create_project')}}</h4>
-        <div class="subtitle">{{$t('create_project_subtitle')}}</div>
+        <!-- <div class="subtitle">{{$t('create_project_subtitle')}}</div> -->
         <div class="dropdown select-type">
           <div class="dropdown-toggle col-sm-9" data-toggle="dropdown">
             <i class="tri"></i>
@@ -20,7 +20,7 @@
         <div class="notice">{{$t('mds_notice1')}}{{$t('mds_notice2')}}</div>
       </div>
     </div>
-    <div class="page">{{$t('step1_total2')}}</div>
+    <div class="page"><span>1</span> / 2</div>
   </div>
   <mds-toast :toastInfo='toastInfo' :isWarn="isWarn" @toast="infoByToast"></mds-toast>
 </div>
@@ -91,6 +91,10 @@ export default {
   cursor: pointer;
 }
 
+.select-type .tri {
+  margin-right: 10px;
+}
+
 .next {
   height: 52px;
   text-align: center;
@@ -143,9 +147,12 @@ export default {
   .select-type {
     margin: 70px 0 150px;
   }
-
+  .select-type .dropdown-toggle{
+    border-radius: 4px;
+  }
   .next {
     margin-top: 32px;
+    border-radius: 4px;
   }
 }
 </style>
