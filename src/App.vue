@@ -2,7 +2,7 @@
 <div id="app">
   <mds-nav></mds-nav>
   <router-view />
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <mds-toast :toastInfo='toastInfo' :isWarn='isWarn' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -14,13 +14,17 @@ export default {
   name: 'App',
   data() {
     return {
-      toastInfo: ''
+      toastInfo: '',
+      isWarn: true
     }
   },
   mounted() {
-    if (window.location.hash != '#/about' && window.location.hash != '#/myProject' && window.location.hash != '#/projectBacked') {
-      this.loginByScatter()
-    }
+    this.$router.afterEach((to, from) => {
+      if (to.path != '/about' && to.path != '/myProject' && to.path != '/projectBacked' && to.path != '/address' && to.path != '/projectPurchase') {
+        this.loginByScatter()
+      }
+      window.scrollTo(0, 0)
+    })
   },
   methods: {
     infoByToast: function (val) {

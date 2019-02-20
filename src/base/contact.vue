@@ -48,6 +48,7 @@ h4 {
   font-size: 20px;
   padding-bottom: 8px;
   font-family: Gotham-Medium;
+  font-weight: 500;
 }
 
 .contact span {

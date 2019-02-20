@@ -10,7 +10,6 @@ import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'static/css/index.css'
 import clipboard from 'clipboard'
-
 import ScatterJS from 'scatterjs-core'
 import ScatterEOS from 'scatterjs-plugin-eosjs'
 

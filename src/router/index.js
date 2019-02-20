@@ -18,15 +18,18 @@ export default new Router({
       path: '/projectCreate',
       component: resolve => require(['@/components/project-create'], resolve)
     },
-    // 提交步骤
+    // 创建项目步骤
     {
-      path: '/projectSteps',
-      component: resolve => require(['@/components/project-steps'], resolve)
+      path: '/projectStep',
+      component: resolve => require(['@/components/project-step'], resolve)
     },
-    // 提交项目表单
+    // 发布项目
     {
       path: '/projectRelease',
-      component: resolve => require(['@/components/project-release'], resolve)
+      component: resolve => require(['@/components/project-release'], resolve),
+      props: (route) => ({
+        type: route.query.type
+      })
     },
     // 编辑项目
     {
@@ -44,6 +47,21 @@ export default new Router({
         id: route.query.id
       })
     },
+    // 购买产品
+    {
+      path: '/projectPurchase',
+      name: 'projectPurchase',
+      component: resolve => require(['@/components/project-purchase'], resolve),
+      props: (route) => ({
+        id: route.query.id
+      })
+    },
+    // 订单详情
+    {
+      path: '/orderDetail',
+      name: 'orderDetail',
+      component: resolve => require(['@/components/order-detail'], resolve)
+    },
     // 我的项目
     {
       path: '/myProject',
@@ -58,6 +76,17 @@ export default new Router({
     {
       path: '/about',
       component: resolve => require(['@/components/about'], resolve)
+    },
+    // 地址管理
+    {
+      path: '/address',
+      component: resolve => require(['@/components/address'], resolve)
+    },
+    // 支持列表
+    {
+      path: '/supportList',
+      name: 'supportList',
+      component: resolve => require(['@/components/support-list'], resolve)
     }
   ]
 })

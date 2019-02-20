@@ -6,7 +6,7 @@
     <div class="info col-sm-9">
       <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
       <p class="time">{{$t('release_time')}}: {{time}}</p>
-      <p class="btn-box"><span>{{$t('view_project')}}</span></p>
+        <p class="btn-box"><span>{{$t('view_project')}}</span></p>
     </div>
   </router-link>
   <!-- 我的项目 -->
@@ -22,8 +22,10 @@
         </div>
       </router-link>
       <div class="info col-sm-9">
-        <h4 style="-webkit-box-orient: vertical;"><router-link :to="{path: '/projectDetail',query: {id: id}}">{{title}}</router-link></h4>
-        <router-link :to="{path: '/projectDetail',query: {id: id}}" class="time">{{$t('release_time')}}: {{time}}</router-link>
+        <router-link :to="{path: '/projectDetail',query: {id: id}}">
+          <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
+          <p class="time">{{$t('release_time')}}: {{time}}</p>
+        </router-link>
         <p class="btn-box">
           <router-link class="editor" :to="{path: '/projectModify',query: {eosID: id}}">{{$t('editor')}}</router-link>
           <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
@@ -41,24 +43,52 @@
         </div>
       </div>
       <div class="info col-sm-9">
-        <h4 style="-webkit-box-orient: vertical;"><router-link :to="{path: '/projectDetail',query: {id: id}}">{{title}}</router-link></h4>
-        <router-link :to="{path: '/projectDetail',query: {id: id}}" class="time">{{$t('release_time')}}: {{time}}</router-link>
+        <router-link :to="{path: '/projectDetail',query: {id: id}}">
+          <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
+          <p class="time">{{$t('release_time')}}: {{time}}</p>
+        </router-link>
         <p class="btn-box">
           <router-link class="editor" :to="{path: '/projectModify',query: {eosID: id}}">{{$t('editor')}}</router-link>
           <a href="javascript:;" class="delete" @click="deleteProject">{{$t('delete')}}</a>
         </p>
       </div>
     </template>
-    <router-link :to="{path: '/projectDetail',query: {id: id}}" v-if="status==2||status==3">
-      <div class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + photos +')'}"></div>
+    <!-- 筹款中 -->
+    <template v-if="status==2">
+      <router-link :to="{path: '/projectDetail',query: {id: id}}" class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + photos +')'}">
+        <div class="status">
+          <div>
+            <p>{{$t('ongoing')}}</p>
+          </div>
+        </div>
+      </router-link>
+      <div class="info col-sm-9">
+        <router-link :to="{path: '/projectDetail',query: {id: id}}">
+          <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
+          <p class="time">{{$t('release_time')}}: {{time}}</p>
+        </router-link>
+        <p class="btn-box">
+          <router-link class="editor" :to="{name: 'supportList',params: {id: crowdfundingID}}">{{$t('support_list')}}</router-link>
+        </p>
+      </div>
+    </template>
+    <!-- 筹款结束 -->
+    <router-link :to="{path: '/projectDetail',query: {id: id}}" v-if="status==3">
+      <div class="list-pic col-sm-3" :style="{backgroundImage: 'url(' + photos +')'}">
+        <div class="status">
+          <div>
+            <p>{{$t('ended')}}</p>
+          </div>
+        </div>
+      </div>
       <div class="info col-sm-9">
         <h4 style="-webkit-box-orient: vertical;">{{title}}</h4>
         <p class="time">{{$t('release_time')}}: {{time}}</p>
-        <p class="btn-box"><span class="main-color">{{$t('approved')}}</span></p>
+          <p class="btn-box"><span class="main-color">{{$t('approved')}}</span></p>
       </div>
     </router-link>
   </template>
-  <div class="modal text-center" :id="'reason'+index">
+  <div class="modal text-center reason" :id="'reason'+index">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
@@ -77,7 +107,8 @@ export default {
     return {
       url: '/apiCrowdfunding/getInfo?eosID=',
       photos: '',
-      comment: ''
+      comment: '',
+      crowdfundingID: ''
     }
   },
   mounted() {
@@ -89,6 +120,7 @@ export default {
         if (res.data.success) {
           this.photos = res.data.data.photos
           this.comment = res.data.data.comment
+          this.crowdfundingID = res.data.data.crowdfundingID
         }
       }, (err) => {
         console.log(err);
@@ -104,9 +136,10 @@ export default {
 <style scoped>
 .myproject-list {
   display: block;
-  border: 1px solid #e7ecf0;
+  border: 1px solid var(--very-light-blue);
   border-radius: 4px;
   overflow: hidden;
+  margin-bottom: 24px;
 }
 
 .list-pic {
@@ -115,16 +148,18 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  display: block;
 }
 
 .info {
   padding: 16px;
-  color: #2c363f;
+  color: var(--darkColor);
   overflow: hidden;
 }
 
 .info h4 {
   font-family: Gotham-Medium;
+  font-weight: 500;
   font-size: 20px;
   height: 48px;
   margin-bottom: 8px;
@@ -134,30 +169,11 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  color: var(--darkColor);
 }
-.info h4 a{
-  color: #2c363f;
-}
+
 .info .time {
-  color: #607d8b;
-}
-
-.btn-box {
-  margin-top: 24px;
-  font-size: 16px;
-  font-family: Gotham-Medium;
-  line-height: 1.5;
-}
-
-.btn-box a,.btn-box span {
-  display: inline-block;
-  padding-right: 32px;
-  color: #2196f3;
-  cursor: pointer;
-}
-
-.btn-box .delete {
-  color: #f44336 !important;
+  color: var(--blueGrey);
 }
 
 .status {
@@ -165,6 +181,7 @@ export default {
   color: #fff;
   text-align: center;
   font-family: Gotham-Medium;
+  font-weight: 500;
   line-height: 1.7;
   height: 100%;
   position: relative;
@@ -183,7 +200,7 @@ export default {
   cursor: pointer;
 }
 
-#reason .start {
+.reason .start {
   margin-top: 40px;
   padding: 16px 60px;
 }
@@ -204,10 +221,6 @@ export default {
 
   .info .time {
     font-size: 12px;
-  }
-
-  .btn-box {
-    font-size: 14px;
   }
 }
 </style>

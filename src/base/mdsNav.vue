@@ -13,16 +13,19 @@
         </button>
         <div class="login mobile-login hidden-sm hidden-md hidden-lg" @click="login">{{$t("login")}}</div>
         <div class="dropdown personal hidden-sm hidden-md hidden-lg">
-          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="caret"></span></a>
+          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="tri"></span></a>
           <ul class="dropdown-menu">
             <li>
-              <router-link to="/projectRelease">{{$t("create_a_project")}}</router-link>
+              <router-link to="/projectStep">{{$t("create_a_project")}}</router-link>
             </li>
             <li>
               <router-link to="/myProject">{{$t("my_projects")}}</router-link>
             </li>
             <li>
               <router-link to="/projectBacked">{{$t("backed_projects")}}</router-link>
+            </li>
+            <li>
+              <router-link to="/address">{{$t("address_manage")}}</router-link>
             </li>
             <li><a href="javascript:;" @click="logout">{{$t("logout")}}</a></li>
           </ul>
@@ -39,7 +42,7 @@
           </li>
           <li @click="removeWh100"><a :href="$t('news_link')" target="_blank">{{$t("news")}}</a></li>
           <li @click="removeWh100"><a :href="$t('mathwallet_link')" target="_blank">{{$t("MathWallet")}}</a></li>
-          <div class="dropdown">
+          <div class="dropdown lang">
             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button">{{$t("lang")}}<span class="tri"></span></a>
             <ul class="dropdown-menu">
               <li><a href="javascript:;" name="cn" @click="changeLang">中文</a></li>
@@ -52,13 +55,16 @@
             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="tri"></span></a>
             <ul class="dropdown-menu">
               <li @click="removeWh100">
-                <router-link to="/projectRelease">{{$t("create_a_project")}}</router-link>
+                <router-link to="/projectStep">{{$t("create_a_project")}}</router-link>
               </li>
               <li @click="removeWh100">
                 <router-link to="/myProject">{{$t("my_projects")}}</router-link>
               </li>
               <li @click="removeWh100">
                 <router-link to="/projectBacked">{{$t("backed_projects")}}</router-link>
+              </li>
+              <li @click="removeWh100">
+                <router-link to="/address">{{$t("address_manage")}}</router-link>
               </li>
               <li @click="removeWh100"><a href="javascript:;" @click="logout">{{$t("logout")}}</a></li>
             </ul>
@@ -155,7 +161,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .mds-nav {
   height: 50px;
 }
@@ -187,8 +193,11 @@ export default {
 }
 
 .header-nav a {
-  color: #2c363f;
+  color: var(--darkColor);
   text-transform: capitalize;
+}
+
+.dropdown>a {
   display: inline-block;
 }
 
@@ -201,7 +210,7 @@ export default {
 }
 
 .navbar-toggle .icon-bar {
-  background: #2c363f;
+  background: var(--darkColor);
 }
 
 .ishome a {
@@ -223,7 +232,6 @@ export default {
 .navbar-brand:after {
   display: none;
 }
-
 .header-nav a:hover,
 .header-nav a:focus,
 nav .open>a {
@@ -235,10 +243,10 @@ nav .open>a {
   text-align: center;
   border: none;
   padding: 10px 16px;
-  margin-top: 15px;
+  /* margin-top: 15px; */
 }
 
-.dropdown-menu:after {
+/* .dropdown-menu:after {
   content: '';
   position: absolute;
   top: -12px;
@@ -247,11 +255,11 @@ nav .open>a {
   border: 6px solid transparent;
   border-bottom-color: #fff;
   right: 12px;
-}
+} */
 
 .header-nav .dropdown-menu>li>a {
   padding: 4px 0;
-  color: #2c363f !important;
+  color: var(--darkColor) !important;
 
 }
 
@@ -262,8 +270,9 @@ nav .open>a {
 
 .personal .dropdown-menu>li>a {
   padding: 24px 0;
-  border-bottom: 1px solid #f2f5f6;
+  border-bottom: 1px solid var(--bgColor);
   font-family: Gotham-Medium;
+  font-weight: 500;
 }
 
 .personal .dropdown-menu>li:last-of-type>a {
@@ -272,10 +281,11 @@ nav .open>a {
 
 .pc-login {
   padding: 6px 10px;
-  border: 1px solid #2c363f;
+  border: 1px solidvar(--darkColor);
   border-radius: 4px;
   margin: 8px 10px;
   text-transform: capitalize;
+  cursor: pointer;
 }
 
 .ishome .pc-login {
@@ -287,6 +297,7 @@ nav .open>a {
   padding: 15px;
   line-height: 20px;
   float: right;
+  cursor: pointer;
 }
 
 .ishome .mobile-login {
@@ -294,6 +305,9 @@ nav .open>a {
 }
 
 @media (max-width: 767px) {
+  .navbar-nav{
+    min-height: calc(100vh - 85px);
+  }
   #mds-nav {
     background: #fff;
     position: fixed;
@@ -304,7 +318,7 @@ nav .open>a {
   }
 
   #mds-nav a {
-    color: #2c363f !important;
+    color: var(--darkColor) !important;
     padding: 0;
     height: 60px;
     line-height: 60px;
@@ -314,7 +328,7 @@ nav .open>a {
   .collapse-close {
     font-size: 28px;
     padding: 14px 20px;
-    color: #607d8b;
+    color: var(--blueGrey);
     text-align: right;
   }
 
@@ -327,9 +341,14 @@ nav .open>a {
     left: auto;
     right: -45px;
   }
-
+  .header-nav .lang .dropdown-menu{
+    padding: 0;
+  }
   .personal a {
     padding: 15px;
+  }
+  .ishome .lang .tri{
+    background: url('../../static/img/icon/tri.png')no-repeat center/contain;
   }
 }
 
