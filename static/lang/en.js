@@ -52,7 +52,7 @@ module.exports = {
   qq_kakao_icon: "static/img/foot/sns_icon_qq@2x.png",
   qq_kakao_code: "static/img/qrcode/qq-code.png",
   join_group: "Join the wechat group",
-  group_icon: "http://medishares.oss-cn-hongkong.aliyuncs.com/logo/qr_code.png",
+  group_icon: "static/img/qrcode/qr_code.png",
   title: "Initiate Your First Inclusive Program on Blockchain",
   slogan: "Mutual Aid+ Inclusive Finance + StableCoin e - Commerce",
   start_project: "Start a project",
