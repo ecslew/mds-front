@@ -29,7 +29,7 @@
           <p class="pro-key">{{$t("backers")}}</p>
           <h4 class="pro-value">{{programs.endDate>0?programs.endDate:0}}</h4>
           <p class="pro-key">{{$t("for_the_rest")}}</p>
-          <div class="confirm supportBtn" @click="payModal">
+          <div :class="[{unPay:programs.endDate<=0},'confirm supportBtn']" @click="payModal">
             <template v-if='programs.type==1'>
               {{$t('payment')}}
             </template>
@@ -49,7 +49,7 @@
               <a :class="{'active':!isActive}" @click='toggleTransfer'>{{$t('transfer')}}</a>
             </div>
             <div class="col-sm-4 hidden-xs">
-              <div class="confirm" @click="payModal">
+              <div :class="[{unPay:programs.endDate<=0},'confirm']" @click="payModal">
                 <template v-if='programs.type==1'>
                   {{$t('payment')}}
                 </template>
@@ -231,6 +231,12 @@ export default {
       }, 2000);
     },
     payModal() {
+      if (this.programs.endDate <= 0) {
+        this.isWarn = true
+        this.isFail = false
+        this.toastInfo = "当前项目已下架，请选择其他项目"
+        return false
+      }
       user.getAccount().then((currentAccount) => {
         $(".login").hide()
         $(".personal").show()
@@ -407,6 +413,7 @@ export default {
 .project-detail {
   padding: 68px 0 0;
 }
+
 #copyContent {
   position: absolute;
   right: 0;
@@ -492,6 +499,10 @@ export default {
   height: 0;
   border: 8px solid transparent;
   border-bottom-color: #fff;
+}
+
+.unPay {
+  opacity: 0.5;
 }
 
 .detail-info {
