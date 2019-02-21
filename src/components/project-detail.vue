@@ -234,7 +234,7 @@ export default {
       if (this.programs.endDate <= 0) {
         this.isWarn = true
         this.isFail = false
-        this.toastInfo = "当前项目已下架，请选择其他项目"
+        this.toastInfo = this.$t('project_outDate')
         return false
       }
       user.getAccount().then((currentAccount) => {

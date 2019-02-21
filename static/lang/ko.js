@@ -286,6 +286,7 @@ module.exports = {
   modify_error: "편집 실패",
   delete_error: "삭제 실패",
   project_error: "해당 프로젝트가 없습니다",
+  project_outDate: "해당 프로젝트 이미 종료되었습니다. 다른 프로젝트를 선택하세요",
   mds_notice1: "MDS CITY는 기술 지원만 제공합니다.",
   mds_notice2: "플랫폼 자체는 어떠한 프로젝트에도 관여하지 않으며, 프로젝트에 어떠한 형태의 배서도 하지 않습니다。",
   platform_rules: "<h4 style='text-align:center;font-family: Gotham-Medium;margin:10px 0'>MDS CITY 플랫폼 규칙</h4><h5 style='font-family:Gotham-Medium;margin:10px 0'>제목 :</h5><p>오타, 유창 등하지 불완전, 여러 단어 중에서 제목이 있습니까, 당신은 언어의 기본 규범, 세 인기 준수하지 않는 내용 등하지의 제목에 맞춰 수정할 돌아갑니다. (예 : 도박, 파, 도박 등)</p><h5 style='font-family:Gotham-Medium;margin:10px 0'>프로젝트 설명 :</h5><p>레이아웃 정의 형식의 텍스트, 기사, 반복, 구두점, 기사의 합리적인 학위를 가진 그래픽, 기존 프로젝트 내용에 대한 프로젝트의 실종 텍스트 콘텐츠 콘텐츠 플랫폼, 텍스트의 단어 수의 내용 (이러한 낮은 품질입니다입니다 콘텐츠의 판단 기준은 플랫폼이나 타인의 이름으로 사용할 수 없습니다.</p><p>콘텐츠에는 광고, 프로모션 등으로 의심되는 링크 요소 나 기타 콘텐츠가 포함될 수 없습니다.</p><h5 style='font-family:Gotham-Medium;margin:10px 0'>사진 :</h5><p>프로젝트의 설명과 일치하는 이미지를 업로드하십시오. Sanshou와 같은 비 호환 이미지를 업로드하는 것은 금지되어 있습니다.</p><h5 style='font-family:Gotham-Medium;margin:10px 0'>권장되는 메커니즘 :</h5><p>유사한 콘텐츠가 있든간에 유사성이 높은 콘텐츠는 추천 할 수 없으며 플랫폼은 우수한 품질의 프로젝트 참여를 환영하며 해당 우선 순위 추천 인센티브를 제공합니다.</p><h5 style='font-family:Gotham-Medium;margin:10px 0'>우선 항목 분류 :</h5><p>블록 체인 전자 상거래, 보편적 복지, 상호 보호</p><h5 style='font-family:Gotham-Medium;margin:10px 0'>성명서 :</h5><p>MDS CITY는 기본 기술 지원 만 제공합니다. 플랫폼 자체는 플랫폼의 프로젝트에 참여하지 않으며 어떠한 형태로든 프로젝트를 보증하지 않습니다.</p>"
