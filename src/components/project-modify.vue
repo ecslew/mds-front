@@ -1,104 +1,179 @@
 <template>
-<div class='project-modify'>
-  <div class="container">
-    <div class="col-md-8 col-md-offset-2 basic">
-      <div class="title">{{$t('basic_project_information')}}</div>
-      <div class="subtitle">{{$t('submit_information')}}</div>
-      <form class="basic-form" accept-charset="utf-8" ref="form" enctype="multipart/form-data">
-        <!-- 项目发起者 creator -->
-        <input name="creator" type="text" v-model="modify.creator" class="hide">
-        <!-- 筹款账户 targetAccount-->
-        <input name="targetAccount" type="text" v-model="modify.targetAccount" class="hide">
-        <!-- 筹款Token,比如：EOS，IQ，MEV. targetToken -->
-        <input name="targetToken" type="text" v-model="modify.targetToken" class="hide">
-        <!-- 筹款 Token 合约，EOS 请填写 eosio.token   targetTokenContract-->
-        <input name="targetTokenContract" type="text" v-model="modify.targetTokenContract" class="hide">
-        <!-- eosID -->
-        <input name="eosID" type="text" v-model="modify.eosID" class="hide">
-        <!-- 项目名称 title-->
-        <label>{{$t('project_title')}}</label>
-        <input name="title" type="text" class="basic-input" v-model="modify.title" :placeholder="$t('project_title_pl')" autofocus>
-        <!-- 项目简介 des -->
-        <label>{{$t('tell_story')}}</label>
-        <div id="story">
-          <div v-if="!isFocus" class="story_pl">{{$t('tell_story_pl')}}</div>
-        </div>
-        <textarea name="des" class="hide" v-model="modify.des"></textarea>
-        <!-- 简介做 sha256 后的值 desHash -->
-        <input name="desHash" type="text" class="hide" v-model="desHash">
-        <!-- 封面图片，注意name为数组，以后可能要传多张 photos[]-->
-        <label>{{$t('position_photo')}}</label>
-        <div class="photo-container">
-          <div class='photo' :style="{background: modify.photos?'url(' + modify.photos +')no-repeat center/cover':'#e1e6e9'}">
-            <input name="photos[]" type="file" @change="uploadPic">
-            <template v-if='!isLoad'>
-              <img src="static/img/icon/web_icon_pic.png" width="72">
-              <h5>{{$t('position_photo_pl')}}</h5>
-              <p>{{$t('position_photo_tip')}}</p>
+<div class='project-modify project-sm-container'>
+  <div class="isNull" v-if='isNull'>{{$t('project_error')}}</div>
+  <div class="container" v-else>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="title">{{$t('basic_project_information')}}</div>
+        <!-- <div class="subtitle">{{$t('submit_information')}}</div> -->
+        <form class="basic-form" accept-charset="utf-8" ref="form" enctype="multipart/form-data">
+          <!-- 项目发起者 creator -->
+          <input name="creator" type="text" v-model="modify.creator" class="hide">
+          <!-- 筹款账户 targetAccount-->
+          <input name="targetAccount" type="text" v-model="modify.targetAccount" class="hide">
+          <!-- 筹款Token,比如：EOS，IQ，MEV. targetToken -->
+          <input name="targetToken" type="text" v-model="modify.targetToken" class="hide">
+          <!-- 筹款 Token 合约，EOS 请填写 eosio.token   targetTokenContract-->
+          <input name="targetTokenContract" type="text" v-model="modify.targetTokenContract" class="hide">
+          <!-- eosID -->
+          <input name="eosID" type="text" v-model="modify.eosID" class="hide">
+          <!-- 项目名称 title-->
+          <label>{{$t('project_title')}}</label>
+          <input name="title" type="text" class="basic-input" v-model="modify.title" :placeholder="$t('project_title_pl')" autofocus>
+          <!-- 项目简介 des -->
+          <label>{{$t('tell_story')}}</label>
+          <div id="story">
+            <div v-if="!isFocus" class="story_pl">{{$t('tell_story_pl')}}</div>
+          </div>
+          <!-- 封面图片，注意name为数组，以后可能要传多张 photos[]-->
+          <label>{{$t('position_photo')}}</label>
+          <div class="photo-container">
+            <div class='photo' :style="{background: modify.photos?'url(' + modify.photos +')no-repeat center/cover':'var(--paleBlue)'}">
+              <input name="photos[]" type="file" @change="uploadPic">
+              <template v-if='!isLoad'>
+                <img src="static/img/icon/web_icon_pic.png" width="72">
+                <h5>{{$t('position_photo_pl')}}</h5>
+                <p class="photo-tip">{{$t('position_photo_tip')}}</p>
+              </template>
+            </div>
+            <div class="photo-ext" v-if='isLoad'>
+              <div class="pull-right">
+                <span class="delete" @click="deletePic">{{$t('delete')}}</span>
+                <span class="again">{{$t('upload_again')}}</span>
+              </div>
+              <div class="blank"></div>
+            </div>
+          </div>
+          <!-- 添加产品档位 只有电商产品存在 type==1 -->
+          <div class="gear" v-if="type==1">
+            <a href="#gear_des" class="what-gear" data-toggle="modal">{{$t('what_is_gear')}}</a>
+            <label>{{$t('add_gear')}}</label>
+            <ul class="gear-list">
+              <li v-for="(item, index) in gearList" :key="index">
+                <span class="delete-gear" @click="deleteGear(index)">{{$t('delete')}}</span>
+                <h3>{{$t('gear'+ item.level)}}</h3>
+                <div class="gear-amount">{{$t('amount')}}</div>
+                <div class="row">
+                  <div class="col-sm-6 basic-group">
+                    <input class="basic-input" type="number" v-model="item.money" :placeholder="$t('total_price')">
+                    <span class="target-token">{{item.targetToken}}</span>
+                  </div>
+                  <div class="col-sm-6 basic-group">
+                    <input class="basic-input" type="number" v-model="item.unitNum" :placeholder="$t('unit')">
+                    <select id="unit" @change="changeUnit" v-model="item.unit">
+                      <option value="jin">{{$t('unit_jin')}}</option>
+                      <option value="kg">{{$t('unit_kg')}}</option>
+                      <option value="piece">{{$t('unit_piece')}}</option>
+                    </select>
+                    <span class="tri"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="continue-add" v-if="gearList.length<3" @click="addGear">{{$t("continue_add")}}</li>
+            </ul>
+          </div>
+          <!-- 筹款金额 targetAmount-->
+          <label>{{$t('target_amount')}}</label>
+          <div class="basic-group">
+            <input name="targetAmount" class="basic-input" type="number" v-model="modify.amount" :placeholder="$t('target_amount_pl')">
+            <span class="target-token" v-if="type==1">{{modify.targetToken}}</span>
+            <template v-else>
+              <select id="targetToken" @change="changeTargetToken">
+                <option value="EOS">EOS</option>
+                <option value="EMDS">EMDS</option>
+                <option value="EUSD">EUSD</option>
+                <option value="EETH">EETH</option>
+                <option value="EBTC">EBTC</option>
+              </select>
+              <span class="tri"></span>
             </template>
           </div>
-          <div class="photo-ext" v-if='isLoad'>
-            <div class="pull-right">
-              <span class="delete" @click="deletePic">{{$t('delete')}}</span>
-              <span class="again">{{$t('upload_again')}}</span>
+          <!-- 电商产品不展示最低和最高额度 -->
+          <template v-if="type!=1">
+            <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
+            <div v-show="isShow">
+              <!-- 最低筹款金额 ，非必须 low  -->
+              <label>{{$t('low_amount')}}</label>
+              <p class="basic-group">
+                <input class="basic-input" type="number" v-model="modify.low" :placeholder="$t('low_amount_pl')">
+                <span class="target-token">{{modify.targetToken}}</span>
+              </p>
+              <!-- 最高筹款金额 ，非必须 high-->
+              <label>{{$t('high_amount')}}</label>
+              <p class="basic-group">
+                <input class="basic-input" type="number" v-model="modify.high" :placeholder="$t('high_amount_pl')">
+                <span class="target-token">{{modify.targetToken}}</span>
+              </p>
             </div>
-            <div class="blank"></div>
+          </template>
+          <!-- 筹款结束时间 endDate-->
+          <label>{{$t('end_date')}}</label>
+          <input class="basic-input" type="date" v-model="modify.endTime" :placeholder="$t('end_date_pl')" @change="timeToStamp">
+          <input name="endDate" class="hide" type="text" v-model="endTimeStamp" >
+          <div class="agree">
+            <input type="checkbox" v-model="checked">
+            <div>{{$t('agree')}}<a href="#rule" data-toggle="modal">《{{$t('mds_city_rule')}}》</a></div>
           </div>
-        </div>
-        <!-- 筹款金额 targetAmount-->
-        <label>{{$t('target_amount')}}</label>
-        <div class="basic-group">
-          <input name="targetAmount" class="basic-input" type="number" v-model="modify.amount" :placeholder="$t('target_amount_pl')">
-          <select name="" id="targetToken" @change="changeTargetToken">
-            <option value="EOS">EOS</option>
-            <option value="EMDS">EMDS</option>
-            <option value="EUSD">EUSD</option>
-            <option value="EETH">EETH</option>
-            <option value="EBTC">EBTC</option>
-          </select>
-          <span class="caret"></span>
-        </div>
-        <a @click="toggleShow" class="amount-set">{{$t('amount_setting')}}</a>
-        <div v-show="isShow">
-          <!-- 最低筹款金额 ，非必须 low  -->
-          <label>{{$t('low_amount')}}</label>
-          <p class="basic-group">
-            <input class="basic-input" type="number" v-model="modify.low" :placeholder="$t('low_amount_pl')">
-            <span class="target-token">{{modify.targetToken}}</span>
-          </p>
-          <!-- 最高筹款金额 ，非必须 high-->
-          <label>{{$t('high_amount')}}</label>
-          <p class="basic-group">
-            <input class="basic-input" type="number" v-model="modify.high" :placeholder="$t('high_amount_pl')">
-            <span class="target-token">{{modify.targetToken}}</span>
-          </p>
-        </div>
-        <!-- 筹款结束时间 endDate-->
-        <label>{{$t('end_date')}}</label>
-        <input class="basic-input" type="date" v-model="modify.endTime" :placeholder="$t('end_date_pl')" @change="timeToStamp">
-        <input name="endDate" class="hide" type="text" v-model="endTimeStamp" >
-        <div class="agree">
-          <input type="checkbox" v-model="checked">
-          <div>{{$t('fundraising_rules')}}</div>
-        </div>
-        <a class="start" @click="nextStep">{{$t('next_step')}}</a>
-      </form>
+          <a class="confirm" @click="nextStep">{{$t('next_step')}}</a>
+        </form>
+      </div>
     </div>
   </div>
   <!-- Modal -->
-  <div class="modal" id="myModal">
+  <div class="modal" id="successModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content text-center">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
         <img src="static/img/icon/web_icon_success.png" width="92">
         <h4 class="modal-title">{{$t('modify_success')}}</h4>
-        <p>{{$t('modify_success_tip')}}</p>
+        <p class="info">{{$t('modify_success_tip')}}</p>
         <router-link to="/" data-dismiss="modal" class="modal-close">{{$t('confirm')}}</router-link>
       </div>
     </div>
   </div>
-  <alert-modal :info='alertInfo' :title='alertTitle'></alert-modal>
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <div class="modal" id="rule">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <div class="platform_rules" v-html="$t('platform_rules')"></div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="gear_des">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{{$t('what_is_gear')}}</h4>
+        <p>{{$t('gear_des')}}</p>
+        <p class="example">{{$t('example')}}:</p>
+        <ul class="example-list">
+          <li>
+            <img src="static/img/icon/example.png" width="64">
+            <div class="exam-info">
+              <h5>1 EOS/ 1 kg</h5>
+              <p>{{$t('example_title')}}</p>
+            </div>
+          </li>
+          <li>
+            <img src="static/img/icon/example.png" width="64">
+            <div class="exam-info">
+              <h5>2 EOS/ 2.5 kg</h5>
+              <p>{{$t('example_title')}}</p>
+            </div>
+          </li>
+          <li>
+            <img src="static/img/icon/example.png" width="64">
+            <div class="exam-info">
+              <h5>3 EOS/ 4 kg</h5>
+              <p>{{$t('example_title')}}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <alert-modal :info='alertInfo'></alert-modal>
+  <mds-toast :toastInfo='toastInfo' :isWarn="isWarn" @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -113,11 +188,12 @@ export default {
   props: ['eosID'],
   data() {
     return {
+      type: '',
       url: '/apiCrowdfunding/modify',
       modifyUrl: '/apiCrowdfunding/getInfo?eosID=',
       alertInfo: '',
-      alertTitle: '',
       toastInfo: '',
+      isWarn: false,
       checked: false, //是否同意规则
       isLoad: false, //是否上传封面图片
       isFocus: false, //富文本是否填写内容
@@ -140,7 +216,9 @@ export default {
         title: "", //【 项目名称 】
         low: 0, //【 最低筹款金额 ，非必须 】
         high: 0 //【 最高筹款金额 ，非必须 】
-      }
+      },
+      gearList: [], //档位
+      isNull: false
     }
   },
   mounted() {
@@ -180,7 +258,6 @@ export default {
     editor.customConfig.onchange = function (html) {
       that.isFocus = true
       that.modify.des = html.replace(/<div class="story_pl">&\s*\S*&<\/div>/g, '')
-      that.desHash = sha.sha256(that.modify.des)
     }
     editor.create()
 
@@ -188,17 +265,26 @@ export default {
     this.$http.get(this.globalData.domain + this.modifyUrl + this.eosID).then((res) => {
       if (res.data.success) {
         this.modify = res.data.data
+        this.type = this.modify.type
+        if (this.type == 1) {
+          this.gearList = JSON.parse(this.modify.json)
+          this.gearList.map((item) => {
+            item.money = item.money / Math.pow(10, item.targetTokenDecimal)
+          })
+        }
+
         if (this.modify.photos) {
           this.isLoad = true
         }
         if (this.modify.des) {
           editor.txt.html(this.modify.des)
-          this.desHash = sha.sha256(this.modify.des)
         }
         if (this.modify.endTime) {
           this.modify.endTime = res.data.data.endTime.slice(0, 10)
           this.timeToStamp()
         }
+      } else {
+        this.isNull = true
       }
     }, (err) => {
       console.log(err)
@@ -209,7 +295,12 @@ export default {
       this.toastInfo = val
     },
     nextStep() {
-      const that = this
+      this.isWarn = true
+      // 先做base64加密
+      let Base64 = require('js-base64').Base64
+      this.modify.des = Base64.encode(this.modify.des)
+      // 再做sha256加密
+      this.desHash = sha.sha256(this.modify.des)
 
       // 判断是否登录
       user.getAccount().then((res) => {
@@ -221,38 +312,50 @@ export default {
 
         // 表单匹配
         if (!this.modify.title) {
-          this.alertInfo = this.$t('form_match_title')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_title')
           return false
         }
         if (!this.modify.des) {
-          this.alertInfo = this.$t('form_match_des')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_des')
           return false
         }
         if (!this.modify.photos) {
-          this.alertInfo = this.$t('form_match_photos')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_photos')
           return false
         }
+        // 电商类项目
+        if (this.type == 1) {
+          let isGearListFalse = false
+          this.gearList.some((item, index) => {
+            if (item.money - 0 <= 0) {
+              isGearListFalse = true
+              this.toastInfo = this.$t('form_gear_money')
+              return true
+            }
+            if (item.unitNum - 0 <= 0) {
+              isGearListFalse = true
+              this.toastInfo = this.$t('form_gear_unitNum')
+              return true
+            }
+          })
+          if (isGearListFalse) {
+            return false
+          }
+        }
         if (this.modify.amount == 0) {
-          this.alertInfo = this.$t('form_match_amount')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_amount')
           return false
         }
         if (this.modify.amount < 0) {
-          this.alertInfo = this.$t('form_match_no_negative')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_no_negative')
           return false
         }
         if (this.modify.low < 0) {
-          this.alertInfo = this.$t('form_match_no_negative')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_no_negative')
           return false
         }
         if (this.modify.high < 0) {
-          this.alertInfo = this.$t('form_match_no_negative')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_no_negative')
           return false
         }
         if (this.modify.low == 0) {
@@ -262,29 +365,37 @@ export default {
           this.modify.high = this.modify.amount;
         }
         if (this.modify.low - 0 > this.modify.high - 0) {
-          this.alertInfo = this.$t('form_match_low')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_low')
           return false
         }
         if (this.modify.high - 0 > this.modify.amount - 0) {
-          this.alertInfo = this.$t('form_match_high')
-          $('#alert').modal('show')
-          return false
+          this.modify.high = this.modify.amount
         }
         if (!this.modify.endTime) {
-          this.alertInfo = this.$t('form_match_endTime')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('form_match_endTime')
           return false
         }
         if (!this.checked) {
-          this.alertInfo = this.$t('agree_terms')
-          $('#alert').modal('show')
+          this.toastInfo = this.$t('agree_terms')
           return false
         }
+
         // 生成表单数据
         const formData = new FormData(this.$refs.form);
         formData.append("low", this.modify.low)
         formData.append("high", this.modify.high)
+        formData.append("type", this.type)
+        formData.append("des", this.modify.des)
+        formData.append("desHash", this.desHash)
+
+        if (this.type == 1) {
+          // 档位信息
+          let gearJson = JSON.parse(JSON.stringify(this.gearList))
+          gearJson.map((item) => {
+            item.money = item.money * Math.pow(10, item.targetTokenDecimal)
+          })
+          formData.append("json", JSON.stringify(gearJson))
+        }
 
         // 去除空文件元素
         try {
@@ -297,95 +408,69 @@ export default {
 
         const eos = user.getEos()
 
-        console.log({
-          "initiator": that.modify.creator, // 项目发起人
-          "id": that.modify.eosID,
-          "name": that.modify.title, // 项目名称
-          "item_digest": that.desHash, //that.modify.desHash, // 项目简介sha256 后的值 64 位
-          "receiver": that.modify.targetAccount, // 收款人
-          "min_fund": {
-            amount: parseFloat(that.modify.low).toFixed(that.modify.targetTokenDecimal),
-            precision: that.modify.targetTokenDecimal,
-            symbol: that.modify.targetToken,
-            contract: that.modify.targetTokenContract
-          },
-          "max_fund": {
-            amount: parseFloat(that.modify.high).toFixed(that.modify.targetTokenDecimal),
-            precision: that.modify.targetTokenDecimal,
-            symbol: that.modify.targetToken,
-            contract: that.modify.targetTokenContract
-          },
-          "target_fund": {
-            amount: parseFloat(that.modify.amount).toFixed(that.modify.targetTokenDecimal),
-            precision: that.modify.targetTokenDecimal,
-            symbol: that.modify.targetToken,
-            contract: that.modify.targetTokenContract
-
-          },
-          "deadline": that.endTimeStamp // 结束时间 时间戳(s)
-        })
-
         // 创建项目提交到链上
         eos.transaction({
           actions: [{
-            account: that.globalData.contract, // 合约名
+            account: this.globalData.contract, // 合约名
             name: 'modify', // 合约方法
             authorization: [{
-              actor: that.modify.creator, // 登录当前账户
-              permission: 'active'
+              actor: this.modify.creator, // 登录当前账户
+              permission: res.authority
             }],
             data: {
-              "initiator": that.modify.creator, // 项目发起人
-              "id": that.modify.eosID,
-              "name": that.modify.title, // 项目名称
-              "item_digest": that.desHash, //that.modify.desHash, // 项目简介sha256 后的值 64 位
-              "receiver": that.modify.targetAccount, // 收款人
+              "initiator": this.modify.creator, // 项目发起人
+              "id": this.modify.eosID,
+              "name": this.modify.title, // 项目名称
+              "item_digest": this.desHash, //this.desHash, // 项目简介sha256 后的值 64 位
+              "receiver": this.modify.targetAccount, // 收款人
               "min_fund": {
-                amount: parseFloat(that.modify.low).toFixed(that.modify.targetTokenDecimal),
-                precision: that.modify.targetTokenDecimal,
-                symbol: that.modify.targetToken,
-                contract: that.modify.targetTokenContract
+                amount: parseFloat(this.modify.low).toFixed(this.modify.targetTokenDecimal),
+                precision: this.modify.targetTokenDecimal,
+                symbol: this.modify.targetToken,
+                contract: this.modify.targetTokenContract
               },
               "max_fund": {
-                amount: parseFloat(that.modify.high).toFixed(that.modify.targetTokenDecimal),
-                precision: that.modify.targetTokenDecimal,
-                symbol: that.modify.targetToken,
-                contract: that.modify.targetTokenContract
+                amount: parseFloat(this.modify.high).toFixed(this.modify.targetTokenDecimal),
+                precision: this.modify.targetTokenDecimal,
+                symbol: this.modify.targetToken,
+                contract: this.modify.targetTokenContract
               },
               "target_fund": {
-                amount: parseFloat(that.modify.amount).toFixed(that.modify.targetTokenDecimal),
-                precision: that.modify.targetTokenDecimal,
-                symbol: that.modify.targetToken,
-                contract: that.modify.targetTokenContract
+                amount: parseFloat(this.modify.amount).toFixed(this.modify.targetTokenDecimal),
+                precision: this.modify.targetTokenDecimal,
+                symbol: this.modify.targetToken,
+                contract: this.modify.targetTokenContract
 
               },
-              "deadline": that.endTimeStamp // 结束时间 时间戳(s)
+              "deadline": this.endTimeStamp // 结束时间 时间戳(s)
             }
           }]
         }).then(
           result => {
             // 成功，调用我们的接口
-            that.$http.post(that.globalData.domain + that.url, formData, {
+            this.$http.post(this.globalData.domain + this.url, formData, {
               cache: false,
               processData: false,
               contentType: false
             }).then(res => {
               if (res.data.success) {
-                $('#myModal').modal('show')
+                $('#successModal').modal('show')
               } else {
-                that.alertInfo = res.data.message
+                this.alertInfo = res.data.message
                 $('#alert').modal('show')
               }
-            }, error => {
-              console.info(error)
+            }, () => {
+              // 失败
+              this.alertInfo = this.$t('modify_error')
+              $('#alert').modal('show')
             })
           }
-        ).catch(
-          error => {
-            // 失败
-            console.log(error)
-          }
-        )
+        ).catch(error => {
+          // 失败
+          console.log(error)
+          this.alertInfo = this.$t('modify_error')
+          $('#alert').modal('show')
+        })
       }, () => {
         // 未安装 scatter 或 登录失败
         this.toastInfo = this.$t('connect_scatter')
@@ -427,6 +512,44 @@ export default {
           this.modify.targetTokenContract = 'bitpietokens'
           break;
       }
+    },
+    changeUnit(event) {
+      this.gearList.map((item) => {
+        item.unit = event.target.value
+      })
+    },
+    addGear() {
+      if (this.gearList.length < 3) {
+        this.gearList.push({
+          targetToken: this.gearList[0].targetToken, // token
+          targetTokenContract: this.gearList[0].targetTokenContract, // 合约地址
+          targetTokenDecimal: this.gearList[0].targetTokenDecimal, // 合约小数
+          money: '', // 金额整形
+          unitNum: '', // 单位数量
+          unit: this.gearList[0].unit, // 单位
+          level: this.gearList.length + 1 // 档位
+        })
+      } else if (this.gearList.length == 0) {
+        this.gearList.push({
+          targetToken: 'EUSD', // token
+          targetTokenContract: 'bitpietokens', // 合约地址
+          targetTokenDecimal: 8, // 合约小数
+          money: '', // 金额整形
+          unitNum: '', // 单位数量
+          unit: 'kg', // 单位
+          level: 1 // 档位
+        })
+      } else {
+        this.isWarn = true
+        this.toastInfo = this.$t('continue_add_toast')
+        return false
+      }
+    },
+    deleteGear(index) {
+      this.gearList.splice(index, 1)
+      this.gearList.map((item, index) => {
+        item.level = index + 1
+      })
     }
   },
   components: {
@@ -437,134 +560,5 @@ export default {
 </script>
 
 <style scoped>
-.basic {
-  margin-top: 32px;
-  margin-bottom: 34px;
-  background: #fff;
-  padding: 32px;
-}
-
-.basic-form {
-  padding: 32px 0;
-}
-
-.photo-container {
-  border: 1px solid #e7ecf0;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-}
-
-.basic-form .photo {
-  text-align: center;
-  padding: 48px 16px;
-  color: #2c363f;
-  height: 240px;
-}
-
-.photo input {
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-}
-
-.photo h5 {
-  font-family: Gotham-Medium;
-  font-size: 14px;
-  line-height: 1.43;
-  margin: 16px 0 8px;
-}
-
-.photo-ext {
-  border-top: 1px solid #e7ecf0;
-}
-
-.photo-ext .blank {
-  overflow: hidden;
-  position: relative;
-  z-index: 100;
-  height: 52px;
-}
-
-.photo-ext .delete {
-  color: #f44336;
-  display: inline-block;
-  cursor: pointer;
-  position: relative;
-  z-index: 100;
-  padding: 16px;
-}
-
-.photo-ext .again {
-  color: #2196f3;
-  display: inline-block;
-  cursor: pointer;
-  padding: 16px;
-}
-
-.amount-set {
-  display: block;
-  text-align: right;
-  color: #2196f3 !important;
-  margin-top: 8px;
-}
-
-.sel {
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.agree {
-  padding: 32px 0 66px;
-  position: relative;
-}
-
-.agree input[type='checkbox'] {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  z-index: 10;
-}
-
-.agree div {
-  padding-left: 30px;
-  background: url('../../static/img/icon/web_icon_agreement_no.png')no-repeat left center/18px;
-}
-
-.agree input:checked+div {
-  background: url('../../static/img/icon/web_icon_agreement_yes.png')no-repeat left center/18px;
-}
-
-.modal-content p {
-  font-family: Gotham-Medium;
-  color: #607d8b;
-  font-size: 16px;
-  margin: 8px 0 196px;
-}
-
-@media (max-width: 768px) {
-  .basic {
-    padding: 24px 16px 32px;
-  }
-
-  .basic-form {
-    padding: 0;
-  }
-
-  .basic-group:last-of-type .basic-input {
-    margin-top: 16px;
-  }
-
-  .modal-content p {
-    margin-bottom: 100px;
-  }
-}
+@import '../../static/css/basicForm.css'
 </style>

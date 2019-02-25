@@ -23,7 +23,7 @@
   <contact></contact>
   <foot></foot>
   <loading v-if="!isLoaded"></loading>
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <mds-toast :toastInfo='toastInfo' :isWarn='isWarn' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -42,7 +42,8 @@ export default {
       transferUrl: '/apiEos/getCrowdfundingTransfer?account=',
       programs: [],
       isLoaded: false,
-      toastInfo: ''
+      toastInfo: '',
+      isWarn: true
     }
   },
   mounted() {
@@ -69,7 +70,7 @@ export default {
         $('#login').modal('hide')
         $(".login").hide()
         $(".personal").show()
-        this.$router.push('/projectCreate')
+        this.$router.push('/projectStep')
       }, () => {
         // 未安装 scatter 或 登录失败
         this.toastInfo = this.$t('connect_scatter')

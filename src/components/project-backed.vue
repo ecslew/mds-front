@@ -1,11 +1,11 @@
 <template>
-<div class='project-backed'>
+<div class='project-backed project-container'>
   <div class="container">
     <div class="row">
       <div class="col-sm-10 col-sm-offset-1">
         <h4 class="title">{{$t('support_projects')}}</h4>
-        <div class="subtitle">{{$t('support_projects_subtitle')}}</div>
-        <div class="started">{{$t("started")}}</div>
+        <!-- <div class="subtitle">{{$t('support_projects_subtitle')}}</div>
+        <div class="started">{{$t("started")}}</div> -->
         <template v-if="programs.length>0">
           <div class="list" v-for="item in programs" :key="item.id">
             <myproject-list :isBacked="isBacked" :id="item.eosID" :title="item.title" :time="item.releaseTime"></myproject-list>
@@ -16,7 +16,7 @@
     </div>
   </div>
   <loading v-if="!isLoaded"></loading>
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <mds-toast :toastInfo='toastInfo' :isWarn='isWarn' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -33,7 +33,8 @@ export default {
       currentAccount: '',
       programs: [],
       isLoaded: false,
-      toastInfo: ''
+      toastInfo: '',
+      isWarn: false
     }
   },
   mounted() {
@@ -65,6 +66,7 @@ export default {
         }, 'json')
       }, () => {
         // 未安装 scatter 或 登录失败
+        this.isWarn = true
         this.toastInfo = this.$t('connect_scatter')
       })
     }
@@ -79,41 +81,12 @@ export default {
 </script>
 
 <style scoped>
-.project-backed {
-  padding: 32px 0;
+.title{
+  margin-bottom: 64px;
 }
-
-.project-backed .container {
-  background: #fff;
-  padding: 40px 15px 80px;
-  border-radius: 4px;
-}
-
-.started {
-  font-size: 16px;
-  font-family: Gotham-Medium;
-  padding: 64px 0 8px;
-  border-bottom: 1px solid #e7ecf0;
-  margin-bottom: 36px;
-}
-
-.list {
-  padding: 12px 0;
-}
-
-@media (max-width: 767px) {
-  .project-backed {
-    padding: 16px;
+@media(max-width: 768px){
+  .title{
+    margin-bottom: 32px;
   }
-
-  .started {
-    padding-top: 32px;
-    margin: 8px;
-  }
-
-  .list {
-    padding: 8px 0;
-  }
-
 }
 </style>

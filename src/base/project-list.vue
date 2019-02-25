@@ -36,18 +36,19 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
 
 .info {
   padding: 24px 16px;
-  color: #2c363f;
+  color: var(--darkColor);
 }
 
 .info h4 {
   font-size: 20px;
   font-weight: 400;
-  height: 116px;
-  padding-bottom: 32px;
+  height: 4.2em;
+  margin-bottom: 32px;
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -59,12 +60,13 @@ export default {
 .info .complete {
   font-weight: 600;
   font-family: Gotham-Medium;
+  font-weight: 500;
   font-size: 16px;
   padding: 8px 0 48px;
 }
 
 .info .time {
-  color: #607d8b;
+  color: var(--blueGrey);
 }
 
 @media (max-width: 767px) {

@@ -2,7 +2,7 @@
 <div id="app">
   <mds-nav></mds-nav>
   <router-view />
-  <mds-toast :toastInfo='toastInfo' @toast="infoByToast"></mds-toast>
+  <mds-toast :toastInfo='toastInfo' :isWarn='isWarn' @toast="infoByToast"></mds-toast>
 </div>
 </template>
 
@@ -14,13 +14,17 @@ export default {
   name: 'App',
   data() {
     return {
-      toastInfo: ''
+      toastInfo: '',
+      isWarn: true
     }
   },
   mounted() {
-    if (window.location.hash != '#/about') {
-      this.loginByScatter()
-    }
+    this.$router.afterEach((to, from) => {
+      if (to.path != '/about' && to.path != '/myProject' && to.path != '/projectBacked' && to.path != '/address' && to.path != '/projectPurchase') {
+        this.loginByScatter()
+      }
+      window.scrollTo(0, 0)
+    })
   },
   methods: {
     infoByToast: function (val) {
@@ -28,9 +32,6 @@ export default {
     },
     loginByScatter() {
       user.getAccount().then((res) => {
-        if (this.$route.path == '/myProject' || this.$route.path == '/projectBacked') {
-          this.$router.go(0)
-        }
         $(".currentAccount").html(res.name)
         $('#login').modal('hide')
         $(".login").hide()

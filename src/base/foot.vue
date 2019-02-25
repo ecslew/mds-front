@@ -58,7 +58,7 @@
           <div class="code-tip">{{$t('join_group')}}</div>
         </div>
       </div>
-      <div class="center-align copyright">© 2017 MediShares Foundation Ltd. All rights reserved. <a style="color:#607d8b;text-decoration: underline;" href="http://medishares.oss-cn-hongkong.aliyuncs.com/media/MDS_media_kit.zip">Download Media Kit</a></div>
+      <div class="center-align copyright">© 2017 MediShares Foundation Ltd. All rights reserved. <a style="color:var(--blueGrey);text-decoration: underline;" href="http://medishares.oss-cn-hongkong.aliyuncs.com/media/MDS_media_kit.zip">Download Media Kit</a></div>
     </div>
 </footer>
 </template>
@@ -83,7 +83,7 @@ export default {
 
 <style scoped>
 footer {
-  background-color: #2c363f;
+  background-color: var(--darkColor);
   padding: 120px 0 48px;
 }
 
@@ -137,17 +137,19 @@ footer .contact-icon>img {
 
 footer .contact-icon+span {
   font-family: Gotham-Medium;
+  font-weight: 500;
   font-size: 16px;
   line-height: 1.25;
-  color: #607d8b;
+  color: var(--blueGrey);
   vertical-align: middle;
 }
 
 .code-tip {
   font-family: Gotham-Medium;
+  font-weight: 500;
   font-size: 12px;
   line-height: 1.33;
-  color: #607d8b;
+  color: var(--blueGrey);
   margin-top: 24px;
   white-space: nowrap;
 }
@@ -155,7 +157,7 @@ footer .contact-icon+span {
 .copyright {
   font-size: 14px;
   line-height: 1.43;
-  color: #607d8b;
+  color: var(--blueGrey);
   text-align: center;
 }
 
