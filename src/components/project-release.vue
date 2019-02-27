@@ -103,6 +103,9 @@
           <label>{{$t('end_date')}}</label>
           <input class="basic-input" type="date" v-model="addData.endTime" :placeholder="$t('end_date_pl')" @change="dateToStamp">
           <input name="endDate" class="hide" type="text" v-model="addData.endTimeStamp" >
+          <!-- 反馈通知 email-->
+          <label>{{$t('project_email')}}</label>
+          <input name="email" type="email" class="basic-input" v-model="addData.email" :placeholder="$t('project_email_pl')">
           <div class="agree">
             <input type="checkbox" v-model="checked">
             <div>{{$t('agree')}}<a href="#rule" data-toggle="modal">《{{$t('mds_city_rule')}}》</a></div>
