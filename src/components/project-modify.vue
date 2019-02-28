@@ -110,6 +110,9 @@
           <label>{{$t('end_date')}}</label>
           <input class="basic-input" type="date" v-model="modify.endTime" :placeholder="$t('end_date_pl')" @change="timeToStamp">
           <input name="endDate" class="hide" type="text" v-model="endTimeStamp" >
+          <!-- 反馈通知 email-->
+          <label>{{$t('project_email')}}</label>
+          <input name="email" type="email" class="basic-input" v-model="modify.email" :placeholder="$t('project_email_pl')">
           <div class="agree">
             <input type="checkbox" v-model="checked">
             <div>{{$t('agree')}}<a href="#rule" data-toggle="modal">《{{$t('mds_city_rule')}}》</a></div>
@@ -215,7 +218,8 @@ export default {
         targetTokenDecimal: 4,
         title: "", //【 项目名称 】
         low: 0, //【 最低筹款金额 ，非必须 】
-        high: 0 //【 最高筹款金额 ，非必须 】
+        high: 0, //【 最高筹款金额 ，非必须 】
+        email: '', // 【 email 】
       },
       gearList: [], //档位
       isNull: false
