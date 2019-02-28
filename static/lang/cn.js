@@ -292,4 +292,15 @@ module.exports = {
   platform_rules: "<h4 style='text-align:center;font-family: Gotham-Medium;margin:10px 0'>MDS CITY 平台规则</h4><h5 style='font-family: Gotham-Medium;margin:10px 0'>标题：</h5><p>标题当中是否有错别字、不完整、多字、不通顺等内容，会让你退回进行修改，符合基本的语言的规范，标题中不能带有三俗等不合规内容。（例如：赌博、韭菜、博彩等敏感词汇）</p><h5 style='font-family: Gotham-Medium;margin:10px 0'>项目简介：</h5><p>正文的格式，文章的排版清晰度、图文的合理搭配、无标点、文章的重复度、正文内容的缺失，项目内容是否为平台已有项目内容、正文内容的字数统计（这些都是低质内容的判断依据）不能冒用平台，或者他人的名义。</p><p>内容中不能带有链接元素或其他涉嫌广告推广、宣传等属性的内容。</p><h5 style='font-family: Gotham-Medium;margin:10px 0'>图片：</h5><p>请尽量上传符合您项目描述内容的图片。禁止上传三俗等不合规图片。</p><h5 style='font-family: Gotham-Medium;margin:10px 0'>推荐机制：</h5><p>是否存在相同相似内容，高度相似的不允推荐；平台欢迎优质的项目加入，并会给出相应的优先推荐展示激励。</p><h5 style='font-family: Gotham-Medium;margin:10px 0'>优先推荐的项目分类：</h5><p>区块链电商、普惠公益、相互保障</p><h5 style='font-family: Gotham-Medium;margin:10px 0'>声明：</h5><p>MDS CITY仅提供基础的技术支持。平台本身不会参与任何在平台上架的项目，且不会对项目进行任何形式的背书。</p>",
   project_email: "邮箱地址",
   project_email_pl: "请填写您的邮箱地址",
+  cross_chain_title: "MDS-EMDS Across the chain",
+  cross_chain_slogan: "Moving MDS across the blockchain USES this cross-chain bridge to convert MDS between blockchains into any token in the EMDS network",
+  cross_chain_from: "From",
+  cross_chain_to: "To",
+  cross_chain_amount: "MDS AMOUNT",
+  cross_chain_low: "最低金额",
+  receive_address: "RECEIVING ADDRESS",
+  cross_chain_account: "Your MDS account name",
+  cross_chain_assets: "Number of assets input",
+  cross_chain_error_tip: "You can not transfer a MDS amount that is lower than the minimum amount per transaction. Minimum Amount: ",
+  transfer_max_limit: "单次兑换数量不能超过1000"
 }
