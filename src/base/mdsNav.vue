@@ -1,5 +1,5 @@
 <template>
-<div :class="[{ishome:isHome},'mds-nav']">
+<div :class="[{ishome:isHome},{iscross:isCross},'mds-nav']">
   <nav class="header-nav">
     <div class="container">
       <div class="navbar-header">
@@ -84,7 +84,8 @@ export default {
   name: 'mdsNav',
   data() {
     return {
-      isHome: false
+      isHome: false,
+      isCross: false
     }
   },
   mounted() {
@@ -99,8 +100,12 @@ export default {
     isHomePage() {
       if (this.$route.path == '/' || this.$route.path == '/about') {
         this.isHome = true
+      } else if (to.path == '/crossChain') {
+        this.isHome = false
+        this.isCross = true
       } else {
         this.isHome = false
+        this.isCross = false
       }
     },
     changeLang(event) {
@@ -138,10 +143,14 @@ export default {
   },
   watch: {
     $route(to, from) {
-      if (to.path == '/' || to.path == '/about') {
+      if (this.$route.path == '/' || this.$route.path == '/about') {
         this.isHome = true
+      } else if (to.path == '/crossChain') {
+        this.isHome = false
+        this.isCross = true
       } else {
         this.isHome = false
+        this.isCross = false
       }
       if (to.path == '/about') {
         $(".login").hide()
@@ -186,10 +195,16 @@ export default {
   box-shadow: none;
   position: absolute;
 }
-
+.iscross .header-nav{
+  color: var(--darkColor);
+  background: #f6f6f6;
+  box-shadow: none;
+  position: absolute;
+}
 .ishome .scroll-nav {
   background: #020308;
   position: fixed;
+  color: #fff;
 }
 
 .header-nav a {
@@ -232,6 +247,7 @@ export default {
 .navbar-brand:after {
   display: none;
 }
+
 .header-nav a:hover,
 .header-nav a:focus,
 nav .open>a {
@@ -305,9 +321,10 @@ nav .open>a {
 }
 
 @media (max-width: 767px) {
-  .navbar-nav{
+  .navbar-nav {
     min-height: calc(100vh - 85px);
   }
+
   #mds-nav {
     background: #fff;
     position: fixed;
@@ -341,13 +358,16 @@ nav .open>a {
     left: auto;
     right: -45px;
   }
-  .header-nav .lang .dropdown-menu{
+
+  .header-nav .lang .dropdown-menu {
     padding: 0;
   }
+
   .personal a {
     padding: 15px;
   }
-  .ishome .lang .tri{
+
+  .ishome .lang .tri {
     background: url('../../static/img/icon/tri.png')no-repeat center/contain;
   }
 }

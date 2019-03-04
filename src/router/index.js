@@ -87,6 +87,11 @@ export default new Router({
       path: '/supportList',
       name: 'supportList',
       component: resolve => require(['@/components/support-list'], resolve)
+    },
+    //MDS->EMDS跨链
+    {
+      path: '/crossChain',
+      component: resolve => require(['@/components/cross-chain'], resolve)
     }
   ]
 })

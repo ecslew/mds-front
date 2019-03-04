@@ -219,7 +219,7 @@ export default {
         title: "", //【 项目名称 】
         low: 0, //【 最低筹款金额 ，非必须 】
         high: 0, //【 最高筹款金额 ，非必须 】
-        email: '', // 【 email 】
+        email: '' // 【 email 】
       },
       gearList: [], //档位
       isNull: false
