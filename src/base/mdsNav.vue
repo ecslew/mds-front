@@ -41,6 +41,7 @@
             <router-link to="/about">{{$t("about")}}</router-link>
           </li>
           <li @click="removeWh100"><a :href="$t('news_link')" target="_blank">{{$t("news")}}</a></li>
+          <li @click="removeWh100"><router-link to="/crossChain">{{$t("cross_chain_exchange")}}</router-link></li>
           <li @click="removeWh100"><a :href="$t('mathwallet_link')" target="_blank">{{$t("MathWallet")}}</a></li>
           <div class="dropdown lang">
             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button">{{$t("lang")}}<span class="tri"></span></a>
@@ -100,6 +101,7 @@ export default {
     isHomePage() {
       if (this.$route.path == '/' || this.$route.path == '/about') {
         this.isHome = true
+        this.isCross = false
       } else if (to.path == '/crossChain') {
         this.isHome = false
         this.isCross = true
@@ -145,6 +147,7 @@ export default {
     $route(to, from) {
       if (this.$route.path == '/' || this.$route.path == '/about') {
         this.isHome = true
+        this.isCross = false
       } else if (to.path == '/crossChain') {
         this.isHome = false
         this.isCross = true
