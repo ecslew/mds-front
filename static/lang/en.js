@@ -296,11 +296,11 @@ module.exports = {
   cross_chain_slogan: "Moving MDS across the blockchain USES this cross-chain bridge to convert MDS between blockchains into any token in the EMDS network",
   cross_chain_from: "From",
   cross_chain_to: "To",
-  cross_chain_amount: "MDS AMOUNT",
-  cross_chain_low: "最低金额",
+  cross_chain_low: "Minimum amount",
   receive_address: "RECEIVING ADDRESS",
-  cross_chain_account: "Your MDS account name",
+  cross_chain_account: "Your receiving address",
   cross_chain_assets: "Number of assets input",
-  cross_chain_error_tip: "You can not transfer a MDS amount that is lower than the minimum amount per transaction. Minimum Amount: ",
-  transfer_max_limit: "单次兑换数量不能超过1000"
+  cross_chain_error_tip1: "You can not transfer a",
+  cross_chain_error_tip2: "amount that is lower than the minimum amount per transaction.Minimum Amount: ",
+  transfer_max_limit: "The number of single exchanges cannot exceed 1000"
 }

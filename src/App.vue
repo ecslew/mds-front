@@ -20,7 +20,7 @@ export default {
   },
   mounted() {
     this.$router.afterEach((to, from) => {
-      if (to.path != '/about' && to.path != '/myProject' && to.path != '/projectBacked' && to.path != '/address' && to.path != '/projectPurchase') {
+      if (to.path != '/about' && to.path != '/myProject' && to.path != '/projectBacked' && to.path != '/address' && to.path != '/projectPurchase' && to.path != '/crossChain') {
         this.loginByScatter()
       }
       window.scrollTo(0, 0)
