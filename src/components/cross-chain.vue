@@ -2,40 +2,37 @@
 <div>
   <div class="cross-chian">
     <div class="container">
-      <div class="title">{{$t('cross_chain_title')}}</div>
+      <div class="title uppercase">{{$t('cross_chain_title')}}</div>
       <div class="slogan">{{$t('cross_chain_slogan')}}</div>
       <form>
         <div class="row">
           <div class="col-xs-5">
             <label>{{$t('cross_chain_from')}}</label>
             <div class="basic-group">
-              <input class="basic-input" type="number" v-model="from_assets" :placeholder="$t('cross_chain_assets')">
-              <span class="target-token">MDS</span>
+              <!-- FROM -->
+              <input class="basic-input" type="number" v-model="from.assets" :placeholder="$t('cross_chain_assets')" @input="changeAmount">
+              <span class="target-token">{{from.name}}</span>
             </div>
           </div>
-          <div class="col-xs-2 trans"><img src="static/img/crossChain/zhuanhuan.png"></div>
+          <div class="col-xs-2 trans" @click="switchFunc"><img src="static/img/crossChain/zhuanhuan.png"></div>
             <div class="col-xs-5">
               <label>{{$t('cross_chain_to')}}</label>
               <div class="basic-group">
-                <input class="basic-input" type="number" v-model="to_assets" :placeholder="$t('cross_chain_assets')">
-                <select id="targetToken" @change="changeTargetToken">
-                <option value="EMDS">EMDS</option>
-                <option value="EUSD">EUSD</option>
-                <option value="EETH">EETH</option>
-                <option value="EBTC">EBTC</option>
-              </select>
-                <span class="tri"></span>
+                <!-- TO -->
+                <input class="basic-input" type="number" v-model="to.assets" :placeholder="$t('cross_chain_assets')">
+                <span class="target-token">{{to.name}}</span>
               </div>
             </div>
           </div>
-          <div class="low-amount"><span>{{$t('cross_chain_low')}}</span>：{{low_amount}} MDS</div>
-          <label>{{$t('cross_chain_amount')}}</label>
+          <div class="low-amount"><span>{{$t('cross_chain_low')}}</span>：{{low_amount}} {{from.name}}</div>
+          <!-- <label>{{from.name}} {{$t('amount')}}</label>
           <div class="basic-group">
             <input class="basic-input" type="text" :placeholder="$t('cross_chain_assets')" @change="changeTransferAmount" v-model="transfer_amount">
-            <span class="target-token">MDS</span>
-            <div class="error-tip" v-if="isError&&transfer_amount-0<low_amount">{{$t('cross_chain_error_tip')}}{{low_amount}} MDS</div>
-            <div class="equal" v-else>≈ {{parseFloat(equal_amount).toFixed(4)}} EMDS</div>
-          </div>
+            <span class="target-token">{{from.name}}</span>
+            <div class="error-tip" v-if="isError&&transfer_amount-0<low_amount">{{$t('cross_chain_error_tip1')}} {{from.name}} {{$t('cross_chain_error_tip1')}} {{low_amount}} {{from.name}}</div>
+            <div class="equal" v-else>≈ {{parseFloat(equal_amount).toFixed(4)}} {{to.name}}</div>
+          </div> -->
+          <!-- 接收地址 -->
           <label>{{$t('receive_address')}}</label>
           <input class="basic-input" type="text" :placeholder="$t('cross_chain_account')">
           <a class="confirm" @click="nextStep">{{$t('next_step')}}</a>
@@ -53,35 +50,45 @@ import mdsToast from '@/base/toast'
 export default {
   data() {
     return {
-      from_assets: '',
-      to_assets: '',
-      transfer_amount: '',
-      equal_amount: 0,
+      from: {
+        name: 'MDS',
+        assets: ''
+      },
+      to: {
+        name: 'EMDS',
+        assets: ''
+      },
       low_amount: 100,
-      isError: false,
       toastInfo: '',
       isWarn: true
+      // transfer_amount: '',
+      // equal_amount: 0,
+      // isError: false
     }
   },
   methods: {
     infoByToast(val) {
       this.toastInfo = val
     },
-    changeTargetToken(event) {
-      const target = event.target.value
-
+    changeAmount() {
+      this.to.assets = this.from.assets
     },
-    changeTransferAmount() {
-      this.isError = true
-      if (this.transfer_amount - 0 > 1000) {
-        this.toastInfo = this.$t('transfer_max_limit')
-        this.transfer_amount = 1000
-      }
-      this.equal_amount = this.transfer_amount
+    switchFunc() {
+      let place = this.from
+      this.from = this.to
+      this.to = place
     },
     nextStep() {
 
     }
+    // changeTransferAmount() {
+    //   this.isError = true
+    //   if (this.transfer_amount - 0 > 1000) {
+    //     this.toastInfo = this.$t('transfer_max_limit')
+    //     this.transfer_amount = 1000
+    //   }
+    //   this.equal_amount = this.transfer_amount
+    // }
   },
   components: {
     foot,
@@ -94,6 +101,11 @@ export default {
 .cross-chian {
   padding: 140px 0;
   background: url('../../static/img/crossChain/01.png')no-repeat 90% 10% /500px, url('../../static/img/crossChain/02.png')no-repeat -140px 115%/284px, url('../../static/img/crossChain/03.png')no-repeat 16% 33%/120px, linear-gradient(to bottom, #f6f6f6, #acbabf);
+}
+
+.uppercase,
+label {
+  text-transform: uppercase;
 }
 
 .slogan {
@@ -114,8 +126,7 @@ form {
 }
 
 .low-amount {
-  margin-top: 32px;
-  float: right;
+  margin: 10px 0;
   color: var(--light-grey-blue);
 }
 
@@ -127,10 +138,13 @@ form {
 .trans {
   text-align: center;
   padding-top: 58px;
+  cursor: pointer;
 }
-.trans img{
+
+.trans img {
   width: 64px;
 }
+
 .cross-chian .basic-input {
   background: transparent;
   border: 1px solid var(--light-grey-blue);
@@ -148,29 +162,37 @@ form {
   color: var(--orangeRed);
   margin-top: 8px;
 }
-@media(max-width: 768px){
-  .cross-chian{
+
+@media(max-width: 768px) {
+  .cross-chian {
     padding: 32px 0;
     background: url('../../static/img/crossChain/01.png')no-repeat 240px 0 /230px, url('../../static/img/crossChain/02.png')no-repeat -75px 110%/150px, url('../../static/img/crossChain/03.png')no-repeat -30px 125px/80px, linear-gradient(to bottom, #f6f6f6, #acbabf);
   }
-  .slogan{
+
+  .slogan {
     font-size: 12px;
+    padding: 10px 16px;
   }
-  form{
+
+  form {
     padding: 0 12px 32px;
     margin-top: 32px;
   }
-  .trans{
+
+  .trans {
     padding: 70px 0 0;
   }
-  .col-xs-5{
+
+  .col-xs-5 {
     padding-right: 0;
   }
-  .trans+.col-xs-5{
+
+  .trans+.col-xs-5 {
     padding-left: 0;
     padding-right: 15px;
   }
-  .trans img{
+
+  .trans img {
     width: 44px;
   }
 }
