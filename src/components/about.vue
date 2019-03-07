@@ -52,10 +52,10 @@
           <div>{{$t('mediShares_adv3')}}</div>
         </li>
         <li class="col-sm-4"><span class="mds-sup-icon"><img src="static/img/advantage/advantage_icon_4@2x.png"></span>
-          <div>{{$t('mediShares_adv1')}}</div>
+          <div>{{$t('mediShares_adv4')}}</div>
         </li>
         <li class="col-sm-4"><span class="mds-sup-icon"><img src="static/img/advantage/advantage_icon_5@2x.png"></span>
-          <div>{{$t('mediShares_adv4')}}</div>
+          <div>{{$t('mediShares_adv5')}}</div>
         </li>
       </ul>
     </div>
