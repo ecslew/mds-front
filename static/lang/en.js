@@ -297,11 +297,12 @@ module.exports = {
   cross_chain_slogan: "Use the Cross-chain DApp to convert MDS to EMDS between blockchains.",
   cross_chain_from: "From",
   cross_chain_to: "To",
-  cross_chain_low: "Minimum Amount",
+  cross_chain_range: "Input value should be",
   receive_address: "Receive Address",
   cross_chain_account: "Please enter the receiving address.",
   cross_chain_assets: "Please enter the asset ammount.",
   cross_chain_error_tip1: "You can not transfer a",
   cross_chain_error_tip2: "amount that is lower than the minimum amount per transaction.Minimum Amount: ",
-  transfer_max_limit: "Exchange amount cannot exceed 1000 each time."
+  transfer_max_limit: "Exchange amount cannot exceed 1000 each time.",
+  cross_fee: "Fee",
 }

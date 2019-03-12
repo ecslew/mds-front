@@ -13,6 +13,7 @@
               <input class="basic-input" type="number" v-model="from.assets" :placeholder="$t('cross_chain_assets')" @input="changeAmount">
               <span class="target-token">{{from.name}}</span>
             </div>
+            <div class="low-amount"><span>{{$t('cross_chain_range')}}</span> {{from.min}} ~ {{from.max}} {{from.name}}</div>
           </div>
           <div class="col-xs-2 trans" @click="switchFunc"><img src="static/img/crossChain/zhuanhuan.png"></div>
             <div class="col-xs-5">
@@ -22,77 +23,273 @@
                 <input class="basic-input" type="number" v-model="to.assets" :placeholder="$t('cross_chain_assets')">
                 <span class="target-token">{{to.name}}</span>
               </div>
+              <div class="low-amount"><span>{{$t('cross_fee')}}</span>：{{from.fee}} {{to.name}}</div>
             </div>
           </div>
-          <div class="low-amount"><span>{{$t('cross_chain_low')}}</span>：{{low_amount}} {{from.name}}</div>
-          <!-- <label>{{from.name}} {{$t('amount')}}</label>
-          <div class="basic-group">
-            <input class="basic-input" type="text" :placeholder="$t('cross_chain_assets')" @change="changeTransferAmount" v-model="transfer_amount">
-            <span class="target-token">{{from.name}}</span>
-            <div class="error-tip" v-if="isError&&transfer_amount-0<low_amount">{{$t('cross_chain_error_tip1')}} {{from.name}} {{$t('cross_chain_error_tip1')}} {{low_amount}} {{from.name}}</div>
-            <div class="equal" v-else>≈ {{parseFloat(equal_amount).toFixed(4)}} {{to.name}}</div>
-          </div> -->
-          <!-- 接收地址 -->
+          <!-- Address -->
           <label>{{$t('receive_address')}}</label>
-          <input class="basic-input" type="text" :placeholder="$t('cross_chain_account')">
+          <input class="basic-input" type="text" v-model="toAddress" :placeholder="$t('cross_chain_account')">
           <a class="confirm" @click="nextStep">{{$t('next_step')}}</a>
       </form>
     </div>
   </div>
   <foot></foot>
   <mds-toast :toastInfo='toastInfo' :isWarn="isWarn" @toast="infoByToast"></mds-toast>
+  <mds-alert :info='alertInfo'></mds-alert>
 </div>
 </template>
 
 <script>
 import foot from '@/base/foot'
 import mdsToast from '@/base/toast'
+import mdsAlert from '@/base/alert'
+import user from 'static/js/user'
+import Web3 from 'web3';
+
 export default {
   data() {
     return {
       from: {
         name: 'MDS',
-        assets: ''
+        min_amount: 100,
+        max_amount: 100,
+        fee: 0,
+        address: '',
+        assets: '',
+        decimal:1000000000000000000
       },
       to: {
         name: 'EMDS',
-        assets: ''
+        min_amount: 100,
+        max_amount: 100,
+        fee: 0,
+        address: '',
+        assets: '',
+        decimal:10000
       },
-      low_amount: 100,
+      account: '',
+      toAddress: '',
+      low_amount: 0,
       toastInfo: '',
-      isWarn: true
-      // transfer_amount: '',
-      // equal_amount: 0,
-      // isError: false
+      alertInfo:'',
+      isWarn: true,
+      initUrl: '/apiEmds/getInit',
+      createOrderUrl: '/apiEmds/createOrder',
+      finishOrderUrl: '/apiEmds/finishOrder',
     }
+  },
+  created(){
+
+    // const web3 = new Web3.providers.HttpProvider("https://mainnet.infura.io/I1bDSFCAZW1DvGWDKdLy")
+
+    web3 = new Web3(Web3.givenProvider);
+
+    web3.eth.getAccounts().then(res=>{
+      this.account = res[0];
+    });
+    this.getInit();
+  },
+  mounted(){
+
   },
   methods: {
     infoByToast(val) {
       this.toastInfo = val
     },
     changeAmount() {
-      this.to.assets = this.from.assets
+      this.to.assets = this.from.assets-this.from.fee > 0 ? this.from.assets-this.from.fee : 0;
     },
     switchFunc() {
       let place = this.from
       this.from = this.to
       this.to = place
+      this.from.assets = '';
+      this.to.assets = '';
+      this.toAddress = '';
+      if( this.from.name == 'MDS' ){
+        this.low_amount = this.from.min;
+      }else{
+        this.low_amount = this.from.min;
+      }
     },
     nextStep() {
 
+      if( this.from.assets-0 < this.from.min || this.from.assets-0 > this.from.max ){
+        this.toastInfo = 'Amount should between '+ this.from.min + ' - ' + this.from.max;
+        return false;
+      }
+
+      if( this.toAddress == '' ){
+        this.toastInfo = 'Address can\'t empty!';
+        return false;
+      }
+
+      if( this.to.name == 'MDS' ){
+        var reg=/^0x[a-f0-9]{40}$/i.test(this.toAddress);
+        if(!reg){
+          this.toastInfo = 'Address Style Error!';
+          return false;
+        }
+      }else{
+        if( this.toAddress.length > 12 ){
+          this.toastInfo = 'Address Style Error!';
+          return false;
+        }
+      }
+
+      // 获取当前登录账户
+      if( this.from.name == 'MDS' ){
+        web3.eth.getAccounts().then(res=>{
+          this.account = res[0];
+
+          this.$http.post(this.globalData.domain + this.createOrderUrl, {
+            'address':this.account,
+            'toAddress':this.toAddress,
+            'amount':this.from.assets * this.from.decimal,
+            'type': this.from.name == 'MDS' ? 0 : 1,
+          }, {
+            'emulateJSON': true
+          }).then(res => {
+            if( res.data.success ){
+              this.sendMDS(res.data.data.orderNo);
+            }else{
+              this.toastInfo = res.data.message;
+            }
+          })
+
+        });
+      }else{
+        user.getAccount().then(res=>{
+          this.account = res.name;
+
+          this.$http.post(this.globalData.domain + this.createOrderUrl, {
+            'address':this.account,
+            'toAddress':this.toAddress,
+            'amount':this.from.assets * this.from.decimal,
+            'type': this.from.name == 'MDS' ? 0 : 1,
+          }, {
+            'emulateJSON': true
+          }).then(res => {
+            if( res.data.success ){
+              // emds -> mds
+              this.sendEMDS(res.data.data.orderNo);
+            }else{
+              this.toastInfo = res.data.message;
+            }
+          })
+        })
+      }
+    },
+    getInit() {
+      this.$http.post(this.globalData.domain + this.initUrl, {}, {
+        'emulateJSON': true
+      }).then(res => {
+        if( res.data.success ){
+          this.from.min = res.data.data.mds.min / this.from.decimal;
+          this.low_amount = res.data.data.mds.min / this.from.decimal;
+          this.from.max = res.data.data.mds.max /this.from.decimal;
+          this.from.fee = res.data.data.mds.fee / this.from.decimal;
+          this.from.address = res.data.data.mds.toAddress;
+          this.to.min = res.data.data.emds.min / this.to.decimal;
+          this.to.max = res.data.data.emds.max / this.to.decimal;
+          this.to.fee = res.data.data.emds.fee / this.to.decimal;
+          this.to.address = res.data.data.emds.toAddress; 
+        }else{
+          this.toastInfo = 'System Init Error!';
+        }
+      })
+    },
+    sendMDS(orderNo) {
+
+      var assets = parseFloat( this.from.assets ) * parseInt(this.from.decimal);
+      assets = assets.toString(16);
+      var len = assets.length;
+      for(let i=0;i<64-len;i++){
+        assets = '0' + assets;
+      }
+
+      let _this = this;
+      web3.eth.sendTransaction({
+        'from' : this.account,
+        'to' : '0x66186008c1050627f979d464eabb258860563dbe',
+        'value' :'0x',
+        'data' : '0x' + 'a9059cbb' + '000000000000000000000000' + this.from.address.substr(2,this.from.address.length).toLowerCase() + assets
+      },function(error,hash){
+        if( hash ){
+          _this.$http.post(_this.globalData.domain + _this.finishOrderUrl, {
+            'address':_this.account,
+            'orderNo':orderNo,
+            'hash': hash
+          }, {
+            'emulateJSON': true
+          }).then(res => {
+            if( res.data.success ){
+              _this.toastInfo = 'Success!';
+            }else{
+              _this.toastInfo = 'System Error!';
+            }
+          })
+        }else{
+          _this.toastInfo = error.message;
+        }
+      });
+    },
+    sendEMDS(orderNo) {
+      // isLogin
+      user.getAccount().then((res) => {
+        $(".login").hide()
+        $(".personal").show()
+        $(".currentAccount").html(res.name)
+
+        const eos = user.getEos()
+
+        eos.transaction({
+          actions: [
+            {
+              account: 'medisharesbp',
+              name:    'transfer',
+              authorization: [{
+                  actor:      res.name,
+                  permission: res.authority
+              }],
+              data: {
+                  from: res.name,
+                  to: this.from.address,
+                  quantity: parseFloat( this.from.assets ).toFixed(4)+' EMDS',
+                  memo: 'EMDS 兑换'
+              }
+            }
+          ]
+        }).then(
+          result => {
+            this.$http.post(this.globalData.domain + this.finishOrderUrl, {
+              'address':res.name,
+              'orderNo':orderNo,
+              'hash':result.transaction_id
+            }, {
+              'emulateJSON': true
+            }).then(res => {
+              if( res.data.success ){
+                this.toastInfo = 'Success!';
+              }else{
+                this.toastInfo = 'System Error!';
+              }
+            })
+          }
+        ).catch(error => {
+          console.log(error)
+          this.toastInfo = error.message;
+        })
+      }, () => {
+        // 未安装 scatter 或 登录失败
+        this.toastInfo = this.$t('connect_scatter')
+      })
     }
-    // changeTransferAmount() {
-    //   this.isError = true
-    //   if (this.transfer_amount - 0 > 1000) {
-    //     this.toastInfo = this.$t('transfer_max_limit')
-    //     this.transfer_amount = 1000
-    //   }
-    //   this.equal_amount = this.transfer_amount
-    // }
   },
   components: {
     foot,
-    mdsToast
+    mdsToast,
+    mdsAlert
   }
 }
 </script>
