@@ -297,11 +297,12 @@ module.exports = {
   cross_chain_slogan: "블록체인에서 이 전환 애플리케이션을 사용하여 MDS를 EMDS 로 환전",
   cross_chain_from: "From",
   cross_chain_to: "To",
-  cross_chain_low: "최저 금액",
+  cross_chain_range: "비고: 입력 수량은",
   receive_address: "수취 주소",
   cross_chain_account: "수취 주소를 입력",
   cross_chain_assets: "자산 수량을 입력",
   cross_chain_error_tip1: "You can not transfer a",
   cross_chain_error_tip2: "amount that is lower than the minimum amount per transaction.Minimum Amount: ",
-  transfer_max_limit: "1회 환전 수량은 1000을 초과하면 안됩니다"
+  transfer_max_limit: "1회 환전 수량은 1000을 초과하면 안됩니다",
+  cross_fee: "수수료",
 }

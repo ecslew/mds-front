@@ -297,11 +297,12 @@ module.exports = {
   cross_chain_slogan: "在区块链上将 MDS 使用这个跨链应用，将区块链之间的 MDS 转换为 EMDS 代币",
   cross_chain_from: "From",
   cross_chain_to: "To",
-  cross_chain_low: "最低金额",
+  cross_chain_range: "注：数量应为",
   receive_address: "接收地址",
   cross_chain_account: "请输入接收地址",
   cross_chain_assets: "请输入资产数量",
   cross_chain_error_tip1: "You can not transfer a",
   cross_chain_error_tip2: "amount that is lower than the minimum amount per transaction.Minimum Amount: ",
-  transfer_max_limit: "单次兑换数量不能超过1000"
+  transfer_max_limit: "单次兑换数量不能超过1000",
+  cross_fee: "手续费",
 }
