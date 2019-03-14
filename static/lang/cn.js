@@ -305,4 +305,7 @@ module.exports = {
   cross_chain_error_tip2: "amount that is lower than the minimum amount per transaction.Minimum Amount: ",
   transfer_max_limit: "单次兑换数量不能超过1000",
   cross_fee: "手续费",
+  cross_success_title: "兑换成功",
+  cross_success_info: "您的交易已发送成功，一旦获得批准，我们会将令牌发送到您填写的接受地址中",
+  got_it: "知道了"
 }
