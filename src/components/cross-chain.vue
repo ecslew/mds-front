@@ -245,6 +245,9 @@ export default {
           }).then(res => {
             if( res.data.success ){
               $('#successModal').modal('show');
+                _this.from.assets = '';
+                _this.to.assets = '';
+                _this.toAddress = '';
             }else{
               _this.toastInfo = 'System Error!';
             }
@@ -291,13 +294,17 @@ export default {
             }).then(res => {
               if( res.data.success ){
                 $('#successModal').modal('show');
+                this.from.assets = '';
+                this.to.assets = '';
+                this.toAddress = '';
               }else{
                 this.toastInfo = 'System Error!';
               }
             })
           }
         ).catch(error => {
-          this.toastInfo = error.message;
+          console.log( JSON.stringify(error.message))
+          this.toastInfo = JSON.stringify(error.message);
         })
       }, () => {
         // 未安装 scatter 或 登录失败
