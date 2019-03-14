@@ -305,4 +305,7 @@ module.exports = {
   cross_chain_error_tip2: "amount that is lower than the minimum amount per transaction.Minimum Amount: ",
   transfer_max_limit: "1회 환전 수량은 1000을 초과하면 안됩니다",
   cross_fee: "수수료",
+  cross_success_title: "체인 전환 성공",
+  cross_success_info: "당신의 거래는 성공적으로 발송되었고 승인이 되면 계정으로 토큰을 보내드리겠습니다.",
+  got_it: "동의함"
 }

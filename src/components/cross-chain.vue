@@ -36,6 +36,20 @@
   <foot></foot>
   <mds-toast :toastInfo='toastInfo' :isWarn="isWarn" @toast="infoByToast"></mds-toast>
   <mds-alert :info='alertInfo'></mds-alert>
+  <!-- Modal -->
+  <div class="modal" id="successModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content text-center">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <img src="static/img/crossChain/success.png" width="64">
+        <h4 class="modal-title">{{$t('cross_success_title')}}</h4>
+        <p class="info">{{$t('cross_success_info')}}</p>
+        <div>
+          <span data-dismiss="modal" class="modal-close">{{$t('got_it')}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -44,7 +58,7 @@ import foot from '@/base/foot'
 import mdsToast from '@/base/toast'
 import mdsAlert from '@/base/alert'
 import user from 'static/js/user'
-import Web3 from 'web3';
+// import Web31 from 'web3';
 
 export default {
   data() {
@@ -79,14 +93,14 @@ export default {
     }
   },
   created(){
-
     // const web3 = new Web3.providers.HttpProvider("https://mainnet.infura.io/I1bDSFCAZW1DvGWDKdLy")
+    // console.log(Web31);
+    // console.log(window.postMessage);
+    // web3 = new Web31(Web31.givenProvider);
 
-    web3 = new Web3(Web3.givenProvider);
-
-    web3.eth.getAccounts().then(res=>{
-      this.account = res[0];
-    });
+    // web3.eth.getAccounts().then(res=>{
+    //   this.account = res[0];
+    // });
     this.getInit();
   },
   mounted(){
@@ -139,25 +153,30 @@ export default {
 
       // 获取当前登录账户
       if( this.from.name == 'MDS' ){
-        web3.eth.getAccounts().then(res=>{
-          this.account = res[0];
 
-          this.$http.post(this.globalData.domain + this.createOrderUrl, {
-            'address':this.account,
-            'toAddress':this.toAddress,
-            'amount':this.from.assets * this.from.decimal,
-            'type': this.from.name == 'MDS' ? 0 : 1,
-          }, {
-            'emulateJSON': true
-          }).then(res => {
-            if( res.data.success ){
-              this.sendMDS(res.data.data.orderNo);
-            }else{
-              this.toastInfo = res.data.message;
-            }
-          })
+        if( typeof window.web3 == 'undefined' ){
+          this.toastInfo = 'Get web3 fail. Please install MetaMask.';
+        }
 
-        });
+        if( web3.currentProvider.selectedAddress == undefined ){
+          this.toastInfo = 'Get Account fail. Please unlock your MetaMask.';
+          return false;
+        }
+
+        this.$http.post(this.globalData.domain + this.createOrderUrl, {
+          'address':web3.currentProvider.selectedAddress,
+          'toAddress':this.toAddress,
+          'amount':this.from.assets * this.from.decimal,
+          'type': this.from.name == 'MDS' ? 0 : 1,
+        }, {
+          'emulateJSON': true
+        }).then(res => {
+          if( res.data.success ){
+            this.sendMDS(res.data.data.orderNo);
+          }else{
+            this.toastInfo = res.data.message;
+          }
+        })
       }else{
         user.getAccount().then(res=>{
           this.account = res.name;
@@ -209,22 +228,23 @@ export default {
       }
 
       let _this = this;
+
       web3.eth.sendTransaction({
-        'from' : this.account,
+        'from' : web3.currentProvider.selectedAddress,
         'to' : '0x66186008c1050627f979d464eabb258860563dbe',
-        'value' :'0x',
+        'value' :'0x0',
         'data' : '0x' + 'a9059cbb' + '000000000000000000000000' + this.from.address.substr(2,this.from.address.length).toLowerCase() + assets
       },function(error,hash){
         if( hash ){
           _this.$http.post(_this.globalData.domain + _this.finishOrderUrl, {
-            'address':_this.account,
+            'address':web3.currentProvider.selectedAddress,
             'orderNo':orderNo,
             'hash': hash
           }, {
             'emulateJSON': true
           }).then(res => {
             if( res.data.success ){
-              _this.toastInfo = 'Success!';
+              $('#successModal').modal('show');
             }else{
               _this.toastInfo = 'System Error!';
             }
@@ -256,7 +276,7 @@ export default {
                   from: res.name,
                   to: this.from.address,
                   quantity: parseFloat( this.from.assets ).toFixed(4)+' EMDS',
-                  memo: 'EMDS 兑换'
+                  memo: 'EMDS Exchange'
               }
             }
           ]
@@ -270,14 +290,13 @@ export default {
               'emulateJSON': true
             }).then(res => {
               if( res.data.success ){
-                this.toastInfo = 'Success!';
+                $('#successModal').modal('show');
               }else{
                 this.toastInfo = 'System Error!';
               }
             })
           }
         ).catch(error => {
-          console.log(error)
           this.toastInfo = error.message;
         })
       }, () => {
@@ -295,6 +314,25 @@ export default {
 </script>
 
 <style scoped>
+
+#successModel .info{
+  font-size: 14px;
+  font-weight: 500;
+}
+.modal-content .modal-title{
+  margin-bottom: 30px;
+}
+.modal-close{
+  border:none;
+  padding:18px 0px;
+  background: var(--blueColor);
+  color:#fff;
+  display: inline-block;
+  border-radius: 8px;
+  margin-top: 84px;
+  width: 200px;
+}
+
 .cross-chian {
   padding: 140px 0;
   background: url('../../static/img/crossChain/01.png')no-repeat 90% 10% /500px, url('../../static/img/crossChain/02.png')no-repeat -140px 115%/284px, url('../../static/img/crossChain/03.png')no-repeat 16% 33%/120px, linear-gradient(to bottom, #f6f6f6, #acbabf);
