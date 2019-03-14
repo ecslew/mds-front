@@ -301,8 +301,12 @@ module.exports = {
   receive_address: "Receive Address",
   cross_chain_account: "Please enter the receiving address.",
   cross_chain_assets: "Please enter the asset ammount.",
+  cross_chain_get_assets: "Will get the asset ammount.",
   cross_chain_error_tip1: "You can not transfer a",
   cross_chain_error_tip2: "amount that is lower than the minimum amount per transaction.Minimum Amount: ",
   transfer_max_limit: "Exchange amount cannot exceed 1000 each time.",
   cross_fee: "Fee",
+  cross_success_title: "Exchange Successfully",
+  cross_success_info: "Your exchange is successfull, once it gets approved, we will send the tokens to the account.",
+  got_it: "GOT IT"
 }
