@@ -10,7 +10,7 @@
             <label>{{$t('cross_chain_from')}}</label>
             <div class="basic-group">
               <!-- FROM -->
-              <input class="basic-input" type="number" v-model="from.assets" :placeholder="$t('cross_chain_assets')" @input="changeAmount">
+              <input class="basic-input" type="number" v-model="from.assets" :placeholder="$t('cross_chain_assets')" @input="changeAmount" min="0">
               <span class="target-token">{{from.name}}</span>
             </div>
             <div class="low-amount"><span>{{$t('cross_chain_range')}}</span> {{from.min}} ~ {{from.max}} {{from.name}}</div>
@@ -20,7 +20,7 @@
               <label>{{$t('cross_chain_to')}}</label>
               <div class="basic-group">
                 <!-- TO -->
-                <input class="basic-input" type="number" v-model="to.assets" :placeholder="$t('cross_chain_assets')">
+                <input class="basic-input" readonly="true" type="number" v-model="to.assets" :placeholder="$t('cross_chain_get_assets')">
                 <span class="target-token">{{to.name}}</span>
               </div>
               <div class="low-amount"><span>{{$t('cross_fee')}}</span>：{{from.fee}} {{to.name}}</div>
@@ -245,6 +245,9 @@ export default {
           }).then(res => {
             if( res.data.success ){
               $('#successModal').modal('show');
+                _this.from.assets = '';
+                _this.to.assets = '';
+                _this.toAddress = '';
             }else{
               _this.toastInfo = 'System Error!';
             }
@@ -291,13 +294,17 @@ export default {
             }).then(res => {
               if( res.data.success ){
                 $('#successModal').modal('show');
+                this.from.assets = '';
+                this.to.assets = '';
+                this.toAddress = '';
               }else{
                 this.toastInfo = 'System Error!';
               }
             })
           }
         ).catch(error => {
-          this.toastInfo = error.message;
+          console.log( JSON.stringify(error.message))
+          this.toastInfo = JSON.stringify(error.message);
         })
       }, () => {
         // 未安装 scatter 或 登录失败

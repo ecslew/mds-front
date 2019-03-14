@@ -301,6 +301,7 @@ module.exports = {
   receive_address: "수취 주소",
   cross_chain_account: "수취 주소를 입력",
   cross_chain_assets: "자산 수량을 입력",
+  cross_chain_get_assets: "자산 수량을 입력",
   cross_chain_error_tip1: "You can not transfer a",
   cross_chain_error_tip2: "amount that is lower than the minimum amount per transaction.Minimum Amount: ",
   transfer_max_limit: "1회 환전 수량은 1000을 초과하면 안됩니다",
