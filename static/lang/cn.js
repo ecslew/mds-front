@@ -309,5 +309,7 @@ module.exports = {
   cross_success_title: "兑换成功",
   cross_success_info: "您的交易已发送成功，一旦获得批准，我们会将令牌发送到您填写的接受地址中",
   got_it: "知道了",
-  cross_chain_switch: "切换"
+  cross_chain_switch: "切换",
+  cross_chain_address_eos: "EOS账户名",
+  cross_chain_address_eth: "ETH地址"
 }
