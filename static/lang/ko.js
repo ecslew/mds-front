@@ -308,5 +308,6 @@ module.exports = {
   cross_fee: "수수료",
   cross_success_title: "체인 전환 성공",
   cross_success_info: "당신의 거래는 성공적으로 발송되었고 승인이 되면 계정으로 토큰을 보내드리겠습니다.",
-  got_it: "동의함"
+  got_it: "동의함",
+  cross_chain_switch: "전환"
 }
