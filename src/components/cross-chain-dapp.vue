@@ -26,7 +26,7 @@
           </div>
         </div>
         <!-- Address -->
-        <label>{{$t('receive_address')}}</label>
+        <label>{{address_title}}</label>
         <input class="basic-input" type="text" v-model="toAddress" :placeholder="$t('cross_chain_account')">
         <a class="confirm" @click="nextStep">{{$t('next_step')}}</a>
       </form>
@@ -61,6 +61,7 @@ export default {
   props: ['blockchain'],
   data() {
     return {
+      address_title:this.$t('cross_chain_address_eth'),
       from: {
         name: 'MDS',
         min_amount: 100,
@@ -105,6 +106,7 @@ export default {
         let place = this.from
         this.from = this.to
         this.to = place
+        this.address_title=this.$t('cross_chain_address_eos')
       }
       this.low_amount = this.from.min;
     },
@@ -404,7 +406,7 @@ form {
   }
 
   form {
-    padding: 24px 12px 32px;
+    padding: 24px 16px 32px;
     margin-top: 32px;
   }
 
