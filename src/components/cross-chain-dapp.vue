@@ -403,7 +403,7 @@ form {
   }
 
   form {
-    padding: 0 12px 32px;
+    padding: 24px 12px 32px;
     margin-top: 32px;
   }
 
