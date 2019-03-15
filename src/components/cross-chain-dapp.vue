@@ -5,9 +5,8 @@
       <div class="title uppercase">{{$t('cross_chain_title')}}</div>
       <div class="slogan">{{$t('cross_chain_slogan')}}</div>
       <form>
-        <div class="mobile-trans"><span @click="switchFunc"><img src="static/img/icon/conversion_icon@2x.png"  width="16"> {{$t('cross_chain_switch')}}</span></div>
         <div class="row">
-          <div class="col-sm-5">
+          <div class="col-sm-6">
             <label>{{$t('cross_chain_from')}}</label>
             <div class="basic-group">
               <!-- FROM -->
@@ -16,8 +15,7 @@
             </div>
             <div class="low-amount"><span>{{$t('cross_chain_range')}}</span> {{from.min}} ~ {{from.max}} {{from.name}}</div>
           </div>
-          <div class="col-sm-2 hidden-xs trans" @click="switchFunc"><img src="static/img/crossChain/zhuanhuan.png"></div>
-          <div class="col-sm-5">
+          <div class="col-sm-6">
             <label>{{$t('cross_chain_to')}}</label>
             <div class="basic-group">
               <!-- TO -->
@@ -60,6 +58,7 @@ import mdsToast from '@/base/toast'
 import mdsAlert from '@/base/alert'
 import user from 'static/js/user'
 export default {
+  props: ['blockchain'],
   data() {
     return {
       from: {
@@ -94,8 +93,6 @@ export default {
   created() {
     this.getInit();
   },
-  mounted() {
-  },
   methods: {
     infoByToast(val) {
       this.toastInfo = val
@@ -104,12 +101,11 @@ export default {
       this.to.assets = this.from.assets - this.from.fee > 0 ? this.from.assets - this.from.fee : 0;
     },
     switchFunc() {
-      let place = this.from
-      this.from = this.to
-      this.to = place
-      this.from.assets = '';
-      this.to.assets = '';
-      this.toAddress = '';
+      if (this.blockchain == 'eos') {
+        let place = this.from
+        this.from = this.to
+        this.to = place
+      }
       this.low_amount = this.from.min;
     },
     nextStep() {
@@ -199,6 +195,7 @@ export default {
           this.to.max = res.data.data.emds.max / this.to.decimal;
           this.to.fee = res.data.data.emds.fee / this.to.decimal;
           this.to.address = res.data.data.emds.toAddress;
+          this.switchFunc()
         } else {
           this.toastInfo = 'System Init Error!';
         }
@@ -366,16 +363,6 @@ form {
   margin-top: 8px;
 }
 
-.trans {
-  text-align: center;
-  padding-top: 58px;
-  cursor: pointer;
-}
-
-.trans img {
-  width: 64px;
-}
-
 .cross-chain .basic-input {
   background: transparent;
   border: 1px solid var(--light-grey-blue);
@@ -393,24 +380,14 @@ form {
   color: var(--orangeRed);
   margin-top: 8px;
 }
-.mobile-trans{
+
+.mobile-trans {
   text-align: right;
   padding-top: 24px;
   display: none;
 }
-.mobile-trans span{
-  cursor: pointer;
-  border: 1px solid var(--blueGrey);
-  padding: 8px 16px;
-  display: inline-block;
-  border-radius: 4px;
-  font-size: 12px;
-  line-height: 16px;
-}
+
 @media(max-width: 768px) {
-  .mobile-trans{
-    display: block;
-  }
   .cross-chain {
     padding: 32px 0;
     background: url('../../static/img/crossChain/01.png')no-repeat 240px 0 /230px, url('../../static/img/crossChain/02.png')no-repeat -75px 110%/150px, url('../../static/img/crossChain/03.png')no-repeat -30px 125px/80px, linear-gradient(to bottom, #f6f6f6, #acbabf);
@@ -430,15 +407,8 @@ form {
     margin-top: 32px;
   }
 
-  .trans {
-    padding: 70px 0 0;
-  }
-
-  .trans img {
-    width: 44px;
-  }
-  label{
-    margin:8px 0;
+  label {
+    margin: 8px 0;
   }
 }
 </style>

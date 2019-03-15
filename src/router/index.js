@@ -92,6 +92,14 @@ export default new Router({
     {
       path: '/crossChain',
       component: resolve => require(['@/components/cross-chain'], resolve)
+    },
+    //MDS->EMDS跨链DApp
+    {
+      path: '/crossChainDApp',
+      component: resolve => require(['@/components/cross-chain-dapp'], resolve),
+      props: (route) => ({
+        blockchain: route.query.blockchain
+      })
     }
   ]
 })

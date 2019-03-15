@@ -156,7 +156,7 @@ export default {
         this.isHome = false
         this.isCross = false
       }
-      if (to.path == '/about') {
+      if (to.path == '/about' || to.path == '/crossChain') {
         $(".login").hide()
         $(".personal").hide()
       } else if ($(".currentAccount").html()) {
