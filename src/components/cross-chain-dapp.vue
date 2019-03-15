@@ -140,13 +140,14 @@ export default {
           this.toastInfo = 'Get web3 fail. Please install MetaMask.';
         }
 
-        if (web3.currentProvider.selectedAddress == undefined) {
-          this.toastInfo = 'Get Account fail. Please unlock your MetaMask.';
+        if (typeof web3.eth.accounts[0] == 'undefined') {
+
+          this.toastInfo = 'Get Account fail.';
           return false;
         }
 
         this.$http.post(this.globalData.domain + this.createOrderUrl, {
-          'address': web3.currentProvider.selectedAddress,
+          'address': web3.eth.accounts[0],
           'toAddress': this.toAddress,
           'amount': this.from.assets * this.from.decimal,
           'type': this.from.name == 'MDS' ? 0 : 1
@@ -213,14 +214,14 @@ export default {
       let _this = this;
 
       web3.eth.sendTransaction({
-        'from': web3.currentProvider.selectedAddress,
+        'from': web3.eth.accounts[0],
         'to': '0x66186008c1050627f979d464eabb258860563dbe',
         'value': '0x0',
         'data': '0x' + 'a9059cbb' + '000000000000000000000000' + this.from.address.substr(2, this.from.address.length).toLowerCase() + assets
       }, function (error, hash) {
         if (hash) {
           _this.$http.post(_this.globalData.domain + _this.finishOrderUrl, {
-            'address': web3.currentProvider.selectedAddress,
+            'address': web3.eth.accounts[0],
             'orderNo': orderNo,
             'hash': hash
           }, {
