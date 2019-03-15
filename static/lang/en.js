@@ -308,5 +308,6 @@ module.exports = {
   cross_fee: "Fee",
   cross_success_title: "Exchange Successfully",
   cross_success_info: "Your exchange is successfull, once it gets approved, we will send the tokens to the account.",
-  got_it: "GOT IT"
+  got_it: "GOT IT",
+  cross_chain_switch: "Switch"
 }

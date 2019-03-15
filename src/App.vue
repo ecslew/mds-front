@@ -1,6 +1,6 @@
 <template>
 <div id="app">
-  <mds-nav></mds-nav>
+  <mds-nav v-if="isNavShow"></mds-nav>
   <router-view />
   <mds-toast :toastInfo='toastInfo' :isWarn='isWarn' @toast="infoByToast"></mds-toast>
 </div>
@@ -15,11 +15,17 @@ export default {
   data() {
     return {
       toastInfo: '',
-      isWarn: true
+      isWarn: true,
+      isNavShow: true
     }
   },
   mounted() {
     this.$router.afterEach((to, from) => {
+      if (to.path == '/crossChainDApp') {
+        this.isNavShow = false
+      } else {
+        this.isNavShow = true
+      }
       if (to.path != '/about' && to.path != '/myProject' && to.path != '/projectBacked' && to.path != '/address' && to.path != '/projectPurchase' && to.path != '/crossChain') {
         this.loginByScatter()
       }
@@ -43,6 +49,15 @@ export default {
         // 未安装 scatter 或 登录失败
         this.toastInfo = this.$t('connect_scatter')
       });
+    }
+  },
+  watch: {
+    $route(to, from) {
+      if (this.$route.path == '/crossChainDApp') {
+        this.isNavShow = false
+      } else {
+        this.isNavShow = true
+      }
     }
   },
   components: {
