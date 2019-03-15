@@ -26,7 +26,7 @@ export default {
       } else {
         this.isNavShow = true
       }
-      if (to.path != '/about' && to.path != '/myProject' && to.path != '/projectBacked' && to.path != '/address' && to.path != '/projectPurchase' && to.path != '/crossChain') {
+      if (to.path != '/about' && to.path != '/myProject' && to.path != '/projectBacked' && to.path != '/address' && to.path != '/projectPurchase' && to.path != '/crossChain' && !(to.path == '/crossChainDApp' && to.query.blockchain != 'eos')) {
         this.loginByScatter()
       }
       window.scrollTo(0, 0)
