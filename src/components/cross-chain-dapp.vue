@@ -3,7 +3,7 @@
   <div class="cross-chain">
     <div class="container">
       <div class="title uppercase">{{$t('cross_chain_title')}}</div>
-      <div class="slogan">{{$t('cross_chain_slogan')}}</div>
+      <!-- <div class="slogan">{{$t('cross_chain_slogan')}}</div> -->
       <form>
         <div class="row">
           <div class="col-sm-6">
@@ -61,7 +61,7 @@ export default {
   props: ['blockchain'],
   data() {
     return {
-      address_title:this.$t('cross_chain_address_eth'),
+      address_title:this.$t('cross_chain_address_eos'),
       from: {
         name: 'MDS',
         min_amount: 100,
@@ -106,7 +106,7 @@ export default {
         let place = this.from
         this.from = this.to
         this.to = place
-        this.address_title=this.$t('cross_chain_address_eos')
+        this.address_title=this.$t('cross_chain_address_eth')
       }
       this.low_amount = this.from.min;
     },
@@ -142,13 +142,14 @@ export default {
           this.toastInfo = 'Get web3 fail. Please install MetaMask.';
         }
 
-        if (web3.currentProvider.selectedAddress == undefined) {
-          this.toastInfo = 'Get Account fail. Please unlock your MetaMask.';
+        if (typeof web3.eth.accounts[0] == 'undefined') {
+
+          this.toastInfo = 'Get Account fail.';
           return false;
         }
 
         this.$http.post(this.globalData.domain + this.createOrderUrl, {
-          'address': web3.currentProvider.selectedAddress,
+          'address': web3.eth.accounts[0],
           'toAddress': this.toAddress,
           'amount': this.from.assets * this.from.decimal,
           'type': this.from.name == 'MDS' ? 0 : 1
@@ -215,14 +216,14 @@ export default {
       let _this = this;
 
       web3.eth.sendTransaction({
-        'from': web3.currentProvider.selectedAddress,
+        'from': web3.eth.accounts[0],
         'to': '0x66186008c1050627f979d464eabb258860563dbe',
         'value': '0x0',
         'data': '0x' + 'a9059cbb' + '000000000000000000000000' + this.from.address.substr(2, this.from.address.length).toLowerCase() + assets
       }, function (error, hash) {
         if (hash) {
           _this.$http.post(_this.globalData.domain + _this.finishOrderUrl, {
-            'address': web3.currentProvider.selectedAddress,
+            'address': web3.eth.accounts[0],
             'orderNo': orderNo,
             'hash': hash
           }, {
@@ -284,6 +285,8 @@ export default {
                 this.toastInfo = 'System Error!';
               }
             })
+          },reject=>{
+              this.toastInfo = JSON.parse(reject).error.details[0].message;
           }
         ).catch(error => {
           console.log(JSON.stringify(error.message))
