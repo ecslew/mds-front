@@ -3,7 +3,7 @@
   <div class="cross-chain">
     <div class="container">
       <div class="title uppercase">{{$t('cross_chain_title')}}</div>
-      <div class="slogan">{{$t('cross_chain_slogan')}}</div>
+      <!-- <div class="slogan">{{$t('cross_chain_slogan')}}</div> -->
       <form>
         <div class="row">
           <div class="col-sm-6">
@@ -61,7 +61,7 @@ export default {
   props: ['blockchain'],
   data() {
     return {
-      address_title:this.$t('cross_chain_address_eth'),
+      address_title:this.$t('cross_chain_address_eos'),
       from: {
         name: 'MDS',
         min_amount: 100,
@@ -106,7 +106,7 @@ export default {
         let place = this.from
         this.from = this.to
         this.to = place
-        this.address_title=this.$t('cross_chain_address_eos')
+        this.address_title=this.$t('cross_chain_address_eth')
       }
       this.low_amount = this.from.min;
     },
@@ -285,6 +285,8 @@ export default {
                 this.toastInfo = 'System Error!';
               }
             })
+          },reject=>{
+              this.toastInfo = JSON.parse(reject).error.details[0].message;
           }
         ).catch(error => {
           console.log(JSON.stringify(error.message))

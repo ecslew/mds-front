@@ -3,7 +3,7 @@
   <div class="cross-chain">
     <div class="container">
       <div class="title uppercase">{{$t('cross_chain_title')}}</div>
-      <div class="slogan">{{$t('cross_chain_slogan')}}</div>
+      <!-- <div class="slogan">{{$t('cross_chain_slogan')}}</div> -->
       <form>
         <div class="mobile-trans"><span @click="switchFunc"><img src="static/img/icon/conversion_icon@2x.png"  width="16"> {{$t('cross_chain_switch')}}</span></div>
         <div class="row">
@@ -62,7 +62,7 @@ import user from 'static/js/user'
 export default {
   data() {
     return {
-      address_title:this.$t('cross_chain_address_eth'),
+      address_title:this.$t('cross_chain_address_eos'),
       from: {
         name: 'MDS',
         min_amount: 100,
@@ -113,9 +113,9 @@ export default {
       this.toAddress = '';
       this.low_amount = this.from.min;
       if (this.to.name == 'MDS') {
-        this.address_title=this.$t('cross_chain_address_eos')
-      }else{
         this.address_title=this.$t('cross_chain_address_eth')
+      }else{
+        this.address_title=this.$t('cross_chain_address_eos')
       }
     },
     nextStep() {
@@ -275,7 +275,7 @@ export default {
           }]
         }).then(
           result => {
-            if( result.transaction_id ){
+
               this.$http.post(this.globalData.domain + this.finishOrderUrl, {
                 'address': res.name,
                 'orderNo': orderNo,
@@ -292,11 +292,8 @@ export default {
                   this.toastInfo = 'System Error!';
                 }
               })
-            }else{
-              console.log(result)
-              this.toastInfo = JSON.stringify(result.error.message);
-            }
-            
+          },reject=>{
+              this.toastInfo = JSON.parse(reject).error.details[0].message;
           }
         ).catch(error => {
           this.toastInfo = JSON.stringify(error.message);
