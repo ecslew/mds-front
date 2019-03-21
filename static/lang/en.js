@@ -294,7 +294,7 @@ module.exports = {
   project_email_pl: "Please enter your email",
   cross_chain_exchange: "Cross-chain Exchange",
   cross_chain_title: "MDS-EMDS Cross Chain",
-  cross_chain_slogan: "Use the Cross-chain DApp to convert MDS to EMDS between blockchains.",
+  cross_chain_slogan: "What's EMDS?",
   cross_chain_from: "From",
   cross_chain_to: "To",
   cross_chain_range: "Input value should be",
@@ -311,5 +311,6 @@ module.exports = {
   got_it: "GOT IT",
   cross_chain_switch: "Switch",
   cross_chain_address_eos: "EOS Account Name",
-  cross_chain_address_eth: "ETH Address"
+  cross_chain_address_eth: "ETH Address",
+  what_is_emds: "http://blog.mathwallet.org/?p=275"
 }

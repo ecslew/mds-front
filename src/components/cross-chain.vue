@@ -3,7 +3,7 @@
   <div class="cross-chain">
     <div class="container">
       <div class="title uppercase">{{$t('cross_chain_title')}}</div>
-      <!-- <div class="slogan">{{$t('cross_chain_slogan')}}</div> -->
+      <div class="slogan"><a target="_blank" :href="$t('what_is_emds')">{{$t('cross_chain_slogan')}}</a></div>
       <form>
         <div class="mobile-trans"><span @click="switchFunc"><img src="static/img/icon/conversion_icon@2x.png"  width="16"> {{$t('cross_chain_switch')}}</span></div>
         <div class="row">
@@ -349,11 +349,15 @@ label {
 
 .slogan {
   font-family: Gotham-Medium;
-  font-weight: 500;
-  font-size: 24px;
+  font-size: 20px;
   line-height: 1.33;
   text-align: center;
   padding: 10px 40px;
+}
+
+.slogan a{
+  color:#007aff;
+  text-decoration:underline;
 }
 
 form {
@@ -429,7 +433,7 @@ form {
   }
 
   .slogan {
-    font-size: 12px;
+    font-size: 10px;
     padding: 10px 16px;
   }
 

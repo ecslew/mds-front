@@ -294,7 +294,7 @@ module.exports = {
   project_email_pl: "이메일 주소를 입력하세요",
   cross_chain_exchange: "체인-체인 환전",
   cross_chain_title: "MDS-EMDS 전환",
-  cross_chain_slogan: "블록체인에서 이 전환 애플리케이션을 사용하여 MDS를 EMDS 로 환전",
+  cross_chain_slogan: "EMDS는 무엇인가?",
   cross_chain_from: "From",
   cross_chain_to: "To",
   cross_chain_range: "비고: 입력 수량은",
@@ -311,5 +311,6 @@ module.exports = {
   got_it: "동의함",
   cross_chain_switch: "전환",
   cross_chain_address_eos: "EOS 계정명",
-  cross_chain_address_eth: "ETH 주소"
+  cross_chain_address_eth: "ETH 주소",
+  what_is_emds: "http://blog.mathwallet.org/?p=275"
 }
