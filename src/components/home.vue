@@ -11,9 +11,44 @@
   <div class="aid-programs">
     <div class="container">
       <div class="mds-title">{{$t('programs_title')}}</div>
-      <ul class="row">
+      <ul class="row project-list">
         <li class="col-sm-4 col-xs-12" v-for="item in programs" :key="item.id">
           <project-list :id="item.eosID" :picture="item.img" :title="item.title" :targetAmount="item.targetAmount" :amount="item.reciveAmount" :time="item.releaseTime" :targetToken="item.targetToken"></project-list>
+        </li>
+        <li class="col-sm-4 col-xs-12">
+          <a class="program-list" href="http://riskexchange.one/">
+            <div class="list-pic" :style="{backgroundImage: 'url(static/img/project/risk.jpg)'}"></div>
+            <div class="info">
+              <h4 style="-webkit-box-orient: vertical;">Risk Exchange - Risks are everywhere in the world. Can we tokenize them, and make them tradable?</h4>
+              <div class="no-progress"></div>
+              <div class="complete">&nbsp;</div>
+              <div class="time">{{$t('release_time')}}: 2018-06-10</div>
+            </div>
+          </a>
+        </li>
+        <!--  -->
+        <li class="col-sm-4 col-xs-12">
+          <div class="program-list">
+            <div class="list-pic" :style="{backgroundImage: 'url(static/img/project/delay.jpg)'}"></div>
+            <div class="info">
+              <h4 style="-webkit-box-orient: vertical;">Transaction Delay Contract - Pack up in less than one hour, or get 5 MDS compensation in MathWallet.</h4>
+              <div class="no-progress"></div>
+              <div class="complete">&nbsp;</div>
+              <div class="time">{{$t('release_time')}}: 2018-06-28</div>
+            </div>
+          </div>
+        </li>
+        <!--  -->
+        <li class="col-sm-4 col-xs-12">
+          <div class="program-list">
+            <div class="list-pic" :style="{backgroundImage: 'url(static/img/project/math.jpg)'}"></div>
+            <div class="info">
+              <h4 style="-webkit-box-orient: vertical;">Crypto Protect Contract - Max Claim 100,000 MDS · Join now in MathWallet with 9 MDS gifted.</h4>
+              <div class="no-progress"></div>
+              <div class="complete">&nbsp;</div>
+              <div class="time">{{$t('release_time')}}: 2018-06-07</div>
+            </div>
+          </div>
         </li>
       </ul>
       <router-link to="/project" class="see-more">{{$t('see_more')}}</router-link>
@@ -91,5 +126,67 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style scoped>
+  .project-list li {
+    margin-bottom: 32px;
+  }
+  .program-list {
+    display: block;
+    box-shadow: 0 2px 8px rgba(175, 175, 175, 0.5);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .no-progress {
+    height: 4px;
+  }
+  .list-pic {
+    height: 240px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  }
 
+  .info {
+    padding: 24px 16px;
+    color: var(--darkColor);
+  }
+
+  .info h4 {
+    font-size: 20px;
+    font-weight: 400;
+    height: 4.2em;
+    margin-bottom: 32px;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .info .complete {
+    font-weight: 600;
+    font-family: Gotham-Medium;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 8px 0 48px;
+  }
+
+  .info .time {
+    color: var(--blueGrey);
+  }
+
+  @media (max-width: 767px) {
+    .list-pic {
+      height: 180px;
+    }
+
+    .info .complete {
+      padding-bottom: 28px;
+    }
+
+    .info h4 {
+      height: auto;
+    }
+  }
 </style>
