@@ -8,38 +8,40 @@
         <project-list :id="item.eosID" :picture="item.img" :title="item.title" :targetAmount="item.targetAmount" :amount="item.reciveAmount" :time="item.releaseTime" :targetToken="item.targetToken"></project-list>
       </li>
       <li class="col-sm-4 col-xs-12">
-        <a class="program-list" href="http://riskexchange.one/">
-          <div class="list-pic" :style="{backgroundImage: 'url(static/img/project/risk.jpg)'}"></div>
-          <div class="info">
-            <h4 style="-webkit-box-orient: vertical;">Risk Exchange - Risks are everywhere in the world. Can we tokenize them, and make them tradable?</h4>
-            <div class="no-progress"></div>
-            <div class="complete">&nbsp;</div>
-            <div class="time">{{$t('release_time')}}: 2018-06-10</div>
+          <a class="program-list" href="http://riskexchange.one/">
+            <div class="list-pic" :style="{backgroundImage: 'url(static/img/project/risk.jpg)'}"></div>
+            <div class="info">
+              <div class="info-title">Risk Exchange - Risks are everywhere in the world. Can we tokenize them, and make them tradable?</div>
+              <div class="no-progress"></div>
+              <div class="complete">&nbsp;</div>
+              <div class="time">{{$t('release_time')}}: 2018-06-10</div>
+            </div>
+          </a>
+        </li>
+        <!--  -->
+        <li class="col-sm-4 col-xs-12">
+          <div class="program-list">
+            <div class="list-pic" :style="{backgroundImage: 'url(static/img/project/delay.jpg)'}"></div>
+            <div class="info">
+              <div class="info-title">Transaction Delay Contract - Pack up in less than one hour, or get 5 MDS compensation in MathWallet.</div>
+              <div class="no-progress"></div>
+              <div class="complete">&nbsp;</div>
+              <div class="time">{{$t('release_time')}}: 2018-06-28</div>
+            </div>
           </div>
-        </a>
-      </li>
-      <li class="col-sm-4 col-xs-12">
-        <div class="program-list">
-          <div class="list-pic" :style="{backgroundImage: 'url(static/img/project/delay.jpg)'}"></div>
-          <div class="info">
-            <h4 style="-webkit-box-orient: vertical;">Transaction Delay Contract - Pack up in less than one hour, or get 5 MDS compensation in MathWallet.</h4>
-            <div class="no-progress"></div>
-            <div class="complete">&nbsp;</div>
-            <div class="time">{{$t('release_time')}}: 2018-06-28</div>
+        </li>
+        <!--  -->
+        <li class="col-sm-4 col-xs-12">
+          <div class="program-list">
+            <div class="list-pic" :style="{backgroundImage: 'url(static/img/project/math.jpg)'}"></div>
+            <div class="info">
+              <div class="info-title">Crypto Protect Contract - Max Claim 100,000 MDS · Join now in MathWallet with 9 MDS gifted.</div>
+              <div class="no-progress"></div>
+              <div class="complete">&nbsp;</div>
+              <div class="time">{{$t('release_time')}}: 2018-06-07</div>
+            </div>
           </div>
-        </div>
-      </li>
-      <li class="col-sm-4 col-xs-12">
-        <div class="program-list">
-          <div class="list-pic" :style="{backgroundImage: 'url(static/img/project/math.jpg)'}"></div>
-          <div class="info">
-            <h4 style="-webkit-box-orient: vertical;">Crypto Protect Contract - Max Claim 100,000 MDS · Join now in MathWallet with 9 MDS gifted.</h4>
-            <div class="no-progress"></div>
-            <div class="complete">&nbsp;</div>
-            <div class="time">{{$t('release_time')}}: 2018-06-07</div>
-          </div>
-        </div>
-      </li>
+        </li>
     </ul>
     <blank-page v-else></blank-page>
     <!-- <div class="load-more" v-show="!isAll"><span>{{$t("load_more")}}</span></div> -->
@@ -162,7 +164,13 @@ export default {
   font-size: 16px;
   line-height: 1.25;
 }
-
+.info .info-title {
+    font-size: 20px;
+    font-weight: 400;
+    height: 4.2em;
+    margin-bottom: 32px;
+    line-height: 1.4;
+  }
 @media (max-width: 767px) {
   .project {
     padding-top: 24px;
