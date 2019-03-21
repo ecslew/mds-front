@@ -91,7 +91,7 @@ module.exports = {
   end_date: "마감 날짜",
   end_date_pl: "마감 날짜를 입력",
   preview: "전 단계",
-  next_step: "다은 단계",
+  next_step: "다음 단계",
   transfer_limit: "거래 한도",
   pledged: "목표",
   backers: "지지자",
@@ -312,5 +312,5 @@ module.exports = {
   cross_chain_switch: "전환",
   cross_chain_address_eos: "EOS 계정명",
   cross_chain_address_eth: "ETH 주소",
-  what_is_emds: "http://blog.mathwallet.org/?p=275"
+  what_is_emds: "https://blog.naver.com/medishareskorea?Redirect=Update&logNo=221470585018"
 }
