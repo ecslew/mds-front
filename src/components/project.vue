@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     getPrograms() {
-      // 设置一个开关来避免重负请求数据
+      // 设置一个开关来避免重复请求数据
       let sw = false
       this.$http.get(this.globalData.domain + this.url + this.page).then((res) => {
         if (res.data.success) {
@@ -74,7 +74,7 @@ export default {
             this.isLoadEnd = false
             this.$http.get(this.globalData.domain + this.url + this.page).then((res) => {
               // 将新获取的数据push到vue中的data，就会反应到视图中了
-              this.programs.concat(res.data.data.pageData)
+              this.programs = this.programs.concat(res.data.data.pageData)
               this.isLoadEnd = true
               // 数据更新完毕，将开关打开
               if (res.data.data.pageData.length < 9) {
