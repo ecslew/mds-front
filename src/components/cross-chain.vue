@@ -3,7 +3,7 @@
   <div class="cross-chain">
     <div class="container">
       <div class="title uppercase">{{$t('cross_chain_title')}}</div>
-      <div class="slogan">{{$t('cross_chain_slogan')}}</div>
+      <div class="slogan"><a target="_blank" :href="$t('what_is_emds')">{{$t('cross_chain_slogan')}}</a></div>
       <form>
         <div class="mobile-trans"><span @click="switchFunc"><img src="static/img/icon/conversion_icon@2x.png"  width="16"> {{$t('cross_chain_switch')}}</span></div>
         <div class="row">
@@ -62,7 +62,7 @@ import user from 'static/js/user'
 export default {
   data() {
     return {
-      address_title:this.$t('cross_chain_address_eth'),
+      address_title:this.$t('cross_chain_address_eos'),
       from: {
         name: 'MDS',
         min_amount: 100,
@@ -113,9 +113,9 @@ export default {
       this.toAddress = '';
       this.low_amount = this.from.min;
       if (this.to.name == 'MDS') {
-        this.address_title=this.$t('cross_chain_address_eos')
-      }else{
         this.address_title=this.$t('cross_chain_address_eth')
+      }else{
+        this.address_title=this.$t('cross_chain_address_eos')
       }
     },
     nextStep() {
@@ -150,13 +150,13 @@ export default {
           this.toastInfo = 'Get web3 fail. Please install MetaMask.';
         }
 
-        if (web3.currentProvider.selectedAddress == undefined) {
-          this.toastInfo = 'Get Account fail. Please unlock your MetaMask.';
+        if (typeof web3.eth.accounts[0] == 'undefined') {
+          this.toastInfo = 'Get Account fail.';
           return false;
         }
 
         this.$http.post(this.globalData.domain + this.createOrderUrl, {
-          'address': web3.currentProvider.selectedAddress,
+          'address': web3.eth.accounts[0],
           'toAddress': this.toAddress,
           'amount': this.from.assets * this.from.decimal,
           'type': this.from.name == 'MDS' ? 0 : 1
@@ -222,14 +222,14 @@ export default {
       let _this = this;
 
       web3.eth.sendTransaction({
-        'from': web3.currentProvider.selectedAddress,
+        'from': web3.eth.accounts[0],
         'to': '0x66186008c1050627f979d464eabb258860563dbe',
         'value': '0x0',
         'data': '0x' + 'a9059cbb' + '000000000000000000000000' + this.from.address.substr(2, this.from.address.length).toLowerCase() + assets
       }, function (error, hash) {
         if (hash) {
           _this.$http.post(_this.globalData.domain + _this.finishOrderUrl, {
-            'address': web3.currentProvider.selectedAddress,
+            'address': web3.eth.accounts[0],
             'orderNo': orderNo,
             'hash': hash
           }, {
@@ -275,25 +275,27 @@ export default {
           }]
         }).then(
           result => {
-            this.$http.post(this.globalData.domain + this.finishOrderUrl, {
-              'address': res.name,
-              'orderNo': orderNo,
-              'hash': result.transaction_id
-            }, {
-              'emulateJSON': true
-            }).then(res => {
-              if (res.data.success) {
-                $('#successModal').modal('show');
-                this.from.assets = '';
-                this.to.assets = '';
-                this.toAddress = '';
-              } else {
-                this.toastInfo = 'System Error!';
-              }
-            })
+
+              this.$http.post(this.globalData.domain + this.finishOrderUrl, {
+                'address': res.name,
+                'orderNo': orderNo,
+                'hash': result.transaction_id
+              }, {
+                'emulateJSON': true
+              }).then(res => {
+                if (res.data.success) {
+                  $('#successModal').modal('show');
+                  this.from.assets = '';
+                  this.to.assets = '';
+                  this.toAddress = '';
+                } else {
+                  this.toastInfo = 'System Error!';
+                }
+              })
+          },reject=>{
+              this.toastInfo = JSON.parse(reject).error.details[0].message;
           }
         ).catch(error => {
-          console.log(JSON.stringify(error.message))
           this.toastInfo = JSON.stringify(error.message);
         })
       }, () => {
@@ -347,11 +349,15 @@ label {
 
 .slogan {
   font-family: Gotham-Medium;
-  font-weight: 500;
-  font-size: 24px;
+  font-size: 20px;
   line-height: 1.33;
   text-align: center;
   padding: 10px 40px;
+}
+
+.slogan a{
+  color:#007aff;
+  text-decoration:underline;
 }
 
 form {
@@ -427,7 +433,7 @@ form {
   }
 
   .slogan {
-    font-size: 12px;
+    font-size: 10px;
     padding: 10px 16px;
   }
 

@@ -294,7 +294,7 @@ module.exports = {
   project_email_pl: "Please enter your email",
   cross_chain_exchange: "Cross-chain Exchange",
   cross_chain_title: "MDS-EMDS Cross Chain",
-  cross_chain_slogan: "Use the Cross-chain DApp to convert MDS to EMDS between blockchains.",
+  cross_chain_slogan: "What's EMDS?",
   cross_chain_from: "From",
   cross_chain_to: "To",
   cross_chain_range: "Input value should be",
@@ -306,10 +306,11 @@ module.exports = {
   cross_chain_error_tip2: "amount that is lower than the minimum amount per transaction.Minimum Amount: ",
   transfer_max_limit: "Exchange amount cannot exceed 1000 each time.",
   cross_fee: "Fee",
-  cross_success_title: "Exchange Successfully",
-  cross_success_info: "Your exchange is successfull, once it gets approved, we will send the tokens to the account.",
+  cross_success_title: "Exchanging",
+  cross_success_info: "Please wait for blockchain packaging and the approval of it，then the tokens will be sent to the address you entered",
   got_it: "GOT IT",
   cross_chain_switch: "Switch",
   cross_chain_address_eos: "EOS Account Name",
-  cross_chain_address_eth: "ETH Address"
+  cross_chain_address_eth: "ETH Address",
+  what_is_emds: "http://blog.mathwallet.org/?p=275"
 }

@@ -91,7 +91,7 @@ module.exports = {
   end_date: "마감 날짜",
   end_date_pl: "마감 날짜를 입력",
   preview: "전 단계",
-  next_step: "다은 단계",
+  next_step: "다음 단계",
   transfer_limit: "거래 한도",
   pledged: "목표",
   backers: "지지자",
@@ -294,7 +294,7 @@ module.exports = {
   project_email_pl: "이메일 주소를 입력하세요",
   cross_chain_exchange: "체인-체인 환전",
   cross_chain_title: "MDS-EMDS 전환",
-  cross_chain_slogan: "블록체인에서 이 전환 애플리케이션을 사용하여 MDS를 EMDS 로 환전",
+  cross_chain_slogan: "EMDS는 무엇인가?",
   cross_chain_from: "From",
   cross_chain_to: "To",
   cross_chain_range: "비고: 입력 수량은",
@@ -306,10 +306,11 @@ module.exports = {
   cross_chain_error_tip2: "amount that is lower than the minimum amount per transaction.Minimum Amount: ",
   transfer_max_limit: "1회 환전 수량은 1000을 초과하면 안됩니다",
   cross_fee: "수수료",
-  cross_success_title: "체인 전환 성공",
-  cross_success_info: "당신의 거래는 성공적으로 발송되었고 승인이 되면 계정으로 토큰을 보내드리겠습니다.",
+  cross_success_title: "환전 중",
+  cross_success_info: "패킹과 확인 중입니다. 성공 후 환전된 토큰을 당신이 기입한 주소로 발송하겠습니다",
   got_it: "동의함",
   cross_chain_switch: "전환",
   cross_chain_address_eos: "EOS 계정명",
-  cross_chain_address_eth: "ETH 주소"
+  cross_chain_address_eth: "ETH 주소",
+  what_is_emds: "https://blog.naver.com/medishareskorea?Redirect=Update&logNo=221470585018"
 }

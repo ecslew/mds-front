@@ -294,7 +294,7 @@ module.exports = {
   project_email_pl: "请填写您的邮箱地址",
   cross_chain_exchange: "跨链兑换",
   cross_chain_title: "MDS-EMDS 跨链",
-  cross_chain_slogan: "在区块链上将 MDS 使用这个跨链应用，将区块链之间的 MDS 转换为 EMDS 代币",
+  cross_chain_slogan: "什么是EMDS？",
   cross_chain_from: "From",
   cross_chain_to: "To",
   cross_chain_range: "注：数量应为",
@@ -306,10 +306,11 @@ module.exports = {
   cross_chain_error_tip2: "amount that is lower than the minimum amount per transaction.Minimum Amount: ",
   transfer_max_limit: "单次兑换数量不能超过1000",
   cross_fee: "手续费",
-  cross_success_title: "兑换成功",
-  cross_success_info: "您的交易已发送成功，一旦获得批准，我们会将令牌发送到您填写的接受地址中",
+  cross_success_title: "正在兑换中",
+  cross_success_info: "请等待链上打包和确认，成功后兑换的通证将发送到您填写的地址",
   got_it: "知道了",
   cross_chain_switch: "切换",
   cross_chain_address_eos: "EOS账户名",
-  cross_chain_address_eth: "ETH地址"
+  cross_chain_address_eth: "ETH地址",
+  what_is_emds: "http://blog.medishares.org/?p=1398"
 }
