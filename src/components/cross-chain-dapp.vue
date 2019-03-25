@@ -35,6 +35,7 @@
   <foot></foot>
   <mds-toast :toastInfo='toastInfo' :isWarn="isWarn" @toast="infoByToast"></mds-toast>
   <mds-alert :info='alertInfo'></mds-alert>
+  <loading v-if="!isLoaded"></loading>
   <!-- Modal -->
   <div class="modal" id="successModal">
     <div class="modal-dialog" role="document">
@@ -53,6 +54,7 @@
 </template>
 
 <script>
+import loading from '@/base/loading'
 import foot from '@/base/foot'
 import mdsToast from '@/base/toast'
 import mdsAlert from '@/base/alert'
@@ -86,6 +88,7 @@ export default {
       toastInfo: '',
       alertInfo: '',
       isWarn: true,
+      isLoaded: true,
       initUrl: '/apiEmds/getInit',
       createOrderUrl: '/apiEmds/createOrder',
       finishOrderUrl: '/apiEmds/finishOrder'
@@ -205,6 +208,7 @@ export default {
       })
     },
     sendMDS(orderNo) {
+      this.isLoaded = false
 
       var assets = parseFloat(this.from.assets) * parseInt(this.from.decimal);
       assets = assets.toString(16);
@@ -229,6 +233,8 @@ export default {
           }, {
             'emulateJSON': true
           }).then(res => {
+            _this.isLoaded = true
+
             if (res.data.success) {
               $('#successModal').modal('show');
               _this.from.assets = '';
@@ -239,11 +245,14 @@ export default {
             }
           })
         } else {
+          _this.isLoaded = true
           _this.toastInfo = error.message;
         }
       });
     },
     sendEMDS(orderNo) {
+      this.isLoaded = false
+
       // isLogin
       user.getAccount().then((res) => {
         $(".login").hide()
@@ -276,6 +285,7 @@ export default {
             }, {
               'emulateJSON': true
             }).then(res => {
+              this.isLoaded = true
               if (res.data.success) {
                 $('#successModal').modal('show');
                 this.from.assets = '';
@@ -286,13 +296,15 @@ export default {
               }
             })
           },reject=>{
-              this.toastInfo = JSON.parse(reject).error.details[0].message;
+            this.isLoaded = true
+            this.toastInfo = JSON.parse(reject).error.details[0].message;
           }
         ).catch(error => {
-          console.log(JSON.stringify(error.message))
+          this.isLoaded = true
           this.toastInfo = JSON.stringify(error.message);
         })
       }, () => {
+        this.isLoaded = true
         // 未安装 scatter 或 登录失败
         this.toastInfo = this.$t('connect_scatter')
       })
@@ -301,7 +313,8 @@ export default {
   components: {
     foot,
     mdsToast,
-    mdsAlert
+    mdsAlert,
+    loading
   }
 }
 </script>
