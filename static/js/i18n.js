@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import vueI18n from 'vue-i18n'
-// import mathWallet from 'math-js-sdk'
+import mathWallet from 'math-js-sdk'
 Vue.use(vueI18n)
 
 /*
@@ -108,13 +108,13 @@ i18n.setUserLanguage = function(lang) {
   i18n.locale = lang;
 }
 
-// if (mathwallet.isMath()) {
-//   //接收app提供的语言参数
-//   mathwallet.getLanguage().then((lang) => {
-//     i18n.setUserLanguage(lang)
-//   });
-// } else {
+if (mathwallet.isMath()) {
+  //接收app提供的语言参数
+  mathwallet.getLanguage().then((lang) => {
+    i18n.setUserLanguage(lang)
+  });
+} else {
   var cookieLang = getCookie('userLanguage') ? getCookie('userLanguage') : getNavLanguage();
   i18n.setUserLanguage(cookieLang);
-// }
+}
 export default i18n

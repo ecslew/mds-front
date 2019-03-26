@@ -223,7 +223,7 @@ export default {
       }
 
       let _this = this;
-
+      
       web3.eth.sendTransaction({
         'from': web3.eth.accounts[0],
         'to': '0x66186008c1050627f979d464eabb258860563dbe',
