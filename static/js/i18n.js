@@ -101,6 +101,9 @@ i18n.setUserLanguage = function(lang) {
   if (isJSON(lang)) {
     lang = JSON.parse(lang).language;
   }
+  if (!webLanguage.includes(lang)) {
+    lang = 'en'
+  }
   getCookie("userLanguage", lang, {
     expires: 30,
     path: '/'
