@@ -1,7 +1,7 @@
 <template>
 <div class="blank-page">
   <p>{{$t("no_project")}}</p>
-  <router-link to="/projectRelease"><span>{{$t("to_publish_projects")}}</span></router-link>
+  <router-link to="/projectStep"><span>{{$t("to_publish_projects")}}</span></router-link>
 </div>
 </template>
 
