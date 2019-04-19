@@ -39,7 +39,7 @@ module.exports = {
   mediShares_market_title3: "MediShares는 매년 MDS를 구매하여 보험계약자에게 보상할 수 있도록 총 이익의 X%를 배당할 것입니다.",
   partners: "파트너",
   telegram: "Telegram",
-  telegram_link: "https://t.me/joinchat/IhQKGhBA6wD4xNpQ_Bw2vQ",
+  telegram_link: "https://t.me/medishares_korea",
   twitter: "Twitter",
   twitter_link: "https://twitter.com/MDS_Korea",
   weibo_kakao: "kakao story",

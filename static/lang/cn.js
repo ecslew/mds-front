@@ -39,7 +39,7 @@ module.exports = {
   mediShares_market_title3: "创建保障合约除了需要支付以太坊 Gas 外，还需要抵押一部分 MDS",
   partners: "合作伙伴",
   telegram: "Telegram",
-  telegram_link: "https://t.me/medishares",
+  telegram_link: "https://t.me/medisharesCN",
   twitter: "Twitter",
   twitter_link: "https://twitter.com/MediShares",
   weibo_kakao: "微博",
