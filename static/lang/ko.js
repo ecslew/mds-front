@@ -152,7 +152,7 @@ module.exports = {
   agree_terms: "Please agree to the terms first.",
   success: "success",
   news: "news",
-  news_link: "http://blog.mathwallet.org/?tag=project-report",
+  news_link: "http://blog.medishares.org/?tag=project-update",
   medishares_link: "http://www.medishares.org/ko",
   mathwallet_link: "http://www.mathwallet.org/ko",
   roadmap: "Roadmap",
