@@ -54,7 +54,7 @@ module.exports = {
   join_group: "Join the wechat group",
   group_icon: "static/img/qrcode/qr_code.png",
   title: "Initiate Your First Inclusive Program on Blockchain",
-  slogan: "Mutual Aid+ Inclusive Finance + StableCoin e - Commerce",
+  slogan: "Inclusive Finance + StableCoin e - Commerce",
   start_project: "Start a project",
   programs_title: "Featured project",
   complete: "complete",
