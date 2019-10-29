@@ -1,176 +1,206 @@
 <template>
-<div :class="[{ishome:isHome},{iscross:isCross},'mds-nav']">
-  <nav class="header-nav">
-    <div class="container">
-      <div class="navbar-header">
-        <router-link to="/" class="navbar-brand">MDS</router-link>
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                  data-target="#mds-nav" aria-expanded="true" @click="addWh100">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <div class="login mobile-login hidden-sm hidden-md hidden-lg" @click="login">{{$t("login")}}</div>
-        <div class="dropdown personal hidden-sm hidden-md hidden-lg">
-          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="tri"></span></a>
-          <ul class="dropdown-menu">
-            <li>
-              <router-link to="/projectStep">{{$t("create_a_project")}}</router-link>
+  <div :class="[{ishome:isHome},{iscross:isCross},'mds-nav']">
+    <nav class="header-nav">
+      <div class="container">
+        <div class="navbar-header">
+          <router-link to="/" class="navbar-brand">MDS.CITY</router-link>
+          <button
+            type="button"
+            class="navbar-toggle collapsed"
+            data-toggle="collapse"
+            data-target="#mds-nav"
+            aria-expanded="true"
+            @click="addWh100"
+          >
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <div
+            class="login mobile-login hidden-sm hidden-md hidden-lg"
+            @click="login"
+          >{{$t("login")}}</div>
+          <div class="dropdown personal hidden-sm hidden-md hidden-lg">
+            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button">
+              <span class="currentAccount"></span>
+              <span class="tri"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <router-link to="/projectStep">{{$t("create_a_project")}}</router-link>
+              </li>
+              <li>
+                <router-link to="/myProject">{{$t("my_projects")}}</router-link>
+              </li>
+              <li>
+                <router-link to="/projectBacked">{{$t("backed_projects")}}</router-link>
+              </li>
+              <li>
+                <router-link to="/address">{{$t("address_manage")}}</router-link>
+              </li>
+              <li>
+                <a href="javascript:;" @click="logout">{{$t("logout")}}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="collapse navbar-collapse" id="mds-nav">
+          <div class="collapse-close hidden-sm hidden-md hidden-lg" @click="removeWh100">×</div>
+          <ul class="nav navbar-nav navbar-right">
+            <li @click="removeWh100">
+              <router-link to="/" class="ico-book hidden-sm hidden-md hidden-lg">{{$t("home")}}</router-link>
             </li>
-            <li>
-              <router-link to="/myProject">{{$t("my_projects")}}</router-link>
-            </li>
-            <li>
-              <router-link to="/projectBacked">{{$t("backed_projects")}}</router-link>
-            </li>
-            <li>
-              <router-link to="/address">{{$t("address_manage")}}</router-link>
-            </li>
-            <li><a href="javascript:;" @click="logout">{{$t("logout")}}</a></li>
+            <!-- 跨链兑换 -->
+            <!-- <li @click="removeWh100"><router-link to="/crossChain">{{$t("cross_chain_exchange")}}</router-link></li> -->
+            <div class="dropdown lang">
+              <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                {{$t("lang")}}
+                <span class="tri"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="javascript:;" name="cn" @click="changeLang">中文</a>
+                </li>
+                <li>
+                  <a href="javascript:;" name="en" @click="changeLang">English</a>
+                </li>
+                <li>
+                  <a href="javascript:;" name="ko" @click="changeLang">한국어</a>
+                </li>
+              </ul>
+            </div>
+            <div class="login pc-login pull-left hidden-xs" @click="login">{{$t("login")}}</div>
+            <div class="dropdown personal hidden-xs">
+              <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                <span class="currentAccount"></span>
+                <span class="tri"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li @click="removeWh100">
+                  <router-link to="/projectStep">{{$t("create_a_project")}}</router-link>
+                </li>
+                <li @click="removeWh100">
+                  <router-link to="/myProject">{{$t("my_projects")}}</router-link>
+                </li>
+                <li @click="removeWh100">
+                  <router-link to="/projectBacked">{{$t("backed_projects")}}</router-link>
+                </li>
+                <li @click="removeWh100">
+                  <router-link to="/address">{{$t("address_manage")}}</router-link>
+                </li>
+                <li @click="removeWh100">
+                  <a href="javascript:;" @click="logout">{{$t("logout")}}</a>
+                </li>
+              </ul>
+            </div>
           </ul>
         </div>
       </div>
-      <div class="collapse navbar-collapse" id="mds-nav">
-        <div class="collapse-close hidden-sm hidden-md hidden-lg" @click="removeWh100">×</div>
-        <ul class="nav navbar-nav navbar-right">
-          <li @click="removeWh100">
-            <router-link to="/" class="ico-book hidden-sm hidden-md hidden-lg">{{$t("home")}}</router-link>
-          </li>
-          <li @click="removeWh100">
-            <router-link to="/about">{{$t("about")}}</router-link>
-          </li>
-          <li @click="removeWh100"><a :href="$t('news_link')" target="_blank">{{$t("news")}}</a></li>
-          <!-- 跨链兑换 -->
-          <li @click="removeWh100"><router-link to="/crossChain">{{$t("cross_chain_exchange")}}</router-link></li>
-          <div class="dropdown lang">
-            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button">{{$t("lang")}}<span class="tri"></span></a>
-            <ul class="dropdown-menu">
-              <li><a href="javascript:;" name="cn" @click="changeLang">中文</a></li>
-              <li><a href="javascript:;" name="en" @click="changeLang">English</a></li>
-              <li><a href="javascript:;" name="ko" @click="changeLang">한국어</a></li>
-            </ul>
-          </div>
-          <div class="login pc-login pull-left hidden-xs" @click="login">{{$t("login")}}</div>
-          <div class="dropdown personal hidden-xs">
-            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"><span class="currentAccount"></span><span class="tri"></span></a>
-            <ul class="dropdown-menu">
-              <li @click="removeWh100">
-                <router-link to="/projectStep">{{$t("create_a_project")}}</router-link>
-              </li>
-              <li @click="removeWh100">
-                <router-link to="/myProject">{{$t("my_projects")}}</router-link>
-              </li>
-              <li @click="removeWh100">
-                <router-link to="/projectBacked">{{$t("backed_projects")}}</router-link>
-              </li>
-              <li @click="removeWh100">
-                <router-link to="/address">{{$t("address_manage")}}</router-link>
-              </li>
-              <li @click="removeWh100"><a href="javascript:;" @click="logout">{{$t("logout")}}</a></li>
-            </ul>
-          </div>
-        </ul>
-      </div>
-    </div>
-  </nav>
-  <login-modal></login-modal>
-</div>
+    </nav>
+    <login-modal></login-modal>
+  </div>
 </template>
 
 <script>
-import user from 'static/js/user'
-import loginModal from '@/base/login-modal'
+import user from "static/js/user";
+import loginModal from "@/base/login-modal";
 export default {
-  name: 'mdsNav',
+  name: "mdsNav",
   data() {
     return {
       isHome: false,
       isCross: false
-    }
+    };
   },
   mounted() {
-    this.isHomePage()
+    this.isHomePage();
     // 导航固定
     this.navFix();
     $(window).scroll(() => {
       this.navFix();
-    })
+    });
   },
   methods: {
     isHomePage() {
-      if (this.$route.path == '/' || this.$route.path == '/about') {
-        this.isHome = true
-        this.isCross = false
-      } else if (to.path == '/crossChain') {
-        this.isHome = false
-        this.isCross = true
+      if (this.$route.path == "/" || this.$route.path == "/about") {
+        this.isHome = true;
+        this.isCross = false;
+      } else if (to.path == "/crossChain") {
+        this.isHome = false;
+        this.isCross = true;
       } else {
-        this.isHome = false
-        this.isCross = false
+        this.isHome = false;
+        this.isCross = false;
       }
     },
     changeLang(event) {
-      this.$i18n.setUserLanguage(event.target.name)
-      this.removeWh100()
+      this.$i18n.setUserLanguage(event.target.name);
+      this.removeWh100();
     },
     login() {
-      $("#login").modal('show');
+      $("#login").modal("show");
     },
     logout() {
-      user.logout().then((res) => {
-        $(".currentAccount").html('')
-        $(".login").show()
-        $(".personal").hide()
-      }, (err) => {
-        alert(err);
-      });
+      user.logout().then(
+        res => {
+          $(".currentAccount").html("");
+          $(".login").show();
+          $(".personal").hide();
+        },
+        err => {
+          alert(err);
+        }
+      );
     },
     navFix() {
-      if ($(window).scrollTop() >= ($('.mds-top').outerHeight() - $('.header-nav').outerHeight())) {
-        $('.header-nav').addClass('scroll-nav');
+      if (
+        $(window).scrollTop() >=
+        $(".mds-top").outerHeight() - $(".header-nav").outerHeight()
+      ) {
+        $(".header-nav").addClass("scroll-nav");
       } else {
-        $('.header-nav').removeClass('scroll-nav');
+        $(".header-nav").removeClass("scroll-nav");
       }
     },
     addWh100() {
-      $(document.documentElement).addClass('wh100');
-      $(document.body).addClass('wh100');
+      $(document.documentElement).addClass("wh100");
+      $(document.body).addClass("wh100");
     },
     removeWh100() {
-      $('#mds-nav').removeClass('in');
-      $(document.documentElement).removeClass('wh100');
-      $(document.body).removeClass('wh100');
+      $("#mds-nav").removeClass("in");
+      $(document.documentElement).removeClass("wh100");
+      $(document.body).removeClass("wh100");
     }
   },
   watch: {
     $route(to, from) {
-      if (this.$route.path == '/' || this.$route.path == '/about') {
-        this.isHome = true
-        this.isCross = false
-      } else if (to.path == '/crossChain') {
-        this.isHome = false
-        this.isCross = true
+      if (this.$route.path == "/" || this.$route.path == "/about") {
+        this.isHome = true;
+        this.isCross = false;
+      } else if (to.path == "/crossChain") {
+        this.isHome = false;
+        this.isCross = true;
       } else {
-        this.isHome = false
-        this.isCross = false
+        this.isHome = false;
+        this.isCross = false;
       }
-      if (to.path == '/about' || to.path == '/crossChain') {
-        $(".login").hide()
-        $(".personal").hide()
+      if (to.path == "/about" || to.path == "/crossChain") {
+        $(".login").hide();
+        $(".personal").hide();
       } else if ($(".currentAccount").html()) {
-        $(".login").hide()
-        $(".personal").show()
+        $(".login").hide();
+        $(".personal").show();
       } else {
-        $(".login").show()
-        $(".personal").hide()
+        $(".login").show();
+        $(".personal").hide();
       }
     }
   },
   components: {
     loginModal
   }
-}
+};
 </script>
 
 <style scoped>
@@ -198,7 +228,7 @@ export default {
   box-shadow: none;
   position: absolute;
 }
-.iscross .header-nav{
+.iscross .header-nav {
   color: var(--darkColor);
   background: #f6f6f6;
   box-shadow: none;
@@ -215,7 +245,7 @@ export default {
   text-transform: capitalize;
 }
 
-.dropdown>a {
+.dropdown > a {
   display: inline-block;
 }
 
@@ -223,7 +253,7 @@ export default {
   display: none;
 }
 
-.personal>a {
+.personal > a {
   text-transform: none;
 }
 
@@ -253,7 +283,7 @@ export default {
 
 .header-nav a:hover,
 .header-nav a:focus,
-nav .open>a {
+nav .open > a {
   background: transparent !important;
 }
 
@@ -276,10 +306,9 @@ nav .open>a {
   right: 12px;
 } */
 
-.header-nav .dropdown-menu>li>a {
+.header-nav .dropdown-menu > li > a {
   padding: 4px 0;
   color: var(--darkColor) !important;
-
 }
 
 .personal .dropdown-menu {
@@ -287,14 +316,14 @@ nav .open>a {
   padding: 0;
 }
 
-.personal .dropdown-menu>li>a {
+.personal .dropdown-menu > li > a {
   padding: 24px 0;
   border-bottom: 1px solid var(--bgColor);
   font-family: Gotham-Medium;
   font-weight: 500;
 }
 
-.personal .dropdown-menu>li:last-of-type>a {
+.personal .dropdown-menu > li:last-of-type > a {
   border: none;
 }
 
@@ -371,7 +400,7 @@ nav .open>a {
   }
 
   .ishome .lang .tri {
-    background: url('../../static/img/icon/tri.png')no-repeat center/contain;
+    background: url("../../static/img/icon/tri.png") no-repeat center/contain;
   }
 }
 

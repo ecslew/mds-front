@@ -72,11 +72,6 @@ export default new Router({
       path: '/projectBacked',
       component: resolve => require(['@/components/project-backed'], resolve)
     },
-    // 关于
-    {
-      path: '/about',
-      component: resolve => require(['@/components/about'], resolve)
-    },
     // 地址管理
     {
       path: '/address',

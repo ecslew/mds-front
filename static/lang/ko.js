@@ -54,7 +54,7 @@ module.exports = {
   join_group: " MediShares_Korea 카카오톡 채팅방에 가입하세요.",
   group_icon: "static/img/qrcode/kakao.jpg",
   title: "첫 번째 블록체인 상호 보장 프로그램 시작합니다",
-  slogan: "Mutual Aid+ Inclusive Finance + StableCoin e - Commerce",
+  slogan: "Inclusive Finance + StableCoin e - Commerce",
   start_project: "프로젝트 시작",
   programs_title: "Featured project",
   complete: "완성",
