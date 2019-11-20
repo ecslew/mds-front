@@ -115,10 +115,7 @@ ul {
 }
 
 .title {
-  font-family: Gotham-Medium;
-  font-weight: 500;
-  font-size: 32px;
-  line-height: 2;
+  font: 500 32px/2 Gotham-Medium;
   text-align: center;
 }
 
@@ -196,9 +193,7 @@ ul {
 }
 
 .started {
-  font-size: 16px;
-  font-family: Gotham-Medium;
-  font-weight: 500;
+  font: 500 16px Gotham-Medium;
   padding: 64px 0 8px;
   border-bottom: 1px solid #e7ecf0;
   margin-bottom: 36px;
@@ -349,11 +344,8 @@ span.basic-input {
 }
 
 .modal-content .modal-title {
-  font-family: Gotham-Medium;
-  font-weight: 500;
+  font: 500 20px/1.6 Gotham-Medium;
   color: #000;
-  font-size: 20px;
-  line-height: 1.6;
   text-align: center;
   text-transform: capitalize;
 }
@@ -403,10 +395,7 @@ span.basic-input {
 
 .btn-box {
   margin-top: 24px;
-  font-size: 16px;
-  font-family: Gotham-Medium;
-  font-weight: 500;
-  line-height: 1.5;
+  font: 500 16px/1.5 Gotham-Medium;
 }
 
 .btn-box a,
@@ -455,11 +444,8 @@ span.basic-input {
 }
 
 .mds-top .title {
-  font-size: 48px;
-  line-height: 1.25;
+  font: 500 48px/1.25 Gotham-Medium;
   padding: 150px 0 32px;
-  font-family: Gotham-Medium;
-  font-weight: 500;
 }
 
 .mds-top .slogan {
@@ -511,10 +497,8 @@ span.basic-input {
 }
 
 .mds-title {
-  font-size: 32px;
-  line-height: 1.5;
   text-align: center;
-  font-family: Gotham-Light;
+  font: 300 32px/1.5 Gotham-Light;
   margin-bottom: 64px;
 }
 
@@ -538,9 +522,7 @@ span.basic-input {
 .load-more p {
   display: inline-block;
   border: 1px solid var(--bgColor);
-  font-size: 16px;
-  font-family: Gotham-Medium;
-  font-weight: 500;
+  font: 500 16px/1.5 Gotham-Medium;
   padding: 14px 32px;
   margin: 32px 0;
   border-radius: 4px;
@@ -571,12 +553,37 @@ span.basic-input {
 /* 项目为空 */
 
 .isNull {
-  font-family: Gotham-Medium;
-  font-weight: 500;
   text-align: center;
   padding: 100px 0;
-  font-size: 16px;
   color: var(--blueGrey);
+  min-height: calc(100vh - 850px);
+  font: 500 16px/1.5 Gotham-Medium;
+}
+
+.bottom-line {
+  text-align: center;
+  margin-top: 50px 0 20px;
+  height: 20px;
+  position: relative;
+}
+
+.bottom-line span {
+  display: inline-block;
+  padding: 0 20px;
+  background: #fff;
+  position: relative;
+  z-index: 10;
+}
+
+.bottom-line:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 0;
+  border-top: 1px solid var(--paleBlue);
+  z-index: 5;
 }
 
 @media (max-width: 1500px) {
