@@ -399,31 +399,6 @@ tr.list-null {
   margin: 16px 0 8px;
 }
 
-.bottom-line {
-  text-align: center;
-  margin-top: 50px;
-  height: 20px;
-  position: relative;
-}
-
-.bottom-line span {
-  display: inline-block;
-  padding: 0 20px;
-  background: #fff;
-  position: relative;
-  z-index: 10;
-}
-
-.bottom-line:after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 0;
-  border-top: 1px solid var(--paleBlue);
-  z-index: 5;
-}
 
 @media (max-width: 992px) {
   .table>thead>tr>th {

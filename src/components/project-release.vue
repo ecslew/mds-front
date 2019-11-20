@@ -180,7 +180,6 @@ import 'wangeditor/release/wangEditor.css'
 import E from 'wangeditor'
 import sha from 'js-sha256'
 import user from 'static/js/user'
-import mdsNav from '@/base/mdsNav'
 import mdsToast from '@/base/toast'
 export default {
   props: ['type'],
